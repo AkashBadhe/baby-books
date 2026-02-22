@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "Kids Card Book",
+    "slug": "kids-card-book",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#f8fbff"
+      }
+    }
+  }
+}

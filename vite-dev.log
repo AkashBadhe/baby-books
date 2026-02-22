@@ -1,0 +1,111 @@
+
+> baby-alphabet-slideshow@1.0.0 dev
+> vite --host 0.0.0.0
+
+[2m6:14:20 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m Re-optimizing dependencies because vite config has changed
+
+  [32m[1mVITE[22m v7.3.1[39m  [2mready in [0m[1m692[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.20.176.1:[1m5173[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.1.6:[1m5173[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.16.0.1:[1m5173[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[2m6:16:56 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:17:45 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:17:52 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:17:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:18:07 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:18:18 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:21:58 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:22:56 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m6:22:58 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/slides.js[22m
+[2m6:22:58 pm[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /@fs/C:/akash-workspace/baby-alphabet-slideshow/src/slides.js (resolved id: C:/akash-workspace/baby-alphabet-slideshow/src/slides.js) in C:/akash-workspace/baby-alphabet-slideshow/src/main.js. Does the file exist?
+[2m6:23:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/slides.js[22m
+[2m6:23:40 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m6:25:43 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:25:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m6:28:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:30:51 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m6:31:03 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m6:31:11 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:31:20 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m6:31:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:34:10 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:35:42 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:36:17 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:36:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:42:08 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:44:12 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:44:55 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:45:04 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:45:42 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:45:48 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:46:00 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:47:43 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:48:41 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:50:27 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m6:50:27 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ new dependencies optimized: [33mtwemoji[32m[39m
+[2m6:50:27 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ optimized dependencies changed. reloading[39m
+[2m6:50:33 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m6:52:53 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m6:56:15 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m7:04:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/slides.js[22m
+[2m7:04:26 pm[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /@fs/C:/akash-workspace/baby-alphabet-slideshow/src/slides.js (resolved id: C:/akash-workspace/baby-alphabet-slideshow/src/slides.js) in C:/akash-workspace/baby-alphabet-slideshow/src/main.js. Does the file exist?
+[2m7:05:37 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/slides.js[22m
+[2m7:05:55 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:12:59 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m7:13:11 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m7:13:28 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:13:33 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:13:38 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:31:27 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m7:31:44 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:35:07 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m7:35:07 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[33m
+Unable to parse HTML; parse5 error code control-character-in-input-stream
+ at c:/akash-workspace/baby-alphabet-slideshow/index.html:45:39
+43 |      <div class="card" id="card" role="group" aria-label="Alphabet slide">
+44 |        <div class="letter" id="letter">A</div>
+45 |        <div class="emoji" id="emoji">ðŸŽ</div>
+   |                                        ^
+46 |        <div class="word" id="word">Apple</div>
+47 |        <p class="sub" id="sub">"A for Apple"</p>[39m
+[2m7:35:35 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m7:35:55 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[33m
+Unable to parse HTML; parse5 error code control-character-in-input-stream
+ at c:/akash-workspace/baby-alphabet-slideshow/index.html:45:39
+43 |      <div class="card" id="card" role="group" aria-label="Alphabet slide">
+44 |        <div class="letter" id="letter">A</div>
+45 |        <div class="emoji" id="emoji">ðŸŽ</div>
+   |                                        ^
+46 |        <div class="word" id="word">Apple</div>
+47 |        <p class="sub" id="sub">"A for Apple"</p>[39m
+[2m7:36:33 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m7:36:39 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m7:37:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:40:47 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:43:32 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:43:38 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m7:43:43 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m7:45:02 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m7:45:36 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:47:36 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:47:42 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m7:49:41 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m7:49:58 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:50:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m7:51:06 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/akash-workspace/baby-alphabet-slideshow/src/styles.css[22m
+[2m7:51:36 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:51:43 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:51:47 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:51:52 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:51:58 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:52:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:52:13 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/main.js[22m
+[2m7:56:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/slides.js[22m
+[2m7:56:30 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/slides.js[22m
+[2m7:56:30 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mC:/akash-workspace/baby-alphabet-slideshow/src/slides.js[22m

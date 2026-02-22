@@ -1,506 +1,88 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Baby ABC Slideshow (A–Z)</title>
-  <style>
-    :root{
-      --btn-bg:#ffffffcc;
-      --btn-border:#ffffff66;
-      --shadow: 0 10px 30px rgba(0,0,0,.18);
-    }
-    *{ box-sizing: border-box; }
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      overflow:hidden;
-      touch-action: manipulation;
-    }
-
-    /* Background */
-    .bg{
-      position:fixed;
-      inset:0;
-      background: radial-gradient(circle at 30% 20%, #fff 0%, rgba(255,255,255,0) 45%),
-                  radial-gradient(circle at 70% 80%, #fff 0%, rgba(255,255,255,0) 55%),
-                  linear-gradient(135deg, #ffe8f0, #e6f7ff);
-      transition: filter .4s ease;
-    }
-    .bg::after{
-      content:"";
-      position:absolute;
-      inset:-40px;
-      background: radial-gradient(circle at 10% 30%, rgba(255,255,255,.55), rgba(255,255,255,0) 55%),
-                  radial-gradient(circle at 90% 70%, rgba(255,255,255,.45), rgba(255,255,255,0) 60%);
-      filter: blur(6px);
-      opacity:.9;
-      pointer-events:none;
-    }
-
-    /* Confetti dots */
-    .dots{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      opacity:.35;
-      background-image:
-        radial-gradient(circle, rgba(255,255,255,.9) 1px, rgba(255,255,255,0) 2px),
-        radial-gradient(circle, rgba(255,255,255,.7) 1px, rgba(255,255,255,0) 2px);
-      background-size: 40px 40px, 55px 55px;
-      background-position: 0 0, 20px 25px;
-      mix-blend-mode: overlay;
-    }
-
-    /* Slide wrapper */
-    .wrap{
-      position:fixed;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 18px;
-    }
-
-    .card{
-      width:min(980px, 100%);
-      height:min(640px, 100%);
-      border-radius: 32px;
-      background: rgba(255,255,255,.68);
-      border: 1px solid rgba(255,255,255,.55);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      padding: 28px;
-      position:relative;
-      overflow:hidden;
-    }
-
-    .letter{
-      font-size: clamp(92px, 14vw, 170px);
-      line-height: 1;
-      margin: 4px 0 10px;
-      letter-spacing: .02em;
-      text-shadow: 0 8px 20px rgba(0,0,0,.10);
-      animation: pop .55s ease;
-    }
-
-    .emoji{
-      font-size: clamp(90px, 14vw, 170px);
-      line-height: 1;
-      margin: 4px 0 10px;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.14));
-      animation: floaty 2.2s ease-in-out infinite;
-    }
-
-    .word{
-      font-size: clamp(28px, 4.2vw, 54px);
-      margin: 8px 0 6px;
-      font-weight: 800;
-      letter-spacing: .01em;
-      text-shadow: 0 6px 16px rgba(0,0,0,.08);
-    }
-
-    .sub{
-      font-size: clamp(16px, 2.2vw, 22px);
-      margin: 0;
-      opacity: .72;
-      font-weight: 600;
-    }
-
-    .hint{
-      position:absolute;
-      bottom: 18px;
-      left: 0;
-      right: 0;
-      text-align:center;
-      font-size: 14px;
-      opacity:.6;
-      font-weight:600;
-      user-select:none;
-    }
-
-    /* Controls */
-    .controls{
-      position:fixed;
-      left: 12px;
-      right: 12px;
-      bottom: 12px;
-      display:flex;
-      gap: 10px;
-      justify-content:center;
-      flex-wrap:wrap;
-      z-index: 5;
-    }
-
-    .btn{
-      appearance:none;
-      border: 1px solid var(--btn-border);
-      background: var(--btn-bg);
-      border-radius: 999px;
-      padding: 12px 14px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor:pointer;
-      box-shadow: 0 8px 18px rgba(0,0,0,.10);
-      display:flex;
-      align-items:center;
-      gap:8px;
-      user-select:none;
-    }
-    .btn:active{ transform: translateY(1px) scale(.99); }
-
-    .pill{
-      border: 1px solid var(--btn-border);
-      background: var(--btn-bg);
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-size: 14px;
-      font-weight: 800;
-      box-shadow: 0 8px 18px rgba(0,0,0,.10);
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-
-    input[type="range"]{
-      width: 130px;
-    }
-
-    .dotsbar{
-      position: fixed;
-      top: 12px;
-      left: 12px;
-      right: 12px;
-      display:flex;
-      justify-content:center;
-      gap: 6px;
-      flex-wrap:wrap;
-      z-index: 5;
-      user-select:none;
-    }
-
-    .dot{
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.55);
-      border: 1px solid rgba(255,255,255,.6);
-      box-shadow: 0 6px 12px rgba(0,0,0,.10);
-    }
-    .dot.active{
-      transform: scale(1.25);
-      background: rgba(255,255,255,.92);
-    }
-
-    /* Animations */
-    @keyframes pop{
-      from{ transform: translateY(10px) scale(.96); opacity: .2; }
-      to{ transform: translateY(0) scale(1); opacity: 1; }
-    }
-    @keyframes floaty{
-      0%,100%{ transform: translateY(-3px); }
-      50%{ transform: translateY(6px); }
-    }
-
-    /* Tap anywhere overlay */
-    .tapZone{
-      position:fixed;
-      inset:0;
-      z-index: 1;
-      cursor:pointer;
-    }
-
-    /* Small screens */
-    @media (max-width: 520px){
-      .card{ padding: 18px; border-radius: 26px; }
-      input[type="range"]{ width: 100px; }
-      .btn{ padding: 11px 13px; }
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#3f8efc" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon-192.svg" />
+  <title>Baby ABC Slideshow</title>
 </head>
 <body>
   <div class="bg" id="bg"></div>
   <div class="dots"></div>
 
-  <div class="dotsbar" id="dotsbar" aria-hidden="true"></div>
+  <header class="topNav" aria-label="Primary navigation">
+    <button class="btn categoryBtnFloating" id="categoryBtn" aria-label="Open category picker">Categories</button>
+    <button class="settingsBtn" id="settingsBtn" aria-label="Open settings" aria-expanded="false" title="Settings">
+      <span aria-hidden="true">&#9881;</span>
+    </button>
+  </header>
+
+  <div class="settingsPanel" id="settingsPanel" role="dialog" aria-label="Slideshow settings">
+    <div class="settingsRow">
+      <button class="btn" id="prevBtn" aria-label="Previous letter">Prev</button>
+      <button class="btn" id="playBtn" aria-label="Play or pause">Play</button>
+      <button class="btn" id="nextBtn" aria-label="Next letter">Next</button>
+    </div>
+    <div class="settingsRow">
+      <div class="pill" title="Autoplay speed">
+        Speed
+        <input id="speed" type="range" min="3" max="8" step="1" value="4" />
+        <span id="speedLabel">4s</span>
+      </div>
+    </div>
+    <div class="settingsRow">
+      <button class="btn" id="recentBtn" aria-label="Open recent category">Recent: N/A</button>
+      <button class="btn" id="fullscreenBtn" aria-label="Toggle fullscreen">Fullscreen: OFF</button>
+    </div>
+    <div class="settingsRow">
+      <button class="btn" id="swipeBtn" aria-label="Toggle swipe">Swipe: ON</button>
+      <button class="btn" id="voiceBtn" aria-label="Toggle voice">Voice: OFF</button>
+      <button class="btn" id="musicBtn" aria-label="Toggle music">Music: OFF</button>
+      <button class="btn" id="favoriteBtn" aria-label="Toggle favorite">Favorite: OFF</button>
+    </div>
+    <p class="panelNote">Calm defaults for babies under 2: no autoplay, gentle voice, music off. Hold gear to unlock settings.</p>
+  </div>
 
   <div class="wrap">
-    <div class="card" role="group" aria-label="Alphabet slide">
+    <div class="card" id="card" role="group" aria-label="Learning card">
       <div class="letter" id="letter">A</div>
-      <div class="emoji" id="emoji">🍎</div>
+      <div class="media" id="media">
+        <img class="cardImage" id="cardImage" alt="" />
+        <div class="emoji" id="emoji">🍎</div>
+      </div>
       <div class="word" id="word">Apple</div>
-      <p class="sub" id="sub">“A for Apple”</p>
-      <div class="hint">Tap anywhere for next • Swipe not needed • Works offline</div>
+      <p class="sub" id="sub">"A for Apple"</p>
+    </div>
+  </div>
+
+  <div class="categoryOverlay" id="categoryOverlay" aria-hidden="true">
+    <div class="categoryDialog" role="dialog" aria-label="Choose category">
+      <div class="categoryHead">
+        <h2 class="categoryTitle">Choose Category</h2>
+        <button class="btn categoryClose" id="categoryCloseBtn" aria-label="Close category picker">Close</button>
+      </div>
+      <div class="statsGrid" id="statsGrid" aria-live="polite">
+        <div class="statsCard">
+          <span class="statsLabel">Overall</span>
+          <span class="statsValue" id="overallStatsValue">0/0</span>
+        </div>
+        <div class="statsCard">
+          <span class="statsLabel">Current</span>
+          <span class="statsValue" id="currentStatsValue">0/0</span>
+        </div>
+        <div class="statsCard">
+          <span class="statsLabel">Favorites</span>
+          <span class="statsValue" id="favoriteStatsValue">0</span>
+        </div>
+      </div>
+      <div class="categoryGrid" id="categoryGrid"></div>
     </div>
   </div>
 
   <div class="tapZone" id="tapZone" title="Tap to go to next slide"></div>
-
-  <div class="controls">
-    <button class="btn" id="prevBtn" aria-label="Previous letter">⟵ Prev</button>
-    <button class="btn" id="playBtn" aria-label="Play or pause">▶ Play</button>
-    <button class="btn" id="nextBtn" aria-label="Next letter">Next ⟶</button>
-
-    <div class="pill" title="Autoplay speed">
-      ⏱ Speed
-      <input id="speed" type="range" min="2" max="8" step="1" value="3" />
-      <span id="speedLabel">3s</span>
-    </div>
-
-    <button class="btn" id="voiceBtn" aria-label="Toggle voice">🔊 Voice: ON</button>
-    <button class="btn" id="musicBtn" aria-label="Toggle music">🎵 Music: OFF</button>
-  </div>
-
-<script>
-  // A–Z toddler-friendly words + emojis (works offline, no external images needed)
-  const slides = [
-    {l:'A', w:'Apple', e:'🍎', c:['#ff9a9e','#fad0c4']},
-    {l:'B', w:'Ball', e:'🏀', c:['#a1c4fd','#c2e9fb']},
-    {l:'C', w:'Cat', e:'🐱', c:['#fbc2eb','#a6c1ee']},
-    {l:'D', w:'Dog', e:'🐶', c:['#fddb92','#d1fdff']},
-    {l:'E', w:'Elephant', e:'🐘', c:['#cfd9df','#e2ebf0']},
-    {l:'F', w:'Fish', e:'🐟', c:['#84fab0','#8fd3f4']},
-    {l:'G', w:'Giraffe', e:'🦒', c:['#fa709a','#fee140']},
-    {l:'H', w:'House', e:'🏠', c:['#30cfd0','#330867']},
-    {l:'I', w:'Ice cream', e:'🍦', c:['#ffecd2','#fcb69f']},
-    {l:'J', w:'Juice', e:'🧃', c:['#f6d365','#fda085']},
-    {l:'K', w:'Kite', e:'🪁', c:['#a8edea','#fed6e3']},
-    {l:'L', w:'Lion', e:'🦁', c:['#fdfbfb','#ebedee']},
-    {l:'M', w:'Moon', e:'🌙', c:['#d4fc79','#96e6a1']},
-    {l:'N', w:'Nest', e:'🪺', c:['#e0c3fc','#8ec5fc']},
-    {l:'O', w:'Orange', e:'🍊', c:['#f093fb','#f5576c']},
-    {l:'P', w:'Penguin', e:'🐧', c:['#4facfe','#00f2fe']},
-    {l:'Q', w:'Queen', e:'👑', c:['#43e97b','#38f9d7']},
-    {l:'R', w:'Rainbow', e:'🌈', c:['#fa709a','#fee140']},
-    {l:'S', w:'Sun', e:'☀️', c:['#f6d365','#fda085']},
-    {l:'T', w:'Tiger', e:'🐯', c:['#fbc2eb','#a6c1ee']},
-    {l:'U', w:'Umbrella', e:'☂️', c:['#89f7fe','#66a6ff']},
-    {l:'V', w:'Violin', e:'🎻', c:['#fdfcfb','#e2d1c3']},
-    {l:'W', w:'Whale', e:'🐳', c:['#a1c4fd','#c2e9fb']},
-    {l:'X', w:'Xylophone', e:'🎶', c:['#d299c2','#fef9d7']},
-    {l:'Y', w:'Yoyo', e:'🪀', c:['#fddb92','#d1fdff']},
-    {l:'Z', w:'Zebra', e:'🦓', c:['#84fab0','#8fd3f4']},
-  ];
-
-  const els = {
-    letter: document.getElementById('letter'),
-    emoji: document.getElementById('emoji'),
-    word: document.getElementById('word'),
-    sub: document.getElementById('sub'),
-    bg: document.getElementById('bg'),
-    dotsbar: document.getElementById('dotsbar'),
-    prevBtn: document.getElementById('prevBtn'),
-    nextBtn: document.getElementById('nextBtn'),
-    playBtn: document.getElementById('playBtn'),
-    voiceBtn: document.getElementById('voiceBtn'),
-    musicBtn: document.getElementById('musicBtn'),
-    speed: document.getElementById('speed'),
-    speedLabel: document.getElementById('speedLabel'),
-    tapZone: document.getElementById('tapZone'),
-  };
-
-  // Progress dots
-  const dotEls = slides.map((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'dot' + (i===0 ? ' active' : '');
-    d.addEventListener('click', (ev) => { ev.stopPropagation(); go(i); });
-    els.dotsbar.appendChild(d);
-    return d;
-  });
-
-  let index = 0;
-  let autoplay = false;
-  let timer = null;
-
-  // Voice
-  let voiceOn = true;
-
-  function speak(text){
-    if(!voiceOn) return;
-    if(!('speechSynthesis' in window)) return;
-
-    try{
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.95;
-      u.pitch = 1.15;
-      u.volume = 1;
-      // Let browser pick the best available voice automatically.
-      window.speechSynthesis.speak(u);
-    }catch(e){ /* ignore */ }
-  }
-
-  // Gentle music (WebAudio) – no external files, starts only after a user click
-  let audioCtx = null;
-  let musicOn = false;
-  let musicTimer = null;
-  const lullaby = [
-    // simple, soft arpeggio pattern
-    261.63, 329.63, 392.00, 329.63,
-    293.66, 369.99, 440.00, 369.99,
-    261.63, 329.63, 392.00, 329.63,
-    246.94, 311.13, 392.00, 311.13,
-  ];
-
-  function ensureAudio(){
-    if(audioCtx) return;
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if(!AC) return;
-    audioCtx = new AC();
-  }
-
-  function playNote(freq, duration=0.22){
-    if(!audioCtx) return;
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type = 'sine';
-    o.frequency.value = freq;
-    g.gain.value = 0.0001;
-
-    o.connect(g);
-    g.connect(audioCtx.destination);
-
-    const now = audioCtx.currentTime;
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(0.035, now + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-
-    o.start(now);
-    o.stop(now + duration + 0.02);
-  }
-
-  function startMusic(){
-    ensureAudio();
-    if(!audioCtx) return;
-    if(audioCtx.state === 'suspended') audioCtx.resume();
-
-    let step = 0;
-    stopMusic();
-    musicTimer = setInterval(() => {
-      playNote(lullaby[step % lullaby.length], 0.22);
-      step++;
-    }, 260);
-  }
-
-  function stopMusic(){
-    if(musicTimer){
-      clearInterval(musicTimer);
-      musicTimer = null;
-    }
-  }
-
-  function setBg(colors){
-    els.bg.style.background = `
-      radial-gradient(circle at 30% 20%, rgba(255,255,255,.9) 0%, rgba(255,255,255,0) 45%),
-      radial-gradient(circle at 70% 80%, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 55%),
-      linear-gradient(135deg, ${colors[0]}, ${colors[1]})
-    `;
-  }
-
-  function updateUI(){
-    const s = slides[index];
-
-    // Restart pop animation by resetting element (simple trick)
-    els.letter.style.animation = 'none';
-    els.emoji.style.animation = 'none';
-    void els.letter.offsetHeight;
-    void els.emoji.offsetHeight;
-    els.letter.style.animation = 'pop .55s ease';
-    els.emoji.style.animation = 'floaty 2.2s ease-in-out infinite';
-
-    els.letter.textContent = s.l;
-    els.word.textContent = s.w;
-    els.emoji.textContent = s.e;
-    els.sub.textContent = `“${s.l} for ${s.w}”`;
-
-    setBg(s.c);
-
-    dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
-
-    // Say it
-    speak(`${s.l} for ${s.w}`);
-  }
-
-  function go(i){
-    index = (i + slides.length) % slides.length;
-    updateUI();
-  }
-
-  function next(){ go(index + 1); }
-  function prev(){ go(index - 1); }
-
-  function setAutoplay(on){
-    autoplay = on;
-    els.playBtn.textContent = autoplay ? '⏸ Pause' : '▶ Play';
-
-    if(timer){
-      clearInterval(timer);
-      timer = null;
-    }
-
-    if(autoplay){
-      const seconds = Number(els.speed.value);
-      timer = setInterval(next, seconds * 1000);
-    }
-  }
-
-  function updateSpeedLabel(){
-    const seconds = Number(els.speed.value);
-    els.speedLabel.textContent = `${seconds}s`;
-    if(autoplay) setAutoplay(true);
-  }
-
-  // Button handlers
-  els.prevBtn.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
-  els.nextBtn.addEventListener('click', (e) => { e.stopPropagation(); next(); });
-  els.playBtn.addEventListener('click', (e) => { e.stopPropagation(); setAutoplay(!autoplay); });
-
-  els.voiceBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    voiceOn = !voiceOn;
-    els.voiceBtn.textContent = voiceOn ? '🔊 Voice: ON' : '🔇 Voice: OFF';
-    if(!voiceOn && ('speechSynthesis' in window)) window.speechSynthesis.cancel();
-    if(voiceOn) updateUI();
-  });
-
-  els.musicBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    musicOn = !musicOn;
-    els.musicBtn.textContent = musicOn ? '🎵 Music: ON' : '🎵 Music: OFF';
-    if(musicOn) startMusic();
-    else stopMusic();
-  });
-
-  els.speed.addEventListener('input', (e) => { e.stopPropagation(); updateSpeedLabel(); });
-
-  // Tap anywhere to go next (great for babies / toddlers)
-  els.tapZone.addEventListener('click', () => {
-    // First user gesture also enables audio context if music is turned on later.
-    if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-    next();
-  });
-
-  // Keyboard support for parents
-  window.addEventListener('keydown', (e) => {
-    if(e.key === 'ArrowRight' || e.key === ' ') next();
-    if(e.key === 'ArrowLeft') prev();
-    if(e.key.toLowerCase() === 'p') setAutoplay(!autoplay);
-  });
-
-  // Init
-  updateSpeedLabel();
-  updateUI();
-
-  // Helpful: stop talking when tab is hidden
-  document.addEventListener('visibilitychange', () => {
-    if(document.hidden){
-      if('speechSynthesis' in window) window.speechSynthesis.cancel();
-    }
-  });
-</script>
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
