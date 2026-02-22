@@ -1,14 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" role="img" aria-label="Kids Card Book">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#5fa9ff" />
-      <stop offset="100%" stop-color="#7ae6c8" />
-    </linearGradient>
-  </defs>
-  <rect width="192" height="192" rx="36" fill="url(#bg)" />
-  <rect x="18" y="22" width="156" height="148" rx="20" fill="#ffffff" opacity="0.88" />
-  <text x="96" y="106" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="58" font-weight="900" fill="#1f2f46">A1</text>
-  <circle cx="54" cy="144" r="10" fill="#ff7f7f" />
-  <circle cx="96" cy="144" r="10" fill="#ffd166" />
-  <circle cx="138" cy="144" r="10" fill="#7ddf64" />
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" aria-label="Kids Card Book" viewBox="0 0 192 192"><defs><linearGradient id="a" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#5fa9ff"/><stop offset="100%" stop-color="#7ae6c8"/></linearGradient></defs><rect width="192" height="192" fill="url(#a)" rx="36"/><rect width="156" height="148" x="18" y="22" fill="#fff" opacity=".88" rx="20"/><text x="96" y="106" fill="#1f2f46" font-family="Segoe UI, Arial, sans-serif" font-size="58" font-weight="900" text-anchor="middle">A1</text><circle cx="54" cy="144" r="10" fill="#ff7f7f"/><circle cx="96" cy="144" r="10" fill="#ffd166"/><circle cx="138" cy="144" r="10" fill="#7ddf64"/></svg>
