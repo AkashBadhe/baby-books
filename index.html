@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#3f8efc" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon-192.svg" />
+  <title>Baby ABC Slideshow</title>
+  <script type="module" crossorigin src="./assets/index-Bra6onIM.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-NVNYx8-6.css">
+</head>
+<body>
+  <div class="bg" id="bg"></div>
+  <div class="dots"></div>
+
+  <header class="topNav" aria-label="Primary navigation">
+    <button class="btn categoryBtnFloating" id="categoryBtn" aria-label="Open category picker">Categories</button>
+    <button class="settingsBtn" id="settingsBtn" aria-label="Open settings" aria-expanded="false" title="Settings">
+      <span aria-hidden="true">&#9881;</span>
+    </button>
+  </header>
+
+  <div class="settingsPanel" id="settingsPanel" role="dialog" aria-label="Slideshow settings">
+    <div class="settingsRow">
+      <button class="btn" id="prevBtn" aria-label="Previous letter">Prev</button>
+      <button class="btn" id="playBtn" aria-label="Play or pause">Play</button>
+      <button class="btn" id="nextBtn" aria-label="Next letter">Next</button>
+    </div>
+    <div class="settingsRow">
+      <div class="pill" title="Autoplay speed">
+        Speed
+        <input id="speed" type="range" min="3" max="8" step="1" value="4" />
+        <span id="speedLabel">4s</span>
+      </div>
+    </div>
+    <div class="settingsRow">
+      <button class="btn" id="recentBtn" aria-label="Open recent category">Recent: N/A</button>
+      <button class="btn" id="fullscreenBtn" aria-label="Toggle fullscreen">Fullscreen: OFF</button>
+    </div>
+    <div class="settingsRow">
+      <button class="btn" id="swipeBtn" aria-label="Toggle swipe">Swipe: ON</button>
+      <button class="btn" id="voiceBtn" aria-label="Toggle voice">Voice: OFF</button>
+      <button class="btn" id="musicBtn" aria-label="Toggle music">Music: OFF</button>
+      <button class="btn" id="favoriteBtn" aria-label="Toggle favorite">Favorite: OFF</button>
+    </div>
+    <p class="panelNote">Calm defaults for babies under 2: no autoplay, gentle voice, music off. Hold gear to unlock settings.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="card" id="card" role="group" aria-label="Learning card">
+      <div class="letter" id="letter">A</div>
+      <div class="media" id="media">
+        <img class="cardImage" id="cardImage" alt="" />
+        <div class="emoji" id="emoji">🍎</div>
+      </div>
+      <div class="word" id="word">Apple</div>
+      <p class="sub" id="sub">"A for Apple"</p>
+    </div>
+  </div>
+
+  <div class="categoryOverlay" id="categoryOverlay" aria-hidden="true">
+    <div class="categoryDialog" role="dialog" aria-label="Choose category">
+      <div class="categoryHead">
+        <h2 class="categoryTitle">Choose Category</h2>
+        <button class="btn categoryClose" id="categoryCloseBtn" aria-label="Close category picker">Close</button>
+      </div>
+      <div class="statsGrid" id="statsGrid" aria-live="polite">
+        <div class="statsCard">
+          <span class="statsLabel">Overall</span>
+          <span class="statsValue" id="overallStatsValue">0/0</span>
+        </div>
+        <div class="statsCard">
+          <span class="statsLabel">Current</span>
+          <span class="statsValue" id="currentStatsValue">0/0</span>
+        </div>
+        <div class="statsCard">
+          <span class="statsLabel">Favorites</span>
+          <span class="statsValue" id="favoriteStatsValue">0</span>
+        </div>
+      </div>
+      <div class="categoryGrid" id="categoryGrid"></div>
+    </div>
+  </div>
+
+  <div class="tapZone" id="tapZone" title="Tap to go to next slide"></div>
+</body>
+</html>
