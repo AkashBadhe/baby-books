@@ -1,8 +1,24 @@
 {
   "name": "baby-alphabet-slideshow",
   "version": "1.0.0",
+  "description": "Interactive toddler learning slideshow with alphabet, numbers, category flashcards, and optimized image assets.",
   "private": true,
   "type": "module",
+  "keywords": [
+    "kids-learning",
+    "toddler-app",
+    "flashcards",
+    "alphabet-learning",
+    "numbers-learning",
+    "early-education",
+    "preschool",
+    "pwa",
+    "vite",
+    "javascript",
+    "offline-app",
+    "image-optimization",
+    "github-pages"
+  ],
   "scripts": {
     "dev": "vite",
     "assets:generate": "node scripts/generate-local-card-assets.mjs",

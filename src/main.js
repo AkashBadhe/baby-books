@@ -54,6 +54,7 @@ const state = {
   touchStartX: 0,
   touchStartY: 0,
   touchMoved: false,
+  touchDragging: false,
   suppressTapUntil: 0,
   audioCtx: null,
   musicOn: false,
@@ -68,6 +69,8 @@ const state = {
   categoryLastIndex: {},
   categoryViewedIds: {},
   favorites: [],
+  transitionDirection: "next",
+  hasRenderedCard: false,
 };
 
 const audioAvailabilityCache = new Map();
@@ -366,6 +369,8 @@ function resolveCardImageSrc(card) {
 function loadCardImage(card) {
   const src = resolveCardImageSrc(card);
   if (!src) {
+    els.card.classList.remove("expects-image");
+    els.card.classList.remove("image-loading");
     els.card.classList.remove("image-mode");
     els.cardImage.removeAttribute("src");
     els.cardImage.alt = "";
@@ -373,16 +378,24 @@ function loadCardImage(card) {
   }
 
   const requestId = ++state.imageRequestId;
-  els.card.classList.remove("image-mode");
+  els.card.classList.add("expects-image");
+  els.card.classList.add("image-loading");
   els.cardImage.alt = `${card.title} card`;
   els.cardImage.onload = () => {
     if (requestId !== state.imageRequestId) return;
+    els.card.classList.remove("image-loading");
     els.card.classList.add("image-mode");
   };
   els.cardImage.onerror = () => {
     if (requestId !== state.imageRequestId) return;
+    els.card.classList.remove("image-loading");
     els.card.classList.remove("image-mode");
   };
+  if (els.cardImage.src === src && els.cardImage.complete && els.cardImage.naturalWidth > 0) {
+    els.card.classList.remove("image-loading");
+    els.card.classList.add("image-mode");
+    return;
+  }
   els.cardImage.src = src;
 }
 
@@ -540,6 +553,12 @@ function updateUI() {
   els.card.classList.toggle("alphabet-mode", alphabetMode);
   els.card.classList.toggle("visual-mode", visualMode);
 
+  if (state.hasRenderedCard) {
+    els.card.classList.remove("turn-next", "turn-prev");
+    void els.card.offsetWidth;
+    els.card.classList.add(state.transitionDirection === "prev" ? "turn-prev" : "turn-next");
+  }
+
   els.letter.style.animation = "none";
   els.emoji.style.animation = "none";
   void els.letter.offsetHeight;
@@ -571,9 +590,11 @@ function updateUI() {
   renderCategoryGrid();
   updateStatsDashboard();
   speakCurrentSlide();
+  state.hasRenderedCard = true;
 }
 
-function go(nextIndex) {
+function go(nextIndex, direction = "next") {
+  state.transitionDirection = direction;
   state.index = wrapIndex(nextIndex, activeSlides().length);
   updateUI();
 }
@@ -591,16 +612,52 @@ function nextCategoryId(currentCategoryId) {
 }
 
 function next() {
+  state.transitionDirection = "next";
   if (state.index >= activeSlides().length - 1) {
     setCategory(nextCategoryId(state.category), true);
     return;
   }
 
-  go(state.index + 1);
+  go(state.index + 1, "next");
 }
 
 function prev() {
-  go(state.index - 1);
+  go(state.index - 1, "prev");
+}
+
+function clearSwipeCardTransform() {
+  els.card.style.transform = "";
+  els.card.style.opacity = "";
+  els.card.style.transition = "";
+}
+
+function applySwipeCardDrag(dx) {
+  const limitedDx = Math.max(-220, Math.min(220, dx * 0.92));
+  const rotate = limitedDx / 28;
+  const progress = Math.min(1, Math.abs(limitedDx) / 220);
+  const opacity = 1 - progress * 0.33;
+
+  els.card.style.transition = "none";
+  els.card.style.transform = `translate3d(${limitedDx}px, 0, 0) rotate(${rotate}deg)`;
+  els.card.style.opacity = String(opacity);
+}
+
+function settleSwipeCard() {
+  els.card.style.transition = "transform 180ms ease, opacity 180ms ease";
+  els.card.style.transform = "";
+  els.card.style.opacity = "";
+  setTimeout(() => {
+    if (state.touchDragging) return;
+    els.card.style.transition = "";
+  }, 220);
+}
+
+function animateSwipeCommit(direction) {
+  const sign = direction === "left" ? -1 : 1;
+  const distance = Math.min(240, Math.max(160, window.innerWidth * 0.34));
+  els.card.style.transition = "transform 150ms ease, opacity 150ms ease";
+  els.card.style.transform = `translate3d(${sign * distance}px, 0, 0) rotate(${sign * 8}deg)`;
+  els.card.style.opacity = "0.32";
 }
 
 function setAutoplay(on) {
@@ -901,6 +958,7 @@ els.swipeBtn.addEventListener("click", (e) => {
   e.stopPropagation();
   state.swipeOn = !state.swipeOn;
   els.swipeBtn.textContent = state.swipeOn ? "Swipe: ON" : "Swipe: OFF";
+  if (!state.swipeOn) clearSwipeCardTransform();
   updateToggleButtons();
 });
 
@@ -956,17 +1014,30 @@ els.tapZone.addEventListener("touchstart", (e) => {
   state.touchStartX = e.touches[0].clientX;
   state.touchStartY = e.touches[0].clientY;
   state.touchMoved = false;
+  state.touchDragging = true;
 }, { passive: true });
 
 els.tapZone.addEventListener("touchmove", (e) => {
   if (!state.swipeOn || !e.touches || e.touches.length !== 1) return;
   const dx = e.touches[0].clientX - state.touchStartX;
   const dy = e.touches[0].clientY - state.touchStartY;
-  if (Math.abs(dx) > 12 || Math.abs(dy) > 12) state.touchMoved = true;
+  if (Math.abs(dx) > 8 || Math.abs(dy) > 8) state.touchMoved = true;
+  if (Math.abs(dx) <= Math.abs(dy)) return;
+  applySwipeCardDrag(dx);
 }, { passive: true });
 
 els.tapZone.addEventListener("touchend", (e) => {
-  if (!state.swipeOn || !state.touchMoved || !e.changedTouches || e.changedTouches.length !== 1) return;
+  if (!state.swipeOn || !e.changedTouches || e.changedTouches.length !== 1) {
+    state.touchDragging = false;
+    clearSwipeCardTransform();
+    return;
+  }
+
+  state.touchDragging = false;
+  if (!state.touchMoved) {
+    settleSwipeCard();
+    return;
+  }
 
   const direction = detectSwipe({
     startX: state.touchStartX,
@@ -975,9 +1046,23 @@ els.tapZone.addEventListener("touchend", (e) => {
     endY: e.changedTouches[0].clientY,
   });
 
-  if (direction === "left") next();
-  if (direction === "right") prev();
-  if (direction) state.suppressTapUntil = Date.now() + 320;
+  if (!direction) {
+    settleSwipeCard();
+    return;
+  }
+
+  animateSwipeCommit(direction);
+  state.suppressTapUntil = Date.now() + 320;
+  setTimeout(() => {
+    clearSwipeCardTransform();
+    if (direction === "left") next();
+    if (direction === "right") prev();
+  }, 155);
+}, { passive: true });
+
+els.tapZone.addEventListener("touchcancel", () => {
+  state.touchDragging = false;
+  settleSwipeCard();
 }, { passive: true });
 
 window.addEventListener("keydown", (e) => {

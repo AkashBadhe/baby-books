@@ -1,22 +1,33 @@
-# Baby Alphabet Slideshow
+# Baby Books Slideshow
 
-Simple A-Z slideshow for babies, now organized for easier change, testing, and deployment.
+Interactive learning slideshow for toddlers with categories (alphabet, numbers, fruits, vegetables, birds, body, vehicles, wild animals), swipe navigation, voice support, and GitHub Pages deployment.
 
-## Implementation Plan
+## Features
 
-- Step-by-step multi-platform implementation guide:
-  - `IMPLEMENTATION_README.md`
-- Live progress and resume checklist:
-  - `IMPLEMENTATION_CHECKLIST.md`
+- Category-based flashcards with automatic category cycling
+- Smooth tap/swipe slide transitions
+- Image-first cards for real visual assets
+- Optional text-to-speech and recorded audio per card
+- PWA support (manifest + service worker)
+- Automated image optimization before build
+
+## Discoverability Tags
+
+Use these as GitHub Topics/keywords:
+
+`kids-learning` `toddler-app` `flashcards` `alphabet-learning` `numbers-learning` `early-education` `preschool` `pwa` `vite` `javascript` `offline-app` `image-optimization` `github-pages`
 
 ## Project Structure
 
 - `index.html`: app shell and markup
-- `src/main.js`: app wiring and event handlers
-- `src/styles.css`: styles
-- `src/slides.js`: alphabet slide content
-- `src/logic.js`: pure logic (swipe detection and index wrapping)
-- `src/voice.js`: voice selection and speech helpers
+- `src/main.js`: app state, interactions, slideshow behavior
+- `src/styles.css`: UI and animation styles
+- `src/slides.js`: category/card content
+- `src/logic.js`: pure logic helpers
+- `src/voice.js`: TTS voice helpers
+- `scripts/optimize-assets.mjs`: automatic image/SVG optimization pipeline
+- `raw-assets/photos/`: source images (not directly shipped)
+- `public/assets/photos/`: processed images used by the app
 - `tests/*.test.js`: unit tests
 
 ## Local Development
@@ -24,63 +35,39 @@ Simple A-Z slideshow for babies, now organized for easier change, testing, and d
 1. `npm install`
 2. `npm run dev`
 
-## Run Tests
+## Image Workflow
 
-- `npm test`
-- `npm run test:watch`
+1. Add original images to:
+   - `raw-assets/photos/fruits/`
+   - `raw-assets/photos/vegetables/`
+   - `raw-assets/photos/birds/`
+   - `raw-assets/photos/bodyparts/`
+   - `raw-assets/photos/vehicles/`
+   - `raw-assets/photos/wild_animals/`
+2. Copy mapped files to `public/assets/photos/...` (lowercase names matching card IDs).
+3. Run optimization:
+   - `npm run assets:optimize`
 
-## Build For Deployment
+## Build and Test
 
-1. `npm run build`
-2. Deploy the generated `dist/` folder to any static host:
-   - GitHub Pages
-   - Netlify
-   - Vercel (static)
-   - Cloudflare Pages
-
-`vite.config.js` uses `base: "./"` so the app also works when hosted from a subpath.
-
-## Local Card Assets
-
-- Generate packaged local SVG assets for all cards:
-  - `npm run assets:generate`
+- Build (runs optimization automatically via `prebuild`):
+  - `npm run build`
+- Run tests:
+  - `npm test`
+  - `npm run test:watch`
 
 ## Optional Recorded Audio Per Card
 
-You can add pre-recorded audio files (preferred over TTS) by:
+Add audio files under `public/assets/audio/...` and set `audio` in `src/slides.js` card objects.
 
-1. Placing files under `public/assets/audio/...`
-2. Adding `audio` to a card in `src/slides.js`, for example:
+Playback priority:
 
-```js
-{
-  id: "a",
-  value: "A",
-  title: "Apple",
-  subtitle: "A for Apple",
-  emoji: "🍎",
-  audioLabel: "A for Apple",
-  audio: "/assets/audio/alphabet/a.mp3",
-  colors: ["#ff9a9e", "#fad0c4"]
-}
-```
-
-Playback priority is:
 - recorded audio (if available)
 - TTS (`audioLabel`)
 
-## PWA Support
+## Deploy to GitHub Pages
 
-The app now includes:
-- `public/manifest.webmanifest`
-- `public/sw.js` service worker for offline caching
-- local app icons in `public/icons/`
+1. `npm run deploy`
+2. Open: `https://akashbadhe.github.io/baby-books/`
 
-## Publish To GitHub Pages
-
-1. Ensure your git remote is set to your GitHub repo.
-2. Run:
-   - `npm install`
-   - `npm run deploy`
-
-This builds the app and publishes `dist/` to the `gh-pages` branch.
+If old content appears after deploy, hard refresh once (`Ctrl+F5`). The service worker is configured to reduce stale-page issues.

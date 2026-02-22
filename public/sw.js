@@ -1,7 +1,6 @@
-const CACHE_NAME = "kids-card-book-v2";
+const CACHE_NAME = "kids-card-book-v3";
 const CORE_ASSETS = [
   "./",
-  "./index.html",
   "./manifest.webmanifest",
   "./icons/icon-192.svg",
   "./icons/icon-512.svg",
@@ -24,6 +23,25 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
+
+  // Always try network first for page/document navigation so new deploys
+  // become visible immediately instead of serving stale cached index HTML.
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request).then((response) => {
+        if (response && response.status === 200) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+        }
+        return response;
+      }).catch(async () => {
+        const cachedNav = await caches.match(request);
+        if (cachedNav) return cachedNav;
+        return caches.match("./");
+      }),
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(request).then((cached) => {
