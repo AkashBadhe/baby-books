@@ -1,6 +1,6 @@
 import "./styles.css";
 import { wrapIndex, detectSwipe } from "./logic.js";
-import { categoryCards, categoryDefinitions } from "./slides.js";
+import { categoryCards, categoryDefinitions, categoryOrder } from "./slides.js";
 import { chooseVoice, speakText } from "./voice.js";
 import twemoji from "twemoji";
 
@@ -253,12 +253,7 @@ function findRecentShortcutCategory() {
 function setCategory(nextCategoryIdValue, resetIndex = true) {
   if (!categoryCards[nextCategoryIdValue]) return;
   state.category = nextCategoryIdValue;
-  if (resetIndex) {
-    state.index = 0;
-  } else {
-    const saved = state.categoryLastIndex[nextCategoryIdValue] ?? 0;
-    state.index = Math.min(saved, Math.max(0, categoryCards[nextCategoryIdValue].length - 1));
-  }
+  state.index = 0;
   markCategoryRecent(nextCategoryIdValue);
   try {
     localStorage.setItem(STORAGE_LAST_CATEGORY, nextCategoryIdValue);
@@ -583,11 +578,16 @@ function go(nextIndex) {
   updateUI();
 }
 
+function orderedCategoryIds() {
+  return categoryOrder.filter((id) => (categoryCards[id] || []).length > 0);
+}
+
 function nextCategoryId(currentCategoryId) {
-  const total = categoryDefinitions.length;
-  const currentIndex = categoryDefinitions.findIndex((item) => item.id === currentCategoryId);
-  if (currentIndex < 0) return categoryDefinitions[0].id;
-  return categoryDefinitions[(currentIndex + 1) % total].id;
+  const order = orderedCategoryIds();
+  if (order.length === 0) return "alphabet";
+  const currentIndex = order.indexOf(currentCategoryId);
+  if (currentIndex < 0) return order[0];
+  return order[(currentIndex + 1) % order.length];
 }
 
 function next() {
@@ -1030,10 +1030,7 @@ const savedCategory = (() => {
 if (savedCategory && categoryCards[savedCategory]) {
   state.category = savedCategory;
 }
-state.index = Math.min(
-  state.categoryLastIndex[state.category] ?? 0,
-  Math.max(0, activeSlides().length - 1),
-);
+state.index = 0;
 markCategoryRecent(state.category);
 
 updateSpeedLabel();

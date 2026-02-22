@@ -148,6 +148,8 @@ body {
   height: auto;
   border-radius: 18px;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+  object-fit: contain;
+  max-height: 52vh;
 }
 
 .card.image-mode .cardImage {
@@ -212,8 +214,12 @@ body {
 }
 
 .card.visual-mode.image-mode .cardImage {
-  width: clamp(340px, 68vw, 620px);
-  border-radius: 16px;
+  width: clamp(220px, 42vw, 360px);
+  max-height: min(46vh, 420px);
+  border-radius: 0;
+  box-shadow: none;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.2));
+  mix-blend-mode: multiply;
 }
 
 .word {
@@ -514,11 +520,16 @@ input[type="range"] {
   }
 
   .card.visual-mode .media {
-    min-height: clamp(230px, 62vw, 420px);
+    min-height: clamp(180px, 48vw, 320px);
   }
 
   .card.visual-mode .emoji {
     font-size: clamp(200px, 52vw, 360px);
+  }
+
+  .card.visual-mode.image-mode .cardImage {
+    width: clamp(250px, 56vw, 300px);
+    max-height: min(40vh, 300px);
   }
 
   .card.visual-mode .word {

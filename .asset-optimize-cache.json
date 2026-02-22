@@ -1,0 +1,312 @@
+{
+  "public/assets/photos/birds/chicken.png": {
+    "hash": "0d93c90e11b2a4e871538a856152a66725264cb8",
+    "size": 270336,
+    "type": "raster"
+  },
+  "public/assets/photos/birds/duck.png": {
+    "hash": "9c6486e31161c9381334b14add629230b0b5ebda",
+    "size": 230064,
+    "type": "raster"
+  },
+  "public/assets/photos/birds/eagle.png": {
+    "hash": "eef3d40a6c4e0a17513e116ce455d32f8fd8491d",
+    "size": 272716,
+    "type": "raster"
+  },
+  "public/assets/photos/birds/flamingo.png": {
+    "hash": "a3c02c5383392e10f23e251b480b1313598c2afa",
+    "size": 125039,
+    "type": "raster"
+  },
+  "public/assets/photos/birds/owl.png": {
+    "hash": "d35e3ddf22094884a936ae49bf73a4fc67ac1fe0",
+    "size": 382087,
+    "type": "raster"
+  },
+  "public/assets/photos/birds/parrot.png": {
+    "hash": "ea3522f7d8d302b8f158982c9cce9d4c77cc3403",
+    "size": 203525,
+    "type": "raster"
+  },
+  "public/assets/photos/birds/peacock.png": {
+    "hash": "4959b17c6ea3c03f3c79485c291689d52c43b4d4",
+    "size": 432150,
+    "type": "raster"
+  },
+  "public/assets/photos/birds/penguin.png": {
+    "hash": "6781433af65230d480e109f74a86a6073c91bbf2",
+    "size": 159270,
+    "type": "raster"
+  },
+  "public/assets/photos/birds/sparrow.png": {
+    "hash": "5137d00cb1e3efd6ea4465d4e3f9c7393ef7190b",
+    "size": 214629,
+    "type": "raster"
+  },
+  "public/assets/photos/birds/swan.png": {
+    "hash": "8689fe2919d278a6cabf1cdd6a2e6939ea7f6bef",
+    "size": 189054,
+    "type": "raster"
+  },
+  "public/assets/photos/body/arms.png": {
+    "hash": "158fb73eeec5108c07efc0b52267746824881b44",
+    "size": 293058,
+    "type": "raster"
+  },
+  "public/assets/photos/body/ears.png": {
+    "hash": "8c69eb6858a08014aefbf6bf362c3725d204ea8f",
+    "size": 446103,
+    "type": "raster"
+  },
+  "public/assets/photos/body/eyes.png": {
+    "hash": "b74930ec48bc66fa9bdb13aec981d3e6592a3b86",
+    "size": 216951,
+    "type": "raster"
+  },
+  "public/assets/photos/body/feet.png": {
+    "hash": "5868b85a4e84cfef1abc733c612d8f40deb43297",
+    "size": 360333,
+    "type": "raster"
+  },
+  "public/assets/photos/body/hands.png": {
+    "hash": "d5fc3e2ace7f1cd6c9a5f29071930db089476fc9",
+    "size": 265684,
+    "type": "raster"
+  },
+  "public/assets/photos/body/head.png": {
+    "hash": "497cbef31eb390e17fddc58d7589abeeab8ed8b1",
+    "size": 268226,
+    "type": "raster"
+  },
+  "public/assets/photos/body/legs.png": {
+    "hash": "cb537ce200c2f65feca02fa82a1fe6251389ff7a",
+    "size": 133379,
+    "type": "raster"
+  },
+  "public/assets/photos/body/mouth.png": {
+    "hash": "048a4b1a505f62462c88b793737d19294db61b11",
+    "size": 261283,
+    "type": "raster"
+  },
+  "public/assets/photos/body/nose.png": {
+    "hash": "02834135b462d4493212b83799451d5e808785e0",
+    "size": 163003,
+    "type": "raster"
+  },
+  "public/assets/photos/body/teeth.png": {
+    "hash": "3969918236dfc6e7b45c84dc705f9afed825534d",
+    "size": 339923,
+    "type": "raster"
+  },
+  "public/assets/photos/fruits/apple.png": {
+    "hash": "7dbe032c1360c949544a0f163fb69374eea53871",
+    "size": 395680,
+    "type": "raster"
+  },
+  "public/assets/photos/fruits/banana.png": {
+    "hash": "827d2472d495b6acaa00a94f9af411e94ba281ca",
+    "size": 238820,
+    "type": "raster"
+  },
+  "public/assets/photos/fruits/cherries.png": {
+    "hash": "6f5aff02abc8bb095b4545eeda8041d1dcbbdfba",
+    "size": 219306,
+    "type": "raster"
+  },
+  "public/assets/photos/fruits/grapes.png": {
+    "hash": "dc8daa96742104fa50660fedcc87e4dc3ea1744f",
+    "size": 180945,
+    "type": "raster"
+  },
+  "public/assets/photos/fruits/mango.png": {
+    "hash": "60b17b9e9650d8b65288472fad98af528588713c",
+    "size": 247401,
+    "type": "raster"
+  },
+  "public/assets/photos/fruits/orange.png": {
+    "hash": "b26a1dae904d01c797d114a739a9e4a069f0a4b5",
+    "size": 352001,
+    "type": "raster"
+  },
+  "public/assets/photos/fruits/pear.png": {
+    "hash": "ea9ff06920079c0f9893ddc17a9da516ab265df7",
+    "size": 292860,
+    "type": "raster"
+  },
+  "public/assets/photos/fruits/pineapple.png": {
+    "hash": "8d36502ffdf923afcf6a39d424d35e75e84cacf0",
+    "size": 319974,
+    "type": "raster"
+  },
+  "public/assets/photos/fruits/strawberry.png": {
+    "hash": "a2024795b657a0e45985d04d0f080faaa724a22d",
+    "size": 234114,
+    "type": "raster"
+  },
+  "public/assets/photos/fruits/watermelon.png": {
+    "hash": "155e3511da22b968f8aa847d2164347735797957",
+    "size": 366785,
+    "type": "raster"
+  },
+  "public/assets/photos/vegetables/broccoli.png": {
+    "hash": "b364124e0e5a239249600f58c5ed02fca1768131",
+    "size": 241361,
+    "type": "raster"
+  },
+  "public/assets/photos/vegetables/carrot.png": {
+    "hash": "983091fa336db8e1813de40e646672e332484680",
+    "size": 199906,
+    "type": "raster"
+  },
+  "public/assets/photos/vegetables/corn.png": {
+    "hash": "ff53582b319495011858b10fd4d4b0dfd498c59f",
+    "size": 166267,
+    "type": "raster"
+  },
+  "public/assets/photos/vegetables/cucumber.png": {
+    "hash": "41a87daaf4111edaadde1bc682984ed32fb728ba",
+    "size": 191430,
+    "type": "raster"
+  },
+  "public/assets/photos/vegetables/eggplant.png": {
+    "hash": "b10a6e29bb5f735ac427424817c543775be926f5",
+    "size": 167359,
+    "type": "raster"
+  },
+  "public/assets/photos/vegetables/onion.png": {
+    "hash": "c9eead916a0211277d05005d86290d2271920c2a",
+    "size": 224568,
+    "type": "raster"
+  },
+  "public/assets/photos/vegetables/peas.png": {
+    "hash": "a075fb9ee644ab57a43465a313affd62a5649ee7",
+    "size": 275571,
+    "type": "raster"
+  },
+  "public/assets/photos/vegetables/potato.png": {
+    "hash": "631110719762f6f9cfb6930ef7fe64c2bfcc83a2",
+    "size": 260033,
+    "type": "raster"
+  },
+  "public/assets/photos/vegetables/pumpkin.png": {
+    "hash": "de7e8fc4fc27204acf78601d9deff13c0bd51cdc",
+    "size": 269583,
+    "type": "raster"
+  },
+  "public/assets/photos/vegetables/tomato.png": {
+    "hash": "0cec42183b56743a8f60983f579b40cfe3b7ea83",
+    "size": 338843,
+    "type": "raster"
+  },
+  "public/assets/photos/vehicles/airplane.png": {
+    "hash": "feea191ced78a84ae7e139cbc893a15abdd8f9fe",
+    "size": 62063,
+    "type": "raster"
+  },
+  "public/assets/photos/vehicles/ambulance.png": {
+    "hash": "385c3fea27dd284721876098a16740d45831385b",
+    "size": 148899,
+    "type": "raster"
+  },
+  "public/assets/photos/vehicles/bicycle.png": {
+    "hash": "9d1155cf9b01282d4477b01f215878c4f39901d8",
+    "size": 163206,
+    "type": "raster"
+  },
+  "public/assets/photos/vehicles/boat.png": {
+    "hash": "3a2dea83ad1ea62ee3607a00d8dbffc6b111ed59",
+    "size": 163074,
+    "type": "raster"
+  },
+  "public/assets/photos/vehicles/bus.png": {
+    "hash": "8430e24ebb67aae37f5012c06d24bb8f19561377",
+    "size": 159627,
+    "type": "raster"
+  },
+  "public/assets/photos/vehicles/car.png": {
+    "hash": "c34146eb24dabdfb36e10d60977258448d9b25e8",
+    "size": 140736,
+    "type": "raster"
+  },
+  "public/assets/photos/vehicles/helicopter.png": {
+    "hash": "0f07bd95f362627db44230a9f3061c98faca6742",
+    "size": 78550,
+    "type": "raster"
+  },
+  "public/assets/photos/vehicles/motorcycle.png": {
+    "hash": "c03029cdcbd3d2e1e2d12ace60e5116eaf68366b",
+    "size": 184036,
+    "type": "raster"
+  },
+  "public/assets/photos/vehicles/train.png": {
+    "hash": "5b15a1bb6a67749d268523615344e0c137c4c812",
+    "size": 356251,
+    "type": "raster"
+  },
+  "public/assets/photos/vehicles/truck.png": {
+    "hash": "4c49ad744e515ce3837a8dd06251e8c899a388d9",
+    "size": 151537,
+    "type": "raster"
+  },
+  "public/assets/photos/wild_animals/bear.png": {
+    "hash": "6940ae70d4b93b09d2e299751516e430705f202c",
+    "size": 107540,
+    "type": "raster"
+  },
+  "public/assets/photos/wild_animals/deer.png": {
+    "hash": "fb652418690770906ae1a15b473608a65d6af3b6",
+    "size": 197042,
+    "type": "raster"
+  },
+  "public/assets/photos/wild_animals/elephant.png": {
+    "hash": "4aa7a4a47ad626a8e7a12d0e06e673c023ab8730",
+    "size": 241360,
+    "type": "raster"
+  },
+  "public/assets/photos/wild_animals/fox.png": {
+    "hash": "f4e9d9259fb8da108d1a48e258610754a51366e2",
+    "size": 202932,
+    "type": "raster"
+  },
+  "public/assets/photos/wild_animals/hippo.png": {
+    "hash": "c2d021d9ab5e94b7b0754ea76891eab65ab9b349",
+    "size": 382610,
+    "type": "raster"
+  },
+  "public/assets/photos/wild_animals/lion.png": {
+    "hash": "0979fd73c2f8c99cb6451ec37c4de07762adc41e",
+    "size": 205735,
+    "type": "raster"
+  },
+  "public/assets/photos/wild_animals/monkey.png": {
+    "hash": "a10e1c33fa0609ed283221444bd0ca4309908e63",
+    "size": 315419,
+    "type": "raster"
+  },
+  "public/assets/photos/wild_animals/tiger.png": {
+    "hash": "1f132cfc1590991f9dfdd949eebef3114dd7061f",
+    "size": 167914,
+    "type": "raster"
+  },
+  "public/assets/photos/wild_animals/wolf.png": {
+    "hash": "ca2306dd1bf31f22247e9dad19fbe2c6c123c68e",
+    "size": 370709,
+    "type": "raster"
+  },
+  "public/assets/photos/wild_animals/zebra.png": {
+    "hash": "2797c10824f3366da580c978fd7944165dc7080f",
+    "size": 305263,
+    "type": "raster"
+  },
+  "public/icons/icon-192.svg": {
+    "hash": "63f139801feaf70106daba05cec6348393b3b484",
+    "size": 705,
+    "type": "svg"
+  },
+  "public/icons/icon-512.svg": {
+    "hash": "4b8dd5e1a24999fa7d929f4f3bfa3139ba469983",
+    "size": 708,
+    "type": "svg"
+  }
+}
