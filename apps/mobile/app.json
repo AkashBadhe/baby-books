@@ -15,6 +15,9 @@
       "adaptiveIcon": {
         "backgroundColor": "#f8fbff"
       }
-    }
+    },
+    "plugins": [
+      "expo-asset"
+    ]
   }
 }

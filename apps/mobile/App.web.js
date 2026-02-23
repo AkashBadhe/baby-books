@@ -1,6 +1,4 @@
 import React, { useCallback, useRef } from "react";
-import { Audio } from "expo-av";
-import * as Speech from "expo-speech";
 import { cardsByCategory, categories } from "./src/content";
 import { KidsCardBookScreen } from "./src/shared/KidsCardBookScreen";
 
@@ -21,19 +19,22 @@ function resolveCardAudioUri(categoryId, card) {
 }
 
 export default function App() {
-  const soundRef = useRef(null);
+  const audioRef = useRef(null);
+  const utteranceRef = useRef(null);
   const audioAvailabilityCache = useRef(new Map());
 
-  const stopSpeaking = useCallback(async () => {
-    Speech.stop();
-    if (!soundRef.current) return;
-    try {
-      await soundRef.current.stopAsync();
-      await soundRef.current.unloadAsync();
-    } catch {
-      // Ignore playback stop failures.
-    } finally {
-      soundRef.current = null;
+  const stopSpeaking = useCallback(() => {
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+
+    if (audioRef.current) {
+      try {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      } catch {
+        // Ignore playback stop failures.
+      }
     }
   }, []);
 
@@ -56,24 +57,30 @@ export default function App() {
 
   const speakCard = useCallback(
     async ({ audioUri, fallbackText }) => {
-      await stopSpeaking();
+      stopSpeaking();
 
       const canPlayRecorded = await isAudioAvailable(audioUri);
-      if (canPlayRecorded) {
+      if (canPlayRecorded && typeof Audio !== "undefined") {
         try {
-          const { sound } = await Audio.Sound.createAsync({ uri: audioUri }, { shouldPlay: true });
-          soundRef.current = sound;
+          if (!audioRef.current) {
+            audioRef.current = new Audio();
+          }
+          audioRef.current.src = audioUri;
+          await audioRef.current.play();
           return;
         } catch {
-          // Fall through to TTS.
+          // Fall through to web speech.
         }
       }
 
-      Speech.speak(fallbackText, {
-        language: "en-US",
-        pitch: 1,
-        rate: 0.85,
-      });
+      if (typeof window !== "undefined" && window.speechSynthesis && typeof SpeechSynthesisUtterance !== "undefined") {
+        const utterance = new SpeechSynthesisUtterance(fallbackText);
+        utterance.lang = "en-US";
+        utterance.rate = 0.85;
+        utterance.pitch = 1;
+        utteranceRef.current = utterance;
+        window.speechSynthesis.speak(utterance);
+      }
     },
     [isAudioAvailable, stopSpeaking],
   );

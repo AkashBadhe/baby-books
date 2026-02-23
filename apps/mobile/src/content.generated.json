@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-02-22T14:30:54.999Z",
+  "generatedAt": "2026-02-23T06:01:06.988Z",
   "categoryDefinitions": [
     {
       "id": "alphabet",
@@ -867,6 +867,7 @@
         "title": "Carrot",
         "subtitle": "This is Carrot",
         "emoji": "🥕",
+        "image": "/assets/photos/vegetables/carrot.png",
         "audioLabel": "Carrot",
         "colors": [
           "#ffb347",
@@ -879,6 +880,7 @@
         "title": "Tomato",
         "subtitle": "This is Tomato",
         "emoji": "🍅",
+        "image": "/assets/photos/vegetables/tomato.png",
         "audioLabel": "Tomato",
         "colors": [
           "#ff7e5f",
@@ -891,6 +893,7 @@
         "title": "Potato",
         "subtitle": "This is Potato",
         "emoji": "🥔",
+        "image": "/assets/photos/vegetables/potato.png",
         "audioLabel": "Potato",
         "colors": [
           "#d9a066",
@@ -903,6 +906,7 @@
         "title": "Broccoli",
         "subtitle": "This is Broccoli",
         "emoji": "🥦",
+        "image": "/assets/photos/vegetables/broccoli.png",
         "audioLabel": "Broccoli",
         "colors": [
           "#9be15d",
@@ -915,6 +919,7 @@
         "title": "Corn",
         "subtitle": "This is Corn",
         "emoji": "🌽",
+        "image": "/assets/photos/vegetables/corn.png",
         "audioLabel": "Corn",
         "colors": [
           "#f6d365",
@@ -927,6 +932,7 @@
         "title": "Cucumber",
         "subtitle": "This is Cucumber",
         "emoji": "🥒",
+        "image": "/assets/photos/vegetables/cucumber.png",
         "audioLabel": "Cucumber",
         "colors": [
           "#84fab0",
@@ -939,6 +945,7 @@
         "title": "Onion",
         "subtitle": "This is Onion",
         "emoji": "🧅",
+        "image": "/assets/photos/vegetables/onion.png",
         "audioLabel": "Onion",
         "colors": [
           "#fbc2eb",
@@ -951,6 +958,7 @@
         "title": "Peas",
         "subtitle": "These are Peas",
         "emoji": "🫛",
+        "image": "/assets/photos/vegetables/peas.png",
         "audioLabel": "Peas",
         "colors": [
           "#d4fc79",
@@ -963,6 +971,7 @@
         "title": "Pumpkin",
         "subtitle": "This is Pumpkin",
         "emoji": "🎃",
+        "image": "/assets/photos/vegetables/pumpkin.png",
         "audioLabel": "Pumpkin",
         "colors": [
           "#f6d365",
@@ -975,6 +984,7 @@
         "title": "Eggplant",
         "subtitle": "This is Eggplant",
         "emoji": "🍆",
+        "image": "/assets/photos/vegetables/eggplant.png",
         "audioLabel": "Eggplant",
         "colors": [
           "#c471f5",
@@ -989,6 +999,7 @@
         "title": "Apple",
         "subtitle": "This is Apple",
         "emoji": "🍎",
+        "image": "/assets/photos/fruits/apple.png",
         "audioLabel": "Apple",
         "colors": [
           "#ff9a9e",
@@ -1001,6 +1012,7 @@
         "title": "Banana",
         "subtitle": "This is Banana",
         "emoji": "🍌",
+        "image": "/assets/photos/fruits/banana.png",
         "audioLabel": "Banana",
         "colors": [
           "#fce38a",
@@ -1013,6 +1025,7 @@
         "title": "Orange",
         "subtitle": "This is Orange",
         "emoji": "🍊",
+        "image": "/assets/photos/fruits/orange.png",
         "audioLabel": "Orange",
         "colors": [
           "#f6d365",
@@ -1025,6 +1038,7 @@
         "title": "Grapes",
         "subtitle": "This is Grapes",
         "emoji": "🍇",
+        "image": "/assets/photos/fruits/grapes.png",
         "audioLabel": "Grapes",
         "colors": [
           "#c471f5",
@@ -1037,6 +1051,7 @@
         "title": "Watermelon",
         "subtitle": "This is Watermelon",
         "emoji": "🍉",
+        "image": "/assets/photos/fruits/watermelon.png",
         "audioLabel": "Watermelon",
         "colors": [
           "#a8e063",
@@ -1049,6 +1064,7 @@
         "title": "Mango",
         "subtitle": "This is Mango",
         "emoji": "🥭",
+        "image": "/assets/photos/fruits/mango.png",
         "audioLabel": "Mango",
         "colors": [
           "#f6d365",
@@ -1061,6 +1077,7 @@
         "title": "Pear",
         "subtitle": "This is Pear",
         "emoji": "🍐",
+        "image": "/assets/photos/fruits/pear.png",
         "audioLabel": "Pear",
         "colors": [
           "#d4fc79",
@@ -1073,6 +1090,7 @@
         "title": "Pineapple",
         "subtitle": "This is Pineapple",
         "emoji": "🍍",
+        "image": "/assets/photos/fruits/pineapple.png",
         "audioLabel": "Pineapple",
         "colors": [
           "#fddb92",
@@ -1085,6 +1103,7 @@
         "title": "Strawberry",
         "subtitle": "This is Strawberry",
         "emoji": "🍓",
+        "image": "/assets/photos/fruits/strawberry.png",
         "audioLabel": "Strawberry",
         "colors": [
           "#ff9a9e",
@@ -1097,6 +1116,7 @@
         "title": "Cherries",
         "subtitle": "These are Cherries",
         "emoji": "🍒",
+        "image": "/assets/photos/fruits/cherries.png",
         "audioLabel": "Cherries",
         "colors": [
           "#ff7e5f",
@@ -1111,6 +1131,7 @@
         "title": "Head",
         "subtitle": "This is Head",
         "emoji": "🧑",
+        "image": "/assets/photos/body/head.png",
         "audioLabel": "Head",
         "colors": [
           "#fddb92",
@@ -1123,6 +1144,7 @@
         "title": "Eyes",
         "subtitle": "These are Eyes",
         "emoji": "👀",
+        "image": "/assets/photos/body/eyes.png",
         "audioLabel": "Eyes",
         "colors": [
           "#a1c4fd",
@@ -1135,6 +1157,7 @@
         "title": "Nose",
         "subtitle": "This is Nose",
         "emoji": "👃",
+        "image": "/assets/photos/body/nose.png",
         "audioLabel": "Nose",
         "colors": [
           "#fbc2eb",
@@ -1147,6 +1170,7 @@
         "title": "Hands",
         "subtitle": "These are Hands",
         "emoji": "👐",
+        "image": "/assets/photos/body/hands.png",
         "audioLabel": "Hands",
         "colors": [
           "#84fab0",
@@ -1159,6 +1183,7 @@
         "title": "Legs",
         "subtitle": "These are Legs",
         "emoji": "🦵",
+        "image": "/assets/photos/body/legs.png",
         "audioLabel": "Legs",
         "colors": [
           "#f6d365",
@@ -1171,6 +1196,7 @@
         "title": "Ears",
         "subtitle": "These are Ears",
         "emoji": "👂",
+        "image": "/assets/photos/body/ears.png",
         "audioLabel": "Ears",
         "colors": [
           "#fbc2eb",
@@ -1183,6 +1209,7 @@
         "title": "Mouth",
         "subtitle": "This is Mouth",
         "emoji": "👄",
+        "image": "/assets/photos/body/mouth.png",
         "audioLabel": "Mouth",
         "colors": [
           "#ff9a9e",
@@ -1195,6 +1222,7 @@
         "title": "Teeth",
         "subtitle": "These are Teeth",
         "emoji": "🦷",
+        "image": "/assets/photos/body/teeth.png",
         "audioLabel": "Teeth",
         "colors": [
           "#fdfbfb",
@@ -1207,6 +1235,7 @@
         "title": "Feet",
         "subtitle": "These are Feet",
         "emoji": "🦶",
+        "image": "/assets/photos/body/feet.png",
         "audioLabel": "Feet",
         "colors": [
           "#e0c3fc",
@@ -1219,6 +1248,7 @@
         "title": "Arms",
         "subtitle": "These are Arms",
         "emoji": "💪",
+        "image": "/assets/photos/body/arms.png",
         "audioLabel": "Arms",
         "colors": [
           "#84fab0",
@@ -1233,6 +1263,7 @@
         "title": "Lion",
         "subtitle": "This is Lion",
         "emoji": "🦁",
+        "image": "/assets/photos/wild_animals/lion.png",
         "audioLabel": "Lion",
         "colors": [
           "#f6d365",
@@ -1245,6 +1276,7 @@
         "title": "Tiger",
         "subtitle": "This is Tiger",
         "emoji": "🐯",
+        "image": "/assets/photos/wild_animals/tiger.png",
         "audioLabel": "Tiger",
         "colors": [
           "#fbc2eb",
@@ -1257,6 +1289,7 @@
         "title": "Elephant",
         "subtitle": "This is Elephant",
         "emoji": "🐘",
+        "image": "/assets/photos/wild_animals/elephant.png",
         "audioLabel": "Elephant",
         "colors": [
           "#cfd9df",
@@ -1269,6 +1302,7 @@
         "title": "Zebra",
         "subtitle": "This is Zebra",
         "emoji": "🦓",
+        "image": "/assets/photos/wild_animals/zebra.png",
         "audioLabel": "Zebra",
         "colors": [
           "#d4fc79",
@@ -1281,6 +1315,7 @@
         "title": "Monkey",
         "subtitle": "This is Monkey",
         "emoji": "🐒",
+        "image": "/assets/photos/wild_animals/monkey.png",
         "audioLabel": "Monkey",
         "colors": [
           "#fddb92",
@@ -1293,6 +1328,7 @@
         "title": "Bear",
         "subtitle": "This is Bear",
         "emoji": "🐻",
+        "image": "/assets/photos/wild_animals/bear.png",
         "audioLabel": "Bear",
         "colors": [
           "#d1913c",
@@ -1305,6 +1341,7 @@
         "title": "Fox",
         "subtitle": "This is Fox",
         "emoji": "🦊",
+        "image": "/assets/photos/wild_animals/fox.png",
         "audioLabel": "Fox",
         "colors": [
           "#ffb347",
@@ -1317,6 +1354,7 @@
         "title": "Wolf",
         "subtitle": "This is Wolf",
         "emoji": "🐺",
+        "image": "/assets/photos/wild_animals/wolf.png",
         "audioLabel": "Wolf",
         "colors": [
           "#cfd9df",
@@ -1329,6 +1367,7 @@
         "title": "Deer",
         "subtitle": "This is Deer",
         "emoji": "🦌",
+        "image": "/assets/photos/wild_animals/deer.png",
         "audioLabel": "Deer",
         "colors": [
           "#fddb92",
@@ -1341,6 +1380,7 @@
         "title": "Hippo",
         "subtitle": "This is Hippo",
         "emoji": "🦛",
+        "image": "/assets/photos/wild_animals/hippo.png",
         "audioLabel": "Hippo",
         "colors": [
           "#d299c2",
@@ -1355,6 +1395,7 @@
         "title": "Parrot",
         "subtitle": "This is Parrot",
         "emoji": "🦜",
+        "image": "/assets/photos/birds/parrot.png",
         "audioLabel": "Parrot",
         "colors": [
           "#84fab0",
@@ -1367,6 +1408,7 @@
         "title": "Owl",
         "subtitle": "This is Owl",
         "emoji": "🦉",
+        "image": "/assets/photos/birds/owl.png",
         "audioLabel": "Owl",
         "colors": [
           "#e0c3fc",
@@ -1379,6 +1421,7 @@
         "title": "Penguin",
         "subtitle": "This is Penguin",
         "emoji": "🐧",
+        "image": "/assets/photos/birds/penguin.png",
         "audioLabel": "Penguin",
         "colors": [
           "#4facfe",
@@ -1391,6 +1434,7 @@
         "title": "Duck",
         "subtitle": "This is Duck",
         "emoji": "🦆",
+        "image": "/assets/photos/birds/duck.png",
         "audioLabel": "Duck",
         "colors": [
           "#f6d365",
@@ -1403,6 +1447,7 @@
         "title": "Chicken",
         "subtitle": "This is Chicken",
         "emoji": "🐔",
+        "image": "/assets/photos/birds/chicken.png",
         "audioLabel": "Chicken",
         "colors": [
           "#fddb92",
@@ -1415,6 +1460,7 @@
         "title": "Sparrow",
         "subtitle": "This is Sparrow",
         "emoji": "🐦",
+        "image": "/assets/photos/birds/sparrow.png",
         "audioLabel": "Sparrow",
         "colors": [
           "#a1c4fd",
@@ -1427,6 +1473,7 @@
         "title": "Eagle",
         "subtitle": "This is Eagle",
         "emoji": "🦅",
+        "image": "/assets/photos/birds/eagle.png",
         "audioLabel": "Eagle",
         "colors": [
           "#f6d365",
@@ -1439,6 +1486,7 @@
         "title": "Peacock",
         "subtitle": "This is Peacock",
         "emoji": "🦚",
+        "image": "/assets/photos/birds/peacock.png",
         "audioLabel": "Peacock",
         "colors": [
           "#43e97b",
@@ -1451,6 +1499,7 @@
         "title": "Flamingo",
         "subtitle": "This is Flamingo",
         "emoji": "🦩",
+        "image": "/assets/photos/birds/flamingo.png",
         "audioLabel": "Flamingo",
         "colors": [
           "#ff9a9e",
@@ -1463,6 +1512,7 @@
         "title": "Swan",
         "subtitle": "This is Swan",
         "emoji": "🦢",
+        "image": "/assets/photos/birds/swan.png",
         "audioLabel": "Swan",
         "colors": [
           "#e0eafc",
@@ -1477,6 +1527,7 @@
         "title": "Car",
         "subtitle": "This is Car",
         "emoji": "🚗",
+        "image": "/assets/photos/vehicles/car.png",
         "audioLabel": "Car",
         "colors": [
           "#a1c4fd",
@@ -1489,6 +1540,7 @@
         "title": "Bus",
         "subtitle": "This is Bus",
         "emoji": "🚌",
+        "image": "/assets/photos/vehicles/bus.png",
         "audioLabel": "Bus",
         "colors": [
           "#f6d365",
@@ -1501,6 +1553,7 @@
         "title": "Train",
         "subtitle": "This is Train",
         "emoji": "🚆",
+        "image": "/assets/photos/vehicles/train.png",
         "audioLabel": "Train",
         "colors": [
           "#84fab0",
@@ -1513,6 +1566,7 @@
         "title": "Airplane",
         "subtitle": "This is Airplane",
         "emoji": "✈️",
+        "image": "/assets/photos/vehicles/airplane.png",
         "audioLabel": "Airplane",
         "colors": [
           "#89f7fe",
@@ -1525,6 +1579,7 @@
         "title": "Boat",
         "subtitle": "This is Boat",
         "emoji": "⛵",
+        "image": "/assets/photos/vehicles/boat.png",
         "audioLabel": "Boat",
         "colors": [
           "#43e97b",
@@ -1537,6 +1592,7 @@
         "title": "Bicycle",
         "subtitle": "This is Bicycle",
         "emoji": "🚲",
+        "image": "/assets/photos/vehicles/bicycle.png",
         "audioLabel": "Bicycle",
         "colors": [
           "#fbc2eb",
@@ -1549,6 +1605,7 @@
         "title": "Truck",
         "subtitle": "This is Truck",
         "emoji": "🚚",
+        "image": "/assets/photos/vehicles/truck.png",
         "audioLabel": "Truck",
         "colors": [
           "#d4fc79",
@@ -1561,6 +1618,7 @@
         "title": "Helicopter",
         "subtitle": "This is Helicopter",
         "emoji": "🚁",
+        "image": "/assets/photos/vehicles/helicopter.png",
         "audioLabel": "Helicopter",
         "colors": [
           "#e0c3fc",
@@ -1573,6 +1631,7 @@
         "title": "Motorcycle",
         "subtitle": "This is Motorcycle",
         "emoji": "🏍️",
+        "image": "/assets/photos/vehicles/motorcycle.png",
         "audioLabel": "Motorcycle",
         "colors": [
           "#fddb92",
@@ -1585,6 +1644,7 @@
         "title": "Ambulance",
         "subtitle": "This is Ambulance",
         "emoji": "🚑",
+        "image": "/assets/photos/vehicles/ambulance.png",
         "audioLabel": "Ambulance",
         "colors": [
           "#ff7e5f",
