@@ -2,8 +2,14 @@ import React, { useCallback, useRef } from "react";
 import { cardsByCategory, categories } from "./src/content";
 import { KidsCardBookScreen } from "./src/shared/KidsCardBookScreen";
 import { resolveBundledImageUri } from "./src/localImageAssets";
+import appConfig from "./app.json";
 
 const WEB_ASSET_BASE = (process.env.EXPO_PUBLIC_WEB_ASSET_BASE || "https://akashbadhe.github.io/baby-books").replace(/\/$/, "");
+const APP_VERSION = appConfig?.expo?.version || "dev";
+const ANDROID_VERSION_CODE = appConfig?.expo?.android?.versionCode;
+const APP_VERSION_LABEL = ANDROID_VERSION_CODE
+  ? `Version ${APP_VERSION} (Android ${ANDROID_VERSION_CODE})`
+  : `Version ${APP_VERSION}`;
 
 function resolveCardImageUri(categoryId, card) {
   if (!card) return null;
@@ -91,6 +97,7 @@ export default function App() {
   return (
     <KidsCardBookScreen
       appTitle="First Words Cards"
+      appVersionLabel={APP_VERSION_LABEL}
       categories={categories}
       cardsByCategory={cardsByCategory}
       resolveCardImageUri={resolveCardImageUri}

@@ -1,6 +1,6 @@
 {
   "name": "kids-card-book-mobile",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "main": "expo/AppEntry",
   "scripts": {
@@ -9,6 +9,11 @@
     "android": "npm run sync-content && expo start --android",
     "ios": "npm run sync-content && expo start --ios",
     "web": "npm run sync-content && expo start --web",
+    "version:bump:patch": "node ./scripts/bump-version.mjs patch",
+    "version:bump:minor": "node ./scripts/bump-version.mjs minor",
+    "version:bump:major": "node ./scripts/bump-version.mjs major",
+    "version:code:bump": "node ./scripts/bump-version.mjs code",
+    "version:set": "node ./scripts/bump-version.mjs set",
     "build:android:prod": "npm run sync-content && eas build --platform android --profile production",
     "submit:android:prod": "eas submit --platform android --profile production",
     "release:checklist": "echo Open CHECKLIST.md and apps/mobile/RELEASE_NOTES.md before production build."

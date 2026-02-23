@@ -153,8 +153,10 @@ function CategorySheet({ categories, selectedCategory, onSelect }) {
 
 function SettingsSheet({
   voiceOn,
+  swipeOn,
   isFavorite,
   onToggleVoice,
+  onToggleSwipe,
   onToggleFavorite,
   currentViewed,
   cardsLength,
@@ -162,6 +164,7 @@ function SettingsSheet({
   overallTotal,
   delayMs,
   onSetDelay,
+  appVersionLabel,
 }) {
   const delayOptions = [2000, 3000, 5000, 8000];
 
@@ -172,6 +175,9 @@ function SettingsSheet({
       <View style={styles.settingsActions}>
         <Pressable style={[styles.pillBtn, voiceOn && styles.pillBtnActive]} onPress={onToggleVoice}>
           <Text style={[styles.pillBtnText, voiceOn && styles.pillBtnTextActive]}>Voice {voiceOn ? "ON" : "OFF"}</Text>
+        </Pressable>
+        <Pressable style={[styles.pillBtn, swipeOn && styles.pillBtnActive]} onPress={onToggleSwipe}>
+          <Text style={[styles.pillBtnText, swipeOn && styles.pillBtnTextActive]}>Swipe {swipeOn ? "ON" : "OFF"}</Text>
         </Pressable>
         <Pressable style={[styles.pillBtn, isFavorite && styles.favoritePillBtnActive]} onPress={onToggleFavorite}>
           <Text style={[styles.pillBtnText, isFavorite && styles.favoritePillBtnTextActive]}>
@@ -190,6 +196,7 @@ function SettingsSheet({
           );
         })}
       </View>
+      <Text style={styles.sheetVersion}>{appVersionLabel || "Version --"}</Text>
     </View>
   );
 }
@@ -222,7 +229,7 @@ function SlidersIcon({ active }) {
   );
 }
 
-function CardViewer({ categoryId, card, imageUri, onPrev, onNext, transitionDirection = 1 }) {
+function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled = true, transitionDirection = 1 }) {
   const [imageFailed, setImageFailed] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
   const { width: viewportWidth, height: viewportHeight } = useWindowDimensions();
@@ -330,6 +337,7 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, transitionDire
 
   const onSwipeEnd = useCallback(
     (endX, endY) => {
+      if (!swipeEnabled) return;
       if (!touchStart) return;
       const dx = endX - touchStart.x;
       const dy = endY - touchStart.y;
@@ -338,7 +346,7 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, transitionDire
       if (dx < 0) onNext();
       else onPrev();
     },
-    [onNext, onPrev, touchStart],
+    [onNext, onPrev, swipeEnabled, touchStart],
   );
 
   if (!card) {
@@ -362,12 +370,17 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, transitionDire
             transform: [{ translateX: cardTranslateX }, { scale: cardScale }],
           },
         ]}
-        onStartShouldSetResponder={() => true}
+        onStartShouldSetResponder={() => swipeEnabled}
         onResponderGrant={(event) => {
+          if (!swipeEnabled) return;
           const { pageX, pageY } = event.nativeEvent;
           setTouchStart({ x: pageX, y: pageY });
         }}
         onResponderRelease={(event) => {
+          if (!swipeEnabled) {
+            setTouchStart(null);
+            return;
+          }
           const { pageX, pageY } = event.nativeEvent;
           onSwipeEnd(pageX, pageY);
           setTouchStart(null);
@@ -466,6 +479,7 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, transitionDire
 
 export function KidsCardBookScreen({
   appTitle,
+  appVersionLabel,
   categories,
   cardsByCategory,
   resolveCardImageUri,
@@ -484,6 +498,7 @@ export function KidsCardBookScreen({
   const [viewedIdsByCategory, setViewedIdsByCategory] = useState({});
   const [favorites, setFavorites] = useState([]);
   const [voiceOn, setVoiceOn] = useState(false);
+  const [swipeOn, setSwipeOn] = useState(true);
   const [autoplay, setAutoplay] = useState(false);
   const [delayMs, setDelayMs] = useState(3000);
   const [categoryPickerOpen, setCategoryPickerOpen] = useState(false);
@@ -710,6 +725,7 @@ export function KidsCardBookScreen({
         imageUri={imageUri}
         onPrev={onPrev}
         onNext={onNext}
+        swipeEnabled={swipeOn}
         transitionDirection={transitionDirection}
       />
 
@@ -798,8 +814,10 @@ export function KidsCardBookScreen({
             ) : (
               <SettingsSheet
                 voiceOn={voiceOn}
+                swipeOn={swipeOn}
                 isFavorite={isFavorite}
                 onToggleVoice={onToggleVoice}
+                onToggleSwipe={() => setSwipeOn((prev) => !prev)}
                 onToggleFavorite={onToggleFavorite}
                 currentViewed={currentViewed}
                 cardsLength={cards.length}
@@ -807,6 +825,7 @@ export function KidsCardBookScreen({
                 overallTotal={overallTotal}
                 delayMs={delayMs}
                 onSetDelay={setDelayMs}
+                appVersionLabel={appVersionLabel}
               />
             )}
           </ScrollView>
@@ -1138,6 +1157,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "900",
     color: "#2c466c",
+  },
+  sheetVersion: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#5a6e8d",
   },
   settingsActions: {
     marginTop: 10,
