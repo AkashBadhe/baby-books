@@ -13,7 +13,7 @@ export const categoryDefinitions = [
 ];
 
 const alphabetCards = [
-  { id: "a", value: "A", title: "Apple", subtitle: "A for Apple", emoji: "🍎", audioLabel: "A for Apple", colors: ["#ff9a9e", "#fad0c4"] },
+  { id: "a", value: "A", title: "Apple", subtitle: "A for Apple", emoji: "🍎", audioLabel: "A for Apple", colors: ["#ffd9de", "#fff0e8"] },
   { id: "b", value: "B", title: "Ball", subtitle: "B for Ball", emoji: "🏀", audioLabel: "B for Ball", colors: ["#a1c4fd", "#c2e9fb"] },
   { id: "c", value: "C", title: "Cat", subtitle: "C for Cat", emoji: "🐱", audioLabel: "C for Cat", colors: ["#fbc2eb", "#a6c1ee"] },
   { id: "d", value: "D", title: "Dog", subtitle: "D for Dog", emoji: "🐶", audioLabel: "D for Dog", colors: ["#fddb92", "#d1fdff"] },
@@ -68,29 +68,29 @@ const colorCards = [
 ];
 
 const shapeCards = [
-  { id: "circle", value: "Circle", title: "Circle", subtitle: "This is a Circle", emoji: "⚪", audioLabel: "Circle", colors: ["#e0eafc", "#cfdef3"] },
-  { id: "square", value: "Square", title: "Square", subtitle: "This is a Square", emoji: "⬜", audioLabel: "Square", colors: ["#f6d365", "#fda085"] },
-  { id: "triangle", value: "Triangle", title: "Triangle", subtitle: "This is a Triangle", emoji: "🔺", audioLabel: "Triangle", colors: ["#fa709a", "#fee140"] },
-  { id: "rectangle", value: "Rectangle", title: "Rectangle", subtitle: "This is a Rectangle", emoji: "▬", audioLabel: "Rectangle", colors: ["#89f7fe", "#66a6ff"] },
-  { id: "star", value: "Star", title: "Star", subtitle: "This is a Star", emoji: "⭐", audioLabel: "Star", colors: ["#fddb92", "#d1fdff"] },
-  { id: "oval", value: "Oval", title: "Oval", subtitle: "This is an Oval", emoji: "🥚", audioLabel: "Oval", colors: ["#a1c4fd", "#c2e9fb"] },
-  { id: "heart_shape", value: "Heart", title: "Heart", subtitle: "This is a Heart", emoji: "❤️", audioLabel: "Heart", colors: ["#ff9a9e", "#fad0c4"] },
-  { id: "diamond", value: "Diamond", title: "Diamond", subtitle: "This is a Diamond", emoji: "🔷", audioLabel: "Diamond", colors: ["#84fab0", "#8fd3f4"] },
-  { id: "pentagon", value: "Pentagon", title: "Pentagon", subtitle: "This is a Pentagon", emoji: "⬠", audioLabel: "Pentagon", colors: ["#e0c3fc", "#8ec5fc"] },
-  { id: "hexagon", value: "Hexagon", title: "Hexagon", subtitle: "This is a Hexagon", emoji: "⬡", audioLabel: "Hexagon", colors: ["#fbc2eb", "#a6c1ee"] },
+  { id: "circle", value: "Circle", title: "Circle", subtitle: "This is a Circle", emoji: "⚪", image: "/assets/photos/shapes/circle.png", audioLabel: "Circle", colors: ["#e0eafc", "#cfdef3"] },
+  { id: "square", value: "Square", title: "Square", subtitle: "This is a Square", emoji: "⬜", image: "/assets/photos/shapes/square.png", audioLabel: "Square", colors: ["#f6d365", "#fda085"] },
+  { id: "triangle", value: "Triangle", title: "Triangle", subtitle: "This is a Triangle", emoji: "🔺", image: "/assets/photos/shapes/triangle.png", audioLabel: "Triangle", colors: ["#1d4ed8", "#60a5fa"] },
+  { id: "rectangle", value: "Rectangle", title: "Rectangle", subtitle: "This is a Rectangle", emoji: "▬", image: "/assets/photos/shapes/rectangle.png", audioLabel: "Rectangle", colors: ["#89f7fe", "#66a6ff"] },
+  { id: "star", value: "Star", title: "Star", subtitle: "This is a Star", emoji: "⭐", image: "/assets/photos/shapes/star.png", audioLabel: "Star", colors: ["#fddb92", "#d1fdff"] },
+  { id: "oval", value: "Oval", title: "Oval", subtitle: "This is an Oval", emoji: "🥚", image: "/assets/photos/shapes/oval.png", audioLabel: "Oval", colors: ["#a1c4fd", "#c2e9fb"] },
+  { id: "heart_shape", value: "Heart", title: "Heart", subtitle: "This is a Heart", emoji: "❤️", image: "/assets/photos/shapes/heart_shape.png", audioLabel: "Heart", colors: ["#ff9a9e", "#fad0c4"] },
+  { id: "diamond", value: "Diamond", title: "Diamond", subtitle: "This is a Diamond", emoji: "🔷", image: "/assets/photos/shapes/diamond.png", audioLabel: "Diamond", colors: ["#84fab0", "#8fd3f4"] },
+  { id: "pentagon", value: "Pentagon", title: "Pentagon", subtitle: "This is a Pentagon", emoji: "⬠", image: "/assets/photos/shapes/pentagon.png", audioLabel: "Pentagon", colors: ["#e0c3fc", "#8ec5fc"] },
+  { id: "hexagon", value: "Hexagon", title: "Hexagon", subtitle: "This is a Hexagon", emoji: "⬡", image: "/assets/photos/shapes/hexagon.png", audioLabel: "Hexagon", colors: ["#fbc2eb", "#a6c1ee"] },
 ];
 
 const sizeCards = [
-  { id: "big", value: "Big", title: "Big", subtitle: "This is Big", emoji: "🐘", audioLabel: "Big", colors: ["#e0c3fc", "#8ec5fc"] },
-  { id: "small", value: "Small", title: "Small", subtitle: "This is Small", emoji: "🐭", audioLabel: "Small", colors: ["#fbc2eb", "#a6c1ee"] },
-  { id: "tall", value: "Tall", title: "Tall", subtitle: "This is Tall", emoji: "🦒", audioLabel: "Tall", colors: ["#d4fc79", "#96e6a1"] },
-  { id: "short", value: "Short", title: "Short", subtitle: "This is Short", emoji: "🧍", audioLabel: "Short", colors: ["#f6d365", "#fda085"] },
-  { id: "long", value: "Long", title: "Long", subtitle: "This is Long", emoji: "🚌", audioLabel: "Long", colors: ["#84fab0", "#8fd3f4"] },
-  { id: "heavy", value: "Heavy", title: "Heavy", subtitle: "This is Heavy", emoji: "🪨", audioLabel: "Heavy", colors: ["#cfd9df", "#e2ebf0"] },
-  { id: "light", value: "Light", title: "Light", subtitle: "This is Light", emoji: "🪶", audioLabel: "Light", colors: ["#ffecd2", "#fcb69f"] },
-  { id: "wide", value: "Wide", title: "Wide", subtitle: "This is Wide", emoji: "🖥️", audioLabel: "Wide", colors: ["#89f7fe", "#66a6ff"] },
-  { id: "narrow", value: "Narrow", title: "Narrow", subtitle: "This is Narrow", emoji: "📏", audioLabel: "Narrow", colors: ["#fddb92", "#d1fdff"] },
-  { id: "thin", value: "Thin", title: "Thin", subtitle: "This is Thin", emoji: "🎗️", audioLabel: "Thin", colors: ["#fa709a", "#fee140"] },
+  { id: "big", value: "Big", title: "Big", subtitle: "Elephant is Big", emoji: "🐘", image: "/assets/photos/sizes/big.png", audioLabel: "Big", colors: ["#e0c3fc", "#8ec5fc"] },
+  { id: "small", value: "Small", title: "Small", subtitle: "Ant is Small", emoji: "🐭", image: "/assets/photos/sizes/small.png", audioLabel: "Small", colors: ["#fbc2eb", "#a6c1ee"] },
+  { id: "tall", value: "Tall", title: "Tall", subtitle: "Giraffe is Tall", emoji: "🦒", image: "/assets/photos/sizes/tall.png", audioLabel: "Tall", colors: ["#d4fc79", "#96e6a1"] },
+  { id: "short", value: "Short", title: "Short", subtitle: "This Boy is Short", emoji: "🧍", image: "/assets/photos/sizes/short.png", audioLabel: "Short", colors: ["#f6d365", "#fda085"] },
+  { id: "long", value: "Long", title: "Long", subtitle: "This Road is Long", emoji: "🚌", image: "/assets/photos/sizes/long.png", audioLabel: "Long", colors: ["#84fab0", "#8fd3f4"] },
+  { id: "heavy", value: "Heavy", title: "Heavy", subtitle: "Rock is Heavy", emoji: "🪨", image: "/assets/photos/sizes/heavy.png", audioLabel: "Heavy", colors: ["#cfd9df", "#e2ebf0"] },
+  { id: "light", value: "Light", title: "Light", subtitle: "Feather is Light", emoji: "🪶", image: "/assets/photos/sizes/light.png", audioLabel: "Light", colors: ["#ffecd2", "#fcb69f"] },
+  { id: "wide", value: "Wide", title: "Wide", subtitle: "This Road is Wide", emoji: "🖥️", image: "/assets/photos/sizes/wide.png", audioLabel: "Wide", colors: ["#89f7fe", "#66a6ff"] },
+  { id: "narrow", value: "Narrow", title: "Narrow", subtitle: "This Lane is Narrow", emoji: "📏", image: "/assets/photos/sizes/narrow.png", audioLabel: "Narrow", colors: ["#fddb92", "#d1fdff"] },
+  { id: "thin", value: "Thin", title: "Thin", subtitle: "Paper is Thin", emoji: "🎗️", image: "/assets/photos/sizes/thin.png", audioLabel: "Thin", colors: ["#fa709a", "#fee140"] },
 ];
 
 const vegetableCards = [

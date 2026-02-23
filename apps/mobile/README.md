@@ -4,35 +4,31 @@ This is the initial mobile app shell for Kids Card Book.
 
 ## Run
 
-From repo root, sync shared content first:
-
-1. `npm run mobile:sync-content`
-2. `cd apps/mobile`
-3. `npm install`
-4. `npm run start`
-5. Scan QR in Expo Go (Android/iOS), or run `npm run android` / `npm run ios`.
-
-## Run (inside mobile folder only)
+From repo root:
 
 1. `cd apps/mobile`
 2. `npm install`
 3. `npm run start`
 4. Scan QR in Expo Go (Android/iOS), or run `npm run android` / `npm run ios`.
 
+`start/android/ios/web` now auto-run content sync (`../../scripts/export-mobile-content.mjs`) before launching Expo.
+
 ## Scope in this phase
 
 - Category selector UI
 - Card viewer UI (prev/next)
 - Shared generated content from web source
-- Persisted progress parity:
-  - last category
-  - last card index per category
-  - viewed cards per category
-  - favorites
+- Navigation parity:
+  - next/prev cycles across all categories globally
+  - category selection starts from first card
 - Media/audio parity:
   - image-first card rendering with emoji fallback
   - voice toggle (default OFF)
   - recorded audio playback when available, with TTS fallback
+- Unified React Native architecture:
+  - `src/shared/KidsCardBookScreen.js` is shared UI/logic
+  - `App.js` is native audio wrapper
+  - `App.web.js` is web audio wrapper
 
 ## Next
 

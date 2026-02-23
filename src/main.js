@@ -22,6 +22,7 @@ const els = {
   bg: document.getElementById("bg"),
   settingsBtn: document.getElementById("settingsBtn"),
   settingsPanel: document.getElementById("settingsPanel"),
+  appVersionLabel: document.getElementById("appVersionLabel"),
   categoryBtn: document.getElementById("categoryBtn"),
   recentBtn: document.getElementById("recentBtn"),
   categoryOverlay: document.getElementById("categoryOverlay"),
@@ -42,6 +43,8 @@ const els = {
   speedLabel: document.getElementById("speedLabel"),
   tapZone: document.getElementById("tapZone"),
 };
+
+const APP_VERSION = typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "dev";
 
 const state = {
   index: 0,
@@ -362,8 +365,19 @@ function generatedCardImageDataUri(card) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
+function resolveAppAssetUrl(src) {
+  if (!src) return null;
+  if (/^(https?:)?\/\//.test(src) || src.startsWith("data:") || src.startsWith("blob:")) {
+    return src;
+  }
+  if (src.startsWith("/")) {
+    return `${import.meta.env.BASE_URL}${src.slice(1)}`;
+  }
+  return src;
+}
+
 function resolveCardImageSrc(card) {
-  return card.image || null;
+  return resolveAppAssetUrl(card.image || null);
 }
 
 function loadCardImage(card) {
@@ -522,11 +536,12 @@ async function playCardAudioOrSpeech(card) {
   const requestId = ++state.audioRequestId;
   cancelAllSpeech();
 
-  if (card.audio) {
-    const available = await ensureAudioAvailable(card.audio);
+  const audioSrc = resolveAppAssetUrl(card.audio);
+  if (audioSrc) {
+    const available = await ensureAudioAvailable(audioSrc);
     if (requestId !== state.audioRequestId || !state.voiceOn) return;
     if (available) {
-      const played = await playRecordedAudio(card.audio, requestId);
+      const played = await playRecordedAudio(audioSrc, requestId);
       if (played) return;
     }
   }
@@ -541,17 +556,20 @@ async function playCardAudioOrSpeech(card) {
 function updateUI() {
   if (state.categoryPickerOpen) return;
   const s = activeSlides()[state.index];
-  const letterColor = chooseLetterColor(s.colors);
-  const isLightLetter = contrastRatio(letterColor, "#ffffff") < contrastRatio(letterColor, "#101010");
   const numberMode = state.category === "numbers";
   const alphabetMode = state.category === "alphabet";
   const visualMode = !alphabetMode && !numberMode;
+  const shapesMode = state.category === "shapes";
+  const letterColor = alphabetMode ? "#101010" : chooseLetterColor(s.colors);
+  const isLightLetter = contrastRatio(letterColor, "#ffffff") < contrastRatio(letterColor, "#101010");
   const duplicatePrimaryLabel = String(s.value).trim().toLowerCase()
     === String(s.title).trim().toLowerCase();
 
   els.card.classList.toggle("number-mode", numberMode);
   els.card.classList.toggle("alphabet-mode", alphabetMode);
   els.card.classList.toggle("visual-mode", visualMode);
+  els.card.classList.toggle("shapes-mode", shapesMode);
+  clearSwipeCardTransform();
 
   if (state.hasRenderedCard) {
     els.card.classList.remove("turn-next", "turn-prev");
@@ -582,7 +600,8 @@ function updateUI() {
     els.emoji.textContent = s.emoji;
   }
   loadCardImage(s);
-  els.sub.textContent = `"${s.subtitle}"`;
+  els.sub.textContent = numberMode ? "" : `"${s.subtitle}"`;
+  els.sub.classList.toggle("hidden", numberMode);
 
   setBackground(s.colors);
   persistCategoryProgress(s);
@@ -611,18 +630,79 @@ function nextCategoryId(currentCategoryId) {
   return order[(currentIndex + 1) % order.length];
 }
 
-function next() {
-  state.transitionDirection = "next";
-  if (state.index >= activeSlides().length - 1) {
-    setCategory(nextCategoryId(state.category), true);
+function previousCategoryId(currentCategoryId) {
+  const order = orderedCategoryIds();
+  if (order.length === 0) return "alphabet";
+  const currentIndex = order.indexOf(currentCategoryId);
+  if (currentIndex < 0) return order[order.length - 1];
+  return order[(currentIndex - 1 + order.length) % order.length];
+}
+
+function setPosition(categoryId, nextIndex) {
+  state.category = categoryId;
+  state.index = Math.max(0, Math.min(nextIndex, Math.max(0, activeSlides().length - 1)));
+  markCategoryRecent(categoryId);
+  try {
+    localStorage.setItem(STORAGE_LAST_CATEGORY, categoryId);
+  } catch {
+    // Ignore storage failures.
+  }
+  updateCategoryButton();
+  updateRecentButton();
+  renderCategoryGrid();
+  updateStatsDashboard();
+  updateUI();
+}
+
+function moveGlobal(step) {
+  const order = orderedCategoryIds();
+  if (order.length === 0) return;
+
+  let categoryPos = order.indexOf(state.category);
+  if (categoryPos < 0) categoryPos = 0;
+  let indexPos = state.index + step;
+
+  while (true) {
+    const categoryId = order[categoryPos];
+    const cardsLength = (categoryCards[categoryId] || []).length;
+    if (cardsLength <= 0) {
+      categoryPos = (categoryPos + (step >= 0 ? 1 : -1) + order.length) % order.length;
+      continue;
+    }
+
+    if (indexPos >= cardsLength) {
+      indexPos -= cardsLength;
+      categoryPos = (categoryPos + 1) % order.length;
+      continue;
+    }
+
+    if (indexPos < 0) {
+      categoryPos = (categoryPos - 1 + order.length) % order.length;
+      indexPos += (categoryCards[order[categoryPos]] || []).length;
+      continue;
+    }
+
+    setPosition(order[categoryPos], indexPos);
     return;
   }
+}
 
-  go(state.index + 1, "next");
+function advanceToNextCard() {
+  state.transitionDirection = "next";
+  moveGlobal(1);
+}
+
+function next() {
+  advanceToNextCard();
+}
+
+function retreatToPreviousCard() {
+  state.transitionDirection = "prev";
+  moveGlobal(-1);
 }
 
 function prev() {
-  go(state.index - 1, "prev");
+  retreatToPreviousCard();
 }
 
 function clearSwipeCardTransform() {
@@ -1054,9 +1134,8 @@ els.tapZone.addEventListener("touchend", (e) => {
   animateSwipeCommit(direction);
   state.suppressTapUntil = Date.now() + 320;
   setTimeout(() => {
-    clearSwipeCardTransform();
-    if (direction === "left") next();
-    if (direction === "right") prev();
+    if (direction === "left") advanceToNextCard();
+    if (direction === "right") retreatToPreviousCard();
   }, 155);
 }, { passive: true });
 
@@ -1126,6 +1205,9 @@ updateToggleButtons();
 setAutoplay(false);
 renderCategoryGrid();
 updateStatsDashboard();
+if (els.appVersionLabel) {
+  els.appVersionLabel.textContent = `Version: ${APP_VERSION}`;
+}
 openCategoryPicker(false);
 updateUI();
 preloadTwemojiAssets();

@@ -1,0 +1,8 @@
+FirstWords Cards 1.0.0
+
+- Baby-safe, gentle card backgrounds
+- Smooth slide transitions between cards
+- Improved alphabet and number card stability
+- Shapes and sizes now use dedicated image assets
+- Colors now use clear visual color circles
+- Better subtitle readability and navigation behavior

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Kids Card Book",
-    "slug": "kids-card-book",
+    "name": "FirstWords Cards",
+    "slug": "firstwords-cards",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -9,12 +9,38 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.akashbadhe.firstwordscards"
     },
     "android": {
+      "package": "com.akashbadhe.firstwordscards",
+      "versionCode": 2,
       "adaptiveIcon": {
-        "backgroundColor": "#f8fbff"
+        "backgroundColor": "#f8fbff",
+        "foregroundImage": "./assets/adaptive-icon.png"
       }
-    }
+    },
+    "scheme": "firstwordscards",
+    "plugins": [
+      "expo-asset"
+    ],
+    "extra": {
+      "supportEmail": "support@firstwordscards.app",
+      "supportUrl": "https://firstwordscards.app/support",
+      "privacyPolicyUrl": "https://firstwordscards.app/privacy",
+      "eas": {
+        "projectId": "c6ac7a62-4549-4374-92fe-59bbdfd0ded6"
+      }
+    },
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#f8fbff"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "owner": "akashbadhe"
   }
 }

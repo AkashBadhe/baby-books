@@ -4,21 +4,30 @@
   "private": true,
   "main": "expo/AppEntry",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "sync-content": "node ../../scripts/export-mobile-content.mjs",
+    "start": "npm run sync-content && expo start",
+    "android": "npm run sync-content && expo start --android",
+    "ios": "npm run sync-content && expo start --ios",
+    "web": "npm run sync-content && expo start --web",
+    "build:android:prod": "npm run sync-content && eas build --platform android --profile production",
+    "submit:android:prod": "eas submit --platform android --profile production",
+    "release:checklist": "echo Open CHECKLIST.md and apps/mobile/RELEASE_NOTES.md before production build."
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "1.23.1",
-    "expo": "~52.0.0",
-    "expo-av": "~15.0.2",
-    "expo-speech": "~13.0.1",
-    "expo-status-bar": "~2.0.0",
-    "react": "18.3.1",
-    "react-native": "0.76.9"
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "expo": "~54.0.0",
+    "expo-asset": "~12.0.12",
+    "expo-av": "~16.0.8",
+    "expo-linear-gradient": "~15.0.8",
+    "expo-speech": "~14.0.8",
+    "expo-status-bar": "~3.0.9",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-web": "^0.21.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.0"
+    "@babel/core": "^7.25.0",
+    "babel-preset-expo": "^54.0.10"
   }
 }

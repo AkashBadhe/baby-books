@@ -35,6 +35,16 @@ Use these as GitHub Topics/keywords:
 1. `npm install`
 2. `npm run dev`
 
+## Unified Mobile + Web (React Native)
+
+- Mobile + web now share one React Native screen in `apps/mobile/src/shared/KidsCardBookScreen.js`.
+- Native wrapper: `apps/mobile/App.js`
+- Web wrapper: `apps/mobile/App.web.js`
+- Run unified web:
+  - `npm run dev:unified:web`
+- Run unified mobile:
+  - `npm run dev:unified:mobile`
+
 ## Image Workflow
 
 1. Add original images to:

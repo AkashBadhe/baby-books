@@ -149,6 +149,106 @@
     "size": 366785,
     "type": "raster"
   },
+  "public/assets/photos/shapes/circle.png": {
+    "hash": "3b31b6691931931563bfb57c7404b6110bf21b45",
+    "size": 107590,
+    "type": "raster"
+  },
+  "public/assets/photos/shapes/diamond.png": {
+    "hash": "8892616dc293b8d0a5821e5e7077a43e08cdd0bb",
+    "size": 4564,
+    "type": "raster"
+  },
+  "public/assets/photos/shapes/heart_shape.png": {
+    "hash": "46ce3d72c67f273ee35943ec4b6a7dba5ef75828",
+    "size": 63560,
+    "type": "raster"
+  },
+  "public/assets/photos/shapes/hexagon.png": {
+    "hash": "4023ec7eb90b70e24152d934388a0f4dadeb7756",
+    "size": 4280,
+    "type": "raster"
+  },
+  "public/assets/photos/shapes/oval.png": {
+    "hash": "942054a9874f0e83f3eba21d7ac50129643faf7f",
+    "size": 4741,
+    "type": "raster"
+  },
+  "public/assets/photos/shapes/pentagon.png": {
+    "hash": "1ea54751122cdb34b560e1ccd8a0ae8ae5bb9415",
+    "size": 4515,
+    "type": "raster"
+  },
+  "public/assets/photos/shapes/rectangle.png": {
+    "hash": "ee3f899b9062f2be3cec631dbdd0dc08129520f3",
+    "size": 70917,
+    "type": "raster"
+  },
+  "public/assets/photos/shapes/square.png": {
+    "hash": "83d63bbc042697ee26ead9f18d6a2e90f865a5ec",
+    "size": 413677,
+    "type": "raster"
+  },
+  "public/assets/photos/shapes/star.png": {
+    "hash": "9ffc7191a42e866f5b42a889edaac94dd8f6c209",
+    "size": 11282,
+    "type": "raster"
+  },
+  "public/assets/photos/shapes/triangle.png": {
+    "hash": "5fb0a64c3d9e49dc38164f3a11687f49beae14e7",
+    "size": 4375,
+    "type": "raster"
+  },
+  "public/assets/photos/sizes/big.png": {
+    "hash": "7918dca0b5aefced98824353e303fe74d7667fef",
+    "size": 43582,
+    "type": "raster"
+  },
+  "public/assets/photos/sizes/heavy.png": {
+    "hash": "74a1c39f441723bf14d105e031891f308a313f6d",
+    "size": 44269,
+    "type": "raster"
+  },
+  "public/assets/photos/sizes/light.png": {
+    "hash": "9b43bc8a2b0a675305713d22b72cd844dc7ad3a5",
+    "size": 324412,
+    "type": "raster"
+  },
+  "public/assets/photos/sizes/long.png": {
+    "hash": "f858bf20236dae0f91b15f1b54efdeb572b568ec",
+    "size": 19396,
+    "type": "raster"
+  },
+  "public/assets/photos/sizes/narrow.png": {
+    "hash": "0f75edd58351bda6f374c7a31dd0a374efd4c94d",
+    "size": 456778,
+    "type": "raster"
+  },
+  "public/assets/photos/sizes/short.png": {
+    "hash": "1df0ae72dccba1f3e32a36a0df35690f90620fb8",
+    "size": 53183,
+    "type": "raster"
+  },
+  "public/assets/photos/sizes/small.png": {
+    "hash": "7fb9a42674eb169c25662d2042590888954ceb4c",
+    "size": 12285,
+    "type": "raster"
+  },
+  "public/assets/photos/sizes/tall.png": {
+    "hash": "858ec8d83dbc1ef9ec7bdffa99df12c921457dd3",
+    "size": 74020,
+    "type": "raster"
+  },
+  "public/assets/photos/sizes/thin.png": {
+    "hash": "19920f535472429acfb08429513813c2259387da",
+    "size": 83856,
+    "type": "raster"
+  },
+  "public/assets/photos/sizes/wide.png": {
+    "hash": "7e4d1e18312f16baf27c5c451132728c6f3ecd20",
+    "size": 226814,
+    "type": "raster"
+  },
   "public/assets/photos/vegetables/broccoli.png": {
     "hash": "b364124e0e5a239249600f58c5ed02fca1768131",
     "size": 241361,
