@@ -228,17 +228,60 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, transitionDire
   const { width: viewportWidth, height: viewportHeight } = useWindowDimensions();
   const cardOpacity = useRef(new Animated.Value(1)).current;
   const cardTranslateX = useRef(new Animated.Value(0)).current;
+  const cardScale = useRef(new Animated.Value(1)).current;
   const previousCardKey = useRef(null);
 
   const alphabetMode = categoryId === "alphabet";
   const numberMode = categoryId === "numbers";
   const colorMode = categoryId === "colors";
+  const textOnlyMode = alphabetMode || numberMode;
+  const numericValue = Number.parseInt(String(card?.value || ""), 10);
+  const numberDenseMode = numberMode && Number.isFinite(numericValue) && numericValue >= 8;
   const visualMode = !alphabetMode && !numberMode;
   const isWeb = Platform.OS === "web";
+  const isTabletLayout = Math.min(viewportWidth, viewportHeight) >= 700;
   const rectangleShapeMode = categoryId === "shapes" && card?.id === "rectangle";
   const showSubtitle = !shouldHideSubtitle(categoryId, card?.subtitle);
   const visualEmojiSize = Math.max(isWeb ? 120 : 138, Math.round(Math.min(viewportWidth, viewportHeight) * (isWeb ? 0.22 : 0.24)));
   const visualTitleSize = Math.max(isWeb ? 34 : 38, Math.round(viewportWidth * (isWeb ? 0.064 : 0.075)));
+  const alphabetEmojiSize = isTabletLayout
+    ? Math.max(92, Math.min(Math.round(Math.min(viewportWidth, viewportHeight) * 0.118), 128))
+    : 74;
+  const numberEmojiSizeBase = isTabletLayout
+    ? Math.max(50, Math.min(Math.round(Math.min(viewportWidth, viewportHeight) * 0.085), 74))
+    : Math.max(isWeb ? 40 : 42, Math.round(Math.min(viewportWidth, viewportHeight) * (isWeb ? 0.076 : 0.082)));
+  const numberEmojiSize = numberDenseMode
+    ? Math.round(numberEmojiSizeBase * 0.84)
+    : numberEmojiSizeBase;
+  const alphabetEmojiLineHeight = Math.round(alphabetEmojiSize * 1.14);
+  const numberEmojiLineHeight = Math.round(numberEmojiSize * 1.1);
+  const numberEmojiLetterSpacing = isTabletLayout ? 2.8 : 2.2;
+  const alphabetEmojiBlockHeight = Math.round(alphabetEmojiLineHeight * 1.3);
+  const numberEmojiBlockHeight = Math.round(numberEmojiLineHeight * 2.22);
+  const mobileValueFontSize = !isTabletLayout
+    ? (numberMode
+      ? Math.max(126, Math.min(Math.round(Math.min(viewportWidth, viewportHeight) * 0.27), 160))
+      : Math.max(144, Math.min(Math.round(Math.min(viewportWidth, viewportHeight) * 0.31), 192)))
+    : null;
+  const valueFontSize = isTabletLayout
+    ? Math.max(
+      numberMode ? 190 : 210,
+      Math.min(
+        Math.round(Math.min(viewportWidth, viewportHeight) * (numberMode ? 0.29 : 0.33)),
+        numberMode ? 260 : 300,
+      ),
+    )
+    : null;
+  const textOnlyMediaHeight = numberMode
+    ? Math.max(numberEmojiBlockHeight + (isTabletLayout ? 12 : 8), isTabletLayout ? 156 : 122)
+    : Math.max(alphabetEmojiBlockHeight + (isTabletLayout ? 24 : 16), isTabletLayout ? 172 : 132);
+  const colorSwatchSize = Math.round(
+    Math.min(
+      isWeb ? viewportWidth * 0.44 : viewportWidth * 0.62,
+      viewportHeight * (isWeb ? 0.34 : 0.3),
+      isWeb ? 320 : 280,
+    ),
+  );
 
   useEffect(() => {
     setImageFailed(false);
@@ -253,8 +296,16 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, transitionDire
     if (previousCardKey.current === currentKey) return;
     previousCardKey.current = currentKey;
 
+    if (textOnlyMode) {
+      cardOpacity.setValue(1);
+      cardTranslateX.setValue(0);
+      cardScale.setValue(1);
+      return;
+    }
+
     cardOpacity.setValue(0);
     cardTranslateX.setValue((transitionDirection || 1) * 20);
+    cardScale.setValue(1);
     Animated.parallel([
       Animated.timing(cardOpacity, {
         toValue: 1,
@@ -268,8 +319,14 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, transitionDire
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
+      Animated.timing(cardScale, {
+        toValue: 1,
+        duration: 180,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
     ]).start();
-  }, [card?.id, cardOpacity, cardTranslateX, categoryId, transitionDirection]);
+  }, [card?.id, cardOpacity, cardScale, cardTranslateX, categoryId, textOnlyMode, transitionDirection]);
 
   const onSwipeEnd = useCallback(
     (endX, endY) => {
@@ -302,7 +359,7 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, transitionDire
           visualMode && styles.cardVisual,
           {
             opacity: cardOpacity,
-            transform: [{ translateX: cardTranslateX }],
+            transform: [{ translateX: cardTranslateX }, { scale: cardScale }],
           },
         ]}
         onStartShouldSetResponder={() => true}
@@ -319,13 +376,47 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, transitionDire
       >
         {(alphabetMode || numberMode) && (
           <View style={styles.valueSlot}>
-            <Text style={styles.value}>{card.value}</Text>
+            <Text
+              style={[
+                styles.value,
+                numberMode && styles.valueNumeric,
+                mobileValueFontSize && {
+                  fontSize: mobileValueFontSize,
+                  lineHeight: Math.round(mobileValueFontSize * 1.03),
+                },
+                isTabletLayout && valueFontSize && {
+                  fontSize: valueFontSize,
+                  lineHeight: Math.round(valueFontSize * 1.03),
+                },
+              ]}
+            >
+              {card.value}
+            </Text>
           </View>
         )}
 
-        <View style={visualMode ? [styles.visualMediaWrap, !isWeb && styles.visualMediaWrapMobile] : [styles.mediaWrap, styles.classicMediaWrap]}>
+        <View
+          style={
+            visualMode
+              ? [styles.visualMediaWrap, !isWeb && styles.visualMediaWrapMobile]
+              : [styles.mediaWrap, styles.classicMediaWrap, textOnlyMode && {
+                minHeight: textOnlyMediaHeight,
+                maxHeight: textOnlyMediaHeight,
+              }]
+          }
+        >
           {colorMode ? (
-            <View style={[styles.colorSwatchCircle, { backgroundColor: swatchColorById(card?.id) }]} />
+            <View
+              style={[
+                styles.colorSwatchCircle,
+                {
+                  width: colorSwatchSize,
+                  height: colorSwatchSize,
+                  borderRadius: colorSwatchSize / 2,
+                  backgroundColor: swatchColorById(card?.id),
+                },
+              ]}
+            />
           ) : !imageFailed && imageUri ? (
             <Image
               source={{ uri: imageUri }}
@@ -340,7 +431,22 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, transitionDire
               style={[
                 visualMode ? styles.emojiLarge : styles.emoji,
                 visualMode && { fontSize: visualEmojiSize },
+                alphabetMode && {
+                  fontSize: alphabetEmojiSize,
+                  lineHeight: alphabetEmojiLineHeight,
+                  minHeight: alphabetEmojiBlockHeight,
+                  maxHeight: alphabetEmojiBlockHeight,
+                  paddingTop: isTabletLayout ? 4 : 2,
+                },
                 numberMode && styles.numberEmoji,
+                numberMode && isTabletLayout && { maxWidth: "84%" },
+                numberMode && {
+                  fontSize: numberEmojiSize,
+                  lineHeight: numberEmojiLineHeight,
+                  letterSpacing: numberEmojiLetterSpacing,
+                  minHeight: numberEmojiBlockHeight,
+                  maxHeight: numberEmojiBlockHeight,
+                },
               ]}
             >
               {card.emoji}
@@ -404,7 +510,8 @@ export function KidsCardBookScreen({
   const overallTotal = useMemo(() => totalCardsCount(categories, cardsByCategory), [cardsByCategory, categories]);
 
   const topInset = Platform.OS === "android" ? (RNStatusBar.currentHeight || 0) : 0;
-  const bottomInset = Platform.OS === "ios" ? 28 : 26;
+  const bottomNavOffset = Platform.OS === "android" ? 22 : 8;
+  const bottomNavPadding = Platform.OS === "android" ? 34 : 28;
 
   useEffect(() => {
     if (!orderedCategoryIds.includes(selectedCategory)) {
@@ -606,7 +713,7 @@ export function KidsCardBookScreen({
         transitionDirection={transitionDirection}
       />
 
-      <View style={[styles.bottomNav, { paddingBottom: bottomInset }]}>
+      <View style={[styles.bottomNav, { bottom: bottomNavOffset, paddingBottom: bottomNavPadding }]}>
         <Pressable
           style={[styles.navPill, categoryPickerOpen && styles.navPillActive]}
           onPress={() => {
@@ -614,14 +721,43 @@ export function KidsCardBookScreen({
             setCategoryPickerOpen((prev) => !prev);
           }}
         >
-          <GridIcon active={categoryPickerOpen} />
-          <Text style={[styles.navPillText, categoryPickerOpen && styles.navPillTextActive]}>Categories</Text>
+          <View style={styles.navIconSlot}>
+            <GridIcon active={categoryPickerOpen} />
+          </View>
+          <Text
+            style={[styles.navPillText, categoryPickerOpen && styles.navPillTextActive]}
+            numberOfLines={1}
+            ellipsizeMode="clip"
+            maxFontSizeMultiplier={1}
+          >
+            Categories
+          </Text>
         </Pressable>
 
         <Pressable style={[styles.navPill, autoplay && styles.navPillActive]} onPress={() => setAutoplay((prev) => !prev)}>
-          <Text style={[styles.navIconGlyph, autoplay && styles.navPillTextActive]}>{autoplay ? "❚❚" : "▶"}</Text>
-          <Text style={[styles.navPillText, autoplay && styles.navPillTextActive]}>{autoplay ? "Pause" : "Play"}</Text>
+          <View style={styles.navIconSlot}>
+            <Text
+              style={[
+                styles.navIconGlyph,
+                styles.navIconGlyphPlay,
+                autoplay && styles.navIconGlyphPause,
+                autoplay && styles.navPillTextActive,
+              ]}
+              allowFontScaling={false}
+            >
+              {autoplay ? "\u275A\u275A" : "\u25B6"}
+            </Text>
+          </View>
+          <Text
+            style={[styles.navPillText, autoplay && styles.navPillTextActive]}
+            numberOfLines={1}
+            ellipsizeMode="clip"
+            maxFontSizeMultiplier={1}
+          >
+            {autoplay ? "Pause" : "Play"}
+          </Text>
         </Pressable>
+
 
         <Pressable
           style={[styles.navPill, settingsOpen && styles.navPillActive]}
@@ -630,8 +766,17 @@ export function KidsCardBookScreen({
             setSettingsOpen((prev) => !prev);
           }}
         >
-          <SlidersIcon active={settingsOpen} />
-          <Text style={[styles.navPillText, settingsOpen && styles.navPillTextActive]}>Settings</Text>
+          <View style={styles.navIconSlot}>
+            <SlidersIcon active={settingsOpen} />
+          </View>
+          <Text
+            style={[styles.navPillText, settingsOpen && styles.navPillTextActive]}
+            numberOfLines={1}
+            ellipsizeMode="clip"
+            maxFontSizeMultiplier={1}
+          >
+            Settings
+          </Text>
         </Pressable>
       </View>
 
@@ -711,8 +856,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 18,
-  },
-  cardVisual: {
+  },  cardVisual: {
     justifyContent: "space-between",
     paddingHorizontal: 14,
     paddingVertical: 14,
@@ -723,12 +867,17 @@ const styles = StyleSheet.create({
     color: "#141d30",
     lineHeight: 110,
     marginBottom: 0,
+    width: "100%",
     textAlign: "center",
     includeFontPadding: false,
   },
+  valueNumeric: {
+    fontVariant: ["tabular-nums"],
+    letterSpacing: 0,
+  },
   valueSlot: {
     width: "100%",
-    minHeight: 120,
+    minHeight: 124,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -739,10 +888,12 @@ const styles = StyleSheet.create({
   },
   numberEmoji: {
     width: "100%",
-    maxWidth: "92%",
-    fontSize: 62,
-    lineHeight: 74,
+    maxWidth: "88%",
+    fontSize: 58,
+    lineHeight: 64,
+    paddingHorizontal: 6,
     includeFontPadding: false,
+    textAlign: "center",
   },
   emojiLarge: {
     fontSize: 132,
@@ -755,8 +906,7 @@ const styles = StyleSheet.create({
   },
   classicMediaWrap: {
     minHeight: 170,
-  },
-  visualMediaWrap: {
+  },  visualMediaWrap: {
     flex: 1,
     width: "100%",
     minHeight: 220,
@@ -776,12 +926,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(23, 36, 59, 0.5)",
   },
   colorSwatchCircle: {
-    width: "70%",
-    aspectRatio: 1,
-    maxWidth: 280,
-    borderRadius: 999,
-    borderWidth: 8,
-    borderColor: "rgba(23, 36, 59, 0.12)",
+    width: 280,
+    height: 280,
+    borderRadius: 140,
     shadowColor: "#0f172a",
     shadowOpacity: 0.12,
     shadowOffset: { width: 0, height: 8 },
@@ -844,25 +991,39 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   navPill: {
-    width: "30%",
+    flex: 1,
     borderRadius: 999,
-    paddingVertical: 8,
+    minHeight: 66,
+    justifyContent: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 4,
     backgroundColor: "transparent",
     alignItems: "center",
-    marginHorizontal: 4,
+    marginHorizontal: 2,
+    minWidth: 0,
   },
   navPillActive: {
-    backgroundColor: "#3f8efc",
+    backgroundColor: "black",
   },
   navPillText: {
     fontSize: 13,
+    lineHeight: 16,
     fontWeight: "900",
     color: "#29486f",
+    textAlign: "center",
+    includeFontPadding: false,
+    width: "100%",
+  },
+  navIconSlot: {
+    width: 24,
+    height: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 4,
   },
   gridIconWrap: {
     width: 18,
     height: 18,
-    marginBottom: 3,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
@@ -880,7 +1041,6 @@ const styles = StyleSheet.create({
   slidersWrap: {
     width: 18,
     height: 18,
-    marginBottom: 3,
     justifyContent: "space-between",
   },
   sliderLine: {
@@ -916,10 +1076,25 @@ const styles = StyleSheet.create({
     color: "#ffffff",
   },
   navIconGlyph: {
-    fontSize: 14,
+    fontSize: 18,
+    lineHeight: 20,
     fontWeight: "900",
     color: "#29486f",
-    marginBottom: 2,
+    minWidth: 18,
+    textAlign: "center",
+    includeFontPadding: false,
+  },
+  navIconGlyphPlay: {
+    fontSize: 22,
+    lineHeight: 24,
+    width: 24,
+    textAlign: "center",
+    includeFontPadding: false,
+  },
+  navIconGlyphPause: {
+    fontSize: 19,
+    lineHeight: 22,
+    letterSpacing: -1,
   },
   backdrop: {
     position: "absolute",
@@ -1031,3 +1206,4 @@ const styles = StyleSheet.create({
     color: "#ffffff",
   },
 });
+

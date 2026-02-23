@@ -1,4 +1,11 @@
-# FirstWords Cards Release Notes
+# First Words Cards Release Notes
+
+## 1.1.0
+- Improved alphabet and number card stability on tablet screens.
+- Removed motion from alphabet/number cards to avoid jumping.
+- Fixed color swatch circles and removed unwanted circle borders.
+- Improved bottom navigation button sizing and alignment consistency.
+- Increased letter/number readability on mobile without layout breakage.
 
 ## 1.0.0
 - Unified mobile/web card experience.

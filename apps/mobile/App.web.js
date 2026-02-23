@@ -90,7 +90,7 @@ export default function App() {
 
   return (
     <KidsCardBookScreen
-      appTitle="FirstWords Cards"
+      appTitle="First Words Cards"
       categories={categories}
       cardsByCategory={cardsByCategory}
       resolveCardImageUri={resolveCardImageUri}

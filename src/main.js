@@ -558,32 +558,37 @@ function updateUI() {
   const s = activeSlides()[state.index];
   const numberMode = state.category === "numbers";
   const alphabetMode = state.category === "alphabet";
+  const textOnlyMode = alphabetMode || numberMode;
   const visualMode = !alphabetMode && !numberMode;
   const shapesMode = state.category === "shapes";
+  const numberDenseMode = numberMode && Number.parseInt(String(s.value), 10) >= 8;
   const letterColor = alphabetMode ? "#101010" : chooseLetterColor(s.colors);
   const isLightLetter = contrastRatio(letterColor, "#ffffff") < contrastRatio(letterColor, "#101010");
   const duplicatePrimaryLabel = String(s.value).trim().toLowerCase()
     === String(s.title).trim().toLowerCase();
 
   els.card.classList.toggle("number-mode", numberMode);
+  els.card.classList.toggle("number-dense-mode", numberDenseMode);
   els.card.classList.toggle("alphabet-mode", alphabetMode);
   els.card.classList.toggle("visual-mode", visualMode);
   els.card.classList.toggle("shapes-mode", shapesMode);
   clearSwipeCardTransform();
 
-  if (state.hasRenderedCard) {
+  if (state.hasRenderedCard && !textOnlyMode) {
     els.card.classList.remove("turn-next", "turn-prev");
     void els.card.offsetWidth;
     els.card.classList.add(state.transitionDirection === "prev" ? "turn-prev" : "turn-next");
+  } else {
+    els.card.classList.remove("turn-next", "turn-prev");
   }
 
   els.letter.style.animation = "none";
   els.emoji.style.animation = "none";
-  void els.letter.offsetHeight;
-  void els.emoji.offsetHeight;
-  if (!numberMode) {
-    els.letter.style.animation = "pop .55s ease";
-    els.emoji.style.animation = "floaty 2.4s ease-in-out infinite";
+  if (!textOnlyMode) {
+    void els.emoji.offsetHeight;
+    if (!numberMode) {
+      els.emoji.style.animation = "floaty 2.4s ease-in-out infinite";
+    }
   }
 
   els.letter.textContent = s.value;
@@ -594,10 +599,10 @@ function updateUI() {
     : "0 3px 0 rgba(255,255,255,.36), 0 10px 22px rgba(0,0,0,.18)";
   els.word.textContent = s.title;
   els.word.classList.toggle("hidden", duplicatePrimaryLabel && !visualMode);
-  if (state.twemojiReady) {
-    els.emoji.innerHTML = parseEmojiToHtml(s.emoji);
-  } else {
+  if (textOnlyMode || !state.twemojiReady) {
     els.emoji.textContent = s.emoji;
+  } else {
+    els.emoji.innerHTML = parseEmojiToHtml(s.emoji);
   }
   loadCardImage(s);
   els.sub.textContent = numberMode ? "" : `"${s.subtitle}"`;
