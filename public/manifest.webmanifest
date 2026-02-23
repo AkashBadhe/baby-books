@@ -1,6 +1,6 @@
 {
-  "name": "Kids Card Book",
-  "short_name": "Kids Cards",
+  "name": "FirstWords Cards",
+  "short_name": "FirstWords",
   "description": "Offline-friendly learning cards for toddlers and young children.",
   "start_url": "./",
   "scope": "./",

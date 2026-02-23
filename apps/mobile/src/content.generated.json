@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-02-23T06:01:06.988Z",
+  "generatedAt": "2026-02-23T09:07:56.275Z",
   "categoryDefinitions": [
     {
       "id": "alphabet",
@@ -67,8 +67,8 @@
         "emoji": "🍎",
         "audioLabel": "A for Apple",
         "colors": [
-          "#ff9a9e",
-          "#fad0c4"
+          "#ffd9de",
+          "#fff0e8"
         ]
       },
       {
@@ -623,6 +623,7 @@
         "title": "Circle",
         "subtitle": "This is a Circle",
         "emoji": "⚪",
+        "image": "/assets/photos/shapes/circle.png",
         "audioLabel": "Circle",
         "colors": [
           "#e0eafc",
@@ -635,6 +636,7 @@
         "title": "Square",
         "subtitle": "This is a Square",
         "emoji": "⬜",
+        "image": "/assets/photos/shapes/square.png",
         "audioLabel": "Square",
         "colors": [
           "#f6d365",
@@ -647,10 +649,11 @@
         "title": "Triangle",
         "subtitle": "This is a Triangle",
         "emoji": "🔺",
+        "image": "/assets/photos/shapes/triangle.png",
         "audioLabel": "Triangle",
         "colors": [
-          "#fa709a",
-          "#fee140"
+          "#1d4ed8",
+          "#60a5fa"
         ]
       },
       {
@@ -659,6 +662,7 @@
         "title": "Rectangle",
         "subtitle": "This is a Rectangle",
         "emoji": "▬",
+        "image": "/assets/photos/shapes/rectangle.png",
         "audioLabel": "Rectangle",
         "colors": [
           "#89f7fe",
@@ -671,6 +675,7 @@
         "title": "Star",
         "subtitle": "This is a Star",
         "emoji": "⭐",
+        "image": "/assets/photos/shapes/star.png",
         "audioLabel": "Star",
         "colors": [
           "#fddb92",
@@ -683,6 +688,7 @@
         "title": "Oval",
         "subtitle": "This is an Oval",
         "emoji": "🥚",
+        "image": "/assets/photos/shapes/oval.png",
         "audioLabel": "Oval",
         "colors": [
           "#a1c4fd",
@@ -695,6 +701,7 @@
         "title": "Heart",
         "subtitle": "This is a Heart",
         "emoji": "❤️",
+        "image": "/assets/photos/shapes/heart_shape.png",
         "audioLabel": "Heart",
         "colors": [
           "#ff9a9e",
@@ -707,6 +714,7 @@
         "title": "Diamond",
         "subtitle": "This is a Diamond",
         "emoji": "🔷",
+        "image": "/assets/photos/shapes/diamond.png",
         "audioLabel": "Diamond",
         "colors": [
           "#84fab0",
@@ -719,6 +727,7 @@
         "title": "Pentagon",
         "subtitle": "This is a Pentagon",
         "emoji": "⬠",
+        "image": "/assets/photos/shapes/pentagon.png",
         "audioLabel": "Pentagon",
         "colors": [
           "#e0c3fc",
@@ -731,6 +740,7 @@
         "title": "Hexagon",
         "subtitle": "This is a Hexagon",
         "emoji": "⬡",
+        "image": "/assets/photos/shapes/hexagon.png",
         "audioLabel": "Hexagon",
         "colors": [
           "#fbc2eb",
@@ -743,8 +753,9 @@
         "id": "big",
         "value": "Big",
         "title": "Big",
-        "subtitle": "This is Big",
+        "subtitle": "Elephant is Big",
         "emoji": "🐘",
+        "image": "/assets/photos/sizes/big.png",
         "audioLabel": "Big",
         "colors": [
           "#e0c3fc",
@@ -755,8 +766,9 @@
         "id": "small",
         "value": "Small",
         "title": "Small",
-        "subtitle": "This is Small",
+        "subtitle": "Ant is Small",
         "emoji": "🐭",
+        "image": "/assets/photos/sizes/small.png",
         "audioLabel": "Small",
         "colors": [
           "#fbc2eb",
@@ -767,8 +779,9 @@
         "id": "tall",
         "value": "Tall",
         "title": "Tall",
-        "subtitle": "This is Tall",
+        "subtitle": "Giraffe is Tall",
         "emoji": "🦒",
+        "image": "/assets/photos/sizes/tall.png",
         "audioLabel": "Tall",
         "colors": [
           "#d4fc79",
@@ -779,8 +792,9 @@
         "id": "short",
         "value": "Short",
         "title": "Short",
-        "subtitle": "This is Short",
+        "subtitle": "This Boy is Short",
         "emoji": "🧍",
+        "image": "/assets/photos/sizes/short.png",
         "audioLabel": "Short",
         "colors": [
           "#f6d365",
@@ -791,8 +805,9 @@
         "id": "long",
         "value": "Long",
         "title": "Long",
-        "subtitle": "This is Long",
+        "subtitle": "This Road is Long",
         "emoji": "🚌",
+        "image": "/assets/photos/sizes/long.png",
         "audioLabel": "Long",
         "colors": [
           "#84fab0",
@@ -803,8 +818,9 @@
         "id": "heavy",
         "value": "Heavy",
         "title": "Heavy",
-        "subtitle": "This is Heavy",
+        "subtitle": "Rock is Heavy",
         "emoji": "🪨",
+        "image": "/assets/photos/sizes/heavy.png",
         "audioLabel": "Heavy",
         "colors": [
           "#cfd9df",
@@ -815,8 +831,9 @@
         "id": "light",
         "value": "Light",
         "title": "Light",
-        "subtitle": "This is Light",
+        "subtitle": "Feather is Light",
         "emoji": "🪶",
+        "image": "/assets/photos/sizes/light.png",
         "audioLabel": "Light",
         "colors": [
           "#ffecd2",
@@ -827,8 +844,9 @@
         "id": "wide",
         "value": "Wide",
         "title": "Wide",
-        "subtitle": "This is Wide",
+        "subtitle": "This Road is Wide",
         "emoji": "🖥️",
+        "image": "/assets/photos/sizes/wide.png",
         "audioLabel": "Wide",
         "colors": [
           "#89f7fe",
@@ -839,8 +857,9 @@
         "id": "narrow",
         "value": "Narrow",
         "title": "Narrow",
-        "subtitle": "This is Narrow",
+        "subtitle": "This Lane is Narrow",
         "emoji": "📏",
+        "image": "/assets/photos/sizes/narrow.png",
         "audioLabel": "Narrow",
         "colors": [
           "#fddb92",
@@ -851,8 +870,9 @@
         "id": "thin",
         "value": "Thin",
         "title": "Thin",
-        "subtitle": "This is Thin",
+        "subtitle": "Paper is Thin",
         "emoji": "🎗️",
+        "image": "/assets/photos/sizes/thin.png",
         "audioLabel": "Thin",
         "colors": [
           "#fa709a",

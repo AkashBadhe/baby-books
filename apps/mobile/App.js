@@ -3,11 +3,14 @@ import { Audio } from "expo-av";
 import * as Speech from "expo-speech";
 import { cardsByCategory, categories } from "./src/content";
 import { KidsCardBookScreen } from "./src/shared/KidsCardBookScreen";
+import { resolveBundledImageUri } from "./src/localImageAssets";
 
 const WEB_ASSET_BASE = (process.env.EXPO_PUBLIC_WEB_ASSET_BASE || "https://akashbadhe.github.io/baby-books").replace(/\/$/, "");
 
 function resolveCardImageUri(categoryId, card) {
   if (!card) return null;
+  const bundledUri = resolveBundledImageUri(categoryId, card.id);
+  if (bundledUri) return bundledUri;
   if (card.image?.startsWith("http://") || card.image?.startsWith("https://")) return card.image;
   if (card.image?.startsWith("/")) return `${WEB_ASSET_BASE}${card.image}`;
   return `${WEB_ASSET_BASE}/assets/cards/${categoryId}/${card.id}.svg`;
@@ -80,7 +83,7 @@ export default function App() {
 
   return (
     <KidsCardBookScreen
-      appTitle="Kids Card Book"
+      appTitle="FirstWords Cards"
       categories={categories}
       cardsByCategory={cardsByCategory}
       resolveCardImageUri={resolveCardImageUri}

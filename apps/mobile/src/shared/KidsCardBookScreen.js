@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Image, Pressable, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar as RNStatusBar, ScrollView } from "react-native";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Animated, Easing, Image, Pressable, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar as RNStatusBar, ScrollView, useWindowDimensions } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -15,11 +15,121 @@ function favoriteKey(categoryId, cardId) {
 function shouldHideSubtitle(categoryId, subtitle) {
   if (!subtitle) return true;
   if (categoryId === "numbers") return true;
+  if (categoryId === "sizes") return false;
   return /^(this is|these are)\b/i.test(subtitle.trim());
 }
 
 function totalCardsCount(categories, cardsByCategory) {
   return categories.reduce((sum, category) => sum + (cardsByCategory[category.id]?.length || 0), 0);
+}
+
+function hexToRgb(hex) {
+  if (typeof hex !== "string") return null;
+  const clean = hex.trim().replace(/^#/, "");
+  if (!/^[0-9a-fA-F]{6}$/.test(clean)) return null;
+  const n = Number.parseInt(clean, 16);
+  return {
+    r: (n >> 16) & 255,
+    g: (n >> 8) & 255,
+    b: n & 255,
+  };
+}
+
+function rgbToHex({ r, g, b }) {
+  const to2 = (n) => Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, "0");
+  return `#${to2(r)}${to2(g)}${to2(b)}`;
+}
+
+function rgbToHsl({ r, g, b }) {
+  const rn = r / 255;
+  const gn = g / 255;
+  const bn = b / 255;
+  const max = Math.max(rn, gn, bn);
+  const min = Math.min(rn, gn, bn);
+  const l = (max + min) / 2;
+  const d = max - min;
+
+  let h = 0;
+  let s = 0;
+  if (d !== 0) {
+    s = d / (1 - Math.abs(2 * l - 1));
+    switch (max) {
+      case rn:
+        h = ((gn - bn) / d) % 6;
+        break;
+      case gn:
+        h = (bn - rn) / d + 2;
+        break;
+      default:
+        h = (rn - gn) / d + 4;
+        break;
+    }
+    h *= 60;
+    if (h < 0) h += 360;
+  }
+
+  return { h, s, l };
+}
+
+function hslToRgb({ h, s, l }) {
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const hp = h / 60;
+  const x = c * (1 - Math.abs((hp % 2) - 1));
+  let r1 = 0;
+  let g1 = 0;
+  let b1 = 0;
+
+  if (hp >= 0 && hp < 1) {
+    r1 = c; g1 = x; b1 = 0;
+  } else if (hp >= 1 && hp < 2) {
+    r1 = x; g1 = c; b1 = 0;
+  } else if (hp >= 2 && hp < 3) {
+    r1 = 0; g1 = c; b1 = x;
+  } else if (hp >= 3 && hp < 4) {
+    r1 = 0; g1 = x; b1 = c;
+  } else if (hp >= 4 && hp < 5) {
+    r1 = x; g1 = 0; b1 = c;
+  } else {
+    r1 = c; g1 = 0; b1 = x;
+  }
+
+  const m = l - c / 2;
+  return {
+    r: (r1 + m) * 255,
+    g: (g1 + m) * 255,
+    b: (b1 + m) * 255,
+  };
+}
+
+function softenColorForBabies(hex) {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return hex;
+  const hsl = rgbToHsl(rgb);
+
+  // Keep backgrounds calm: moderate saturation and bright/pastel lightness.
+  const safeHsl = {
+    h: hsl.h,
+    s: Math.min(hsl.s, 0.35),
+    l: Math.max(0.82, Math.min(hsl.l, 0.92)),
+  };
+
+  return rgbToHex(hslToRgb(safeHsl));
+}
+
+function swatchColorById(cardId) {
+  const swatches = {
+    red: "#ef4444",
+    blue: "#3b82f6",
+    green: "#22c55e",
+    yellow: "#facc15",
+    purple: "#a855f7",
+    orange_color: "#f97316",
+    black: "#1f2937",
+    white: "#ffffff",
+    pink: "#ec4899",
+    brown: "#8b5e34",
+  };
+  return swatches[cardId] || "#94a3b8";
 }
 
 function CategorySheet({ categories, selectedCategory, onSelect }) {
@@ -112,18 +222,54 @@ function SlidersIcon({ active }) {
   );
 }
 
-function CardViewer({ categoryId, card, imageUri, onPrev, onNext }) {
+function CardViewer({ categoryId, card, imageUri, onPrev, onNext, transitionDirection = 1 }) {
   const [imageFailed, setImageFailed] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
+  const { width: viewportWidth, height: viewportHeight } = useWindowDimensions();
+  const cardOpacity = useRef(new Animated.Value(1)).current;
+  const cardTranslateX = useRef(new Animated.Value(0)).current;
+  const previousCardKey = useRef(null);
 
   const alphabetMode = categoryId === "alphabet";
   const numberMode = categoryId === "numbers";
+  const colorMode = categoryId === "colors";
   const visualMode = !alphabetMode && !numberMode;
+  const isWeb = Platform.OS === "web";
+  const rectangleShapeMode = categoryId === "shapes" && card?.id === "rectangle";
   const showSubtitle = !shouldHideSubtitle(categoryId, card?.subtitle);
+  const visualEmojiSize = Math.max(isWeb ? 120 : 138, Math.round(Math.min(viewportWidth, viewportHeight) * (isWeb ? 0.22 : 0.24)));
+  const visualTitleSize = Math.max(isWeb ? 34 : 38, Math.round(viewportWidth * (isWeb ? 0.064 : 0.075)));
 
   useEffect(() => {
     setImageFailed(false);
   }, [imageUri, card?.id]);
+
+  useEffect(() => {
+    const currentKey = `${categoryId}:${card?.id || "none"}`;
+    if (previousCardKey.current === null) {
+      previousCardKey.current = currentKey;
+      return;
+    }
+    if (previousCardKey.current === currentKey) return;
+    previousCardKey.current = currentKey;
+
+    cardOpacity.setValue(0);
+    cardTranslateX.setValue((transitionDirection || 1) * 20);
+    Animated.parallel([
+      Animated.timing(cardOpacity, {
+        toValue: 1,
+        duration: 180,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(cardTranslateX, {
+        toValue: 0,
+        duration: 220,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [card?.id, cardOpacity, cardTranslateX, categoryId, transitionDirection]);
 
   const onSwipeEnd = useCallback(
     (endX, endY) => {
@@ -150,8 +296,15 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext }) {
 
   return (
     <View style={styles.viewerWrap}>
-      <View
-        style={styles.card}
+      <Animated.View
+        style={[
+          styles.card,
+          visualMode && styles.cardVisual,
+          {
+            opacity: cardOpacity,
+            transform: [{ translateX: cardTranslateX }],
+          },
+        ]}
         onStartShouldSetResponder={() => true}
         onResponderGrant={(event) => {
           const { pageX, pageY } = event.nativeEvent;
@@ -164,22 +317,42 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext }) {
         }}
         onResponderTerminate={() => setTouchStart(null)}
       >
-        {(alphabetMode || numberMode) && <Text style={styles.value}>{card.value}</Text>}
-
-        {!imageFailed && imageUri ? (
-          <Image
-            source={{ uri: imageUri }}
-            style={visualMode ? styles.cardImageLarge : styles.cardImage}
-            resizeMode="contain"
-            onError={() => setImageFailed(true)}
-          />
-        ) : (
-          <Text style={visualMode ? styles.emojiLarge : styles.emoji}>{card.emoji}</Text>
+        {(alphabetMode || numberMode) && (
+          <View style={styles.valueSlot}>
+            <Text style={styles.value}>{card.value}</Text>
+          </View>
         )}
 
-        <Text style={visualMode ? styles.titleVisual : styles.title}>{card.title}</Text>
-        {showSubtitle && <Text style={styles.subtitle}>{card.subtitle}</Text>}
-      </View>
+        <View style={visualMode ? [styles.visualMediaWrap, !isWeb && styles.visualMediaWrapMobile] : [styles.mediaWrap, styles.classicMediaWrap]}>
+          {colorMode ? (
+            <View style={[styles.colorSwatchCircle, { backgroundColor: swatchColorById(card?.id) }]} />
+          ) : !imageFailed && imageUri ? (
+            <Image
+              source={{ uri: imageUri }}
+              style={visualMode ? styles.cardImageLarge : styles.cardImage}
+              resizeMode="contain"
+              onError={() => setImageFailed(true)}
+            />
+          ) : rectangleShapeMode ? (
+            <View style={styles.rectangleShape} />
+          ) : (
+            <Text
+              style={[
+                visualMode ? styles.emojiLarge : styles.emoji,
+                visualMode && { fontSize: visualEmojiSize },
+                numberMode && styles.numberEmoji,
+              ]}
+            >
+              {card.emoji}
+            </Text>
+          )}
+        </View>
+
+        <View style={[styles.textSlot, visualMode && styles.textSlotVisual]}>
+          <Text style={[visualMode ? styles.titleVisual : styles.title, visualMode && { fontSize: visualTitleSize }]}>{card.title}</Text>
+          {showSubtitle && <Text style={styles.subtitle}>{card.subtitle}</Text>}
+        </View>
+      </Animated.View>
 
     </View>
   );
@@ -209,6 +382,7 @@ export function KidsCardBookScreen({
   const [delayMs, setDelayMs] = useState(3000);
   const [categoryPickerOpen, setCategoryPickerOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [transitionDirection, setTransitionDirection] = useState(1);
 
   const cards = useMemo(() => cardsByCategory[selectedCategory] || [], [cardsByCategory, selectedCategory]);
   const normalizedIndex = useMemo(() => wrapIndex(currentIndex, cards.length || 1), [currentIndex, cards.length]);
@@ -219,7 +393,7 @@ export function KidsCardBookScreen({
   const bgColors = useMemo(() => {
     const fallback = ["#fde7ef", "#e9f6ff"];
     if (!card?.colors || card.colors.length < 2) return fallback;
-    return [card.colors[0], card.colors[1]];
+    return [softenColorForBabies(card.colors[0]), softenColorForBabies(card.colors[1])];
   }, [card]);
 
   const currentViewed = (viewedIdsByCategory[selectedCategory] || []).length;
@@ -280,6 +454,7 @@ export function KidsCardBookScreen({
     (categoryId) => {
       if (!cardsByCategory[categoryId]) return;
       onStopSpeaking?.();
+      setTransitionDirection(1);
       setSelectedCategory(categoryId);
       setCurrentIndex(0);
       setCategoryPickerOpen(false);
@@ -317,6 +492,7 @@ export function KidsCardBookScreen({
         }
 
         onStopSpeaking?.();
+        setTransitionDirection(step >= 0 ? 1 : -1);
         setSelectedCategory(orderedCategoryIds[categoryPos]);
         setCurrentIndex(indexPos);
         return;
@@ -335,6 +511,65 @@ export function KidsCardBookScreen({
     }, delayMs);
     return () => clearInterval(timer);
   }, [autoplay, delayMs, moveGlobal]);
+
+  useEffect(() => {
+    if (Platform.OS !== "web" || typeof window === "undefined") return undefined;
+
+    const isEditableTarget = (target) => {
+      if (!target || !(target instanceof HTMLElement)) return false;
+      if (target.isContentEditable) return true;
+      const tag = target.tagName;
+      return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+    };
+
+    const onKeyDown = (event) => {
+      if (isEditableTarget(event.target)) return;
+
+      const key = event.key;
+      const normalized = typeof key === "string" ? key.toLowerCase() : "";
+
+      if (key === "Escape") {
+        if (categoryPickerOpen) {
+          event.preventDefault();
+          setCategoryPickerOpen(false);
+          return;
+        }
+        if (settingsOpen) {
+          event.preventDefault();
+          setSettingsOpen(false);
+        }
+        return;
+      }
+
+      if (key === "ArrowLeft") {
+        event.preventDefault();
+        onPrev();
+        return;
+      }
+
+      if (key === "ArrowRight") {
+        event.preventDefault();
+        onNext();
+        return;
+      }
+
+      if (key === " " || key === "Spacebar" || key === "Space") {
+        event.preventDefault();
+        onNext();
+        return;
+      }
+
+      if (normalized === "p") {
+        event.preventDefault();
+        setAutoplay((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [categoryPickerOpen, onNext, onPrev, settingsOpen]);
 
   const onToggleFavorite = () => {
     if (!card) return;
@@ -368,6 +603,7 @@ export function KidsCardBookScreen({
         imageUri={imageUri}
         onPrev={onPrev}
         onNext={onNext}
+        transitionDirection={transitionDirection}
       />
 
       <View style={[styles.bottomNav, { paddingBottom: bottomInset }]}>
@@ -476,20 +712,81 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 18,
   },
+  cardVisual: {
+    justifyContent: "space-between",
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+  },
   value: {
     fontSize: 106,
     fontWeight: "900",
     color: "#141d30",
     lineHeight: 110,
-    marginBottom: 2,
+    marginBottom: 0,
+    textAlign: "center",
+    includeFontPadding: false,
+  },
+  valueSlot: {
+    width: "100%",
+    minHeight: 120,
+    alignItems: "center",
+    justifyContent: "center",
   },
   emoji: {
     fontSize: 74,
     marginVertical: 10,
+    textAlign: "center",
+  },
+  numberEmoji: {
+    width: "100%",
+    maxWidth: "92%",
+    fontSize: 62,
+    lineHeight: 74,
+    includeFontPadding: false,
   },
   emojiLarge: {
-    fontSize: 112,
-    marginVertical: 12,
+    fontSize: 132,
+    marginVertical: 6,
+  },
+  mediaWrap: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  classicMediaWrap: {
+    minHeight: 170,
+  },
+  visualMediaWrap: {
+    flex: 1,
+    width: "100%",
+    minHeight: 220,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  visualMediaWrapMobile: {
+    minHeight: 280,
+  },
+  rectangleShape: {
+    width: "88%",
+    aspectRatio: 2.9,
+    minHeight: 120,
+    maxHeight: 220,
+    backgroundColor: "rgba(23, 36, 59, 0.28)",
+    borderWidth: 4,
+    borderColor: "rgba(23, 36, 59, 0.5)",
+  },
+  colorSwatchCircle: {
+    width: "70%",
+    aspectRatio: 1,
+    maxWidth: 280,
+    borderRadius: 999,
+    borderWidth: 8,
+    borderColor: "rgba(23, 36, 59, 0.12)",
+    shadowColor: "#0f172a",
+    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 16,
+    elevation: 6,
   },
   cardImage: {
     width: "74%",
@@ -497,9 +794,9 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   cardImageLarge: {
-    width: "94%",
-    height: "60%",
-    marginVertical: 8,
+    width: "100%",
+    height: "100%",
+    marginVertical: 4,
   },
   title: {
     fontSize: 38,
@@ -512,6 +809,7 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     color: "#17243b",
     textAlign: "center",
+    marginTop: 6,
   },
   subtitle: {
     marginTop: 8,
@@ -519,6 +817,15 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#2f4b73",
     textAlign: "center",
+  },
+  textSlot: {
+    width: "100%",
+    minHeight: 76,
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  textSlotVisual: {
+    minHeight: 92,
   },
   bottomNav: {
     position: "absolute",

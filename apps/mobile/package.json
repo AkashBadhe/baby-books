@@ -8,7 +8,10 @@
     "start": "npm run sync-content && expo start",
     "android": "npm run sync-content && expo start --android",
     "ios": "npm run sync-content && expo start --ios",
-    "web": "npm run sync-content && expo start --web"
+    "web": "npm run sync-content && expo start --web",
+    "build:android:prod": "npm run sync-content && eas build --platform android --profile production",
+    "submit:android:prod": "eas submit --platform android --profile production",
+    "release:checklist": "echo Open CHECKLIST.md and apps/mobile/RELEASE_NOTES.md before production build."
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
