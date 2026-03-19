@@ -1,7 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Animated, Easing, Image, Pressable, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar as RNStatusBar, ScrollView, useWindowDimensions } from "react-native";
+import { Animated, Easing, Image, Pressable, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar as RNStatusBar, ScrollView, useWindowDimensions, useTVEventHandler } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const PINNING_GUIDE_SEEN_KEY = "firstwords:pinning-guide-seen:v1";
+const useSafeTVEventHandler = typeof useTVEventHandler === "function" ? useTVEventHandler : () => {};
 
 function wrapIndex(index, size) {
   if (size <= 0) return 0;
@@ -132,6 +137,38 @@ function swatchColorById(cardId) {
   return swatches[cardId] || "#94a3b8";
 }
 
+function TvPressable({
+  style,
+  focusedStyle,
+  onFocus,
+  onBlur,
+  hasTVPreferredFocus,
+  ...props
+}) {
+  const isTVDevice = Platform.isTV === true;
+  const [isFocused, setIsFocused] = useState(false);
+
+  return (
+    <Pressable
+      {...props}
+      focusable={isTVDevice ? true : props.focusable}
+      hasTVPreferredFocus={isTVDevice ? hasTVPreferredFocus : false}
+      onFocus={(event) => {
+        if (isTVDevice) setIsFocused(true);
+        onFocus?.(event);
+      }}
+      onBlur={(event) => {
+        if (isTVDevice) setIsFocused(false);
+        onBlur?.(event);
+      }}
+      style={(state) => {
+        const resolvedStyle = typeof style === "function" ? style(state) : style;
+        return [resolvedStyle, isTVDevice && isFocused && focusedStyle];
+      }}
+    />
+  );
+}
+
 function CategorySheet({ categories, selectedCategory, onSelect }) {
   return (
     <View>
@@ -140,10 +177,16 @@ function CategorySheet({ categories, selectedCategory, onSelect }) {
         {categories.map((item) => {
           const active = item.id === selectedCategory;
           return (
-            <Pressable key={item.id} onPress={() => onSelect(item.id)} style={[styles.categoryChip, active && styles.categoryChipActive]}>
+            <TvPressable
+              key={item.id}
+              onPress={() => onSelect(item.id)}
+              style={[styles.categoryChip, active && styles.categoryChipActive]}
+              focusedStyle={styles.categoryChipFocused}
+              hasTVPreferredFocus={active}
+            >
               <Text style={styles.categoryEmoji}>{item.icon}</Text>
               <Text style={[styles.categoryText, active && styles.categoryTextActive]}>{item.label}</Text>
-            </Pressable>
+            </TvPressable>
           );
         })}
       </View>
@@ -165,6 +208,9 @@ function SettingsSheet({
   delayMs,
   onSetDelay,
   appVersionLabel,
+  touchLockOn,
+  onToggleLock,
+  onOpenPinningGuide,
 }) {
   const delayOptions = [2000, 3000, 5000, 8000];
 
@@ -173,30 +219,83 @@ function SettingsSheet({
       <Text style={styles.sheetTitle}>Settings</Text>
       <Text style={styles.sheetStats}>Viewed {currentViewed}/{cardsLength} | Overall {totalViewed}/{overallTotal}</Text>
       <View style={styles.settingsActions}>
-        <Pressable style={[styles.pillBtn, voiceOn && styles.pillBtnActive]} onPress={onToggleVoice}>
+        <TvPressable style={[styles.pillBtn, voiceOn && styles.pillBtnActive]} focusedStyle={styles.pillBtnFocused} onPress={onToggleVoice}>
           <Text style={[styles.pillBtnText, voiceOn && styles.pillBtnTextActive]}>Voice {voiceOn ? "ON" : "OFF"}</Text>
-        </Pressable>
-        <Pressable style={[styles.pillBtn, swipeOn && styles.pillBtnActive]} onPress={onToggleSwipe}>
+        </TvPressable>
+        <TvPressable style={[styles.pillBtn, swipeOn && styles.pillBtnActive]} focusedStyle={styles.pillBtnFocused} onPress={onToggleSwipe}>
           <Text style={[styles.pillBtnText, swipeOn && styles.pillBtnTextActive]}>Swipe {swipeOn ? "ON" : "OFF"}</Text>
-        </Pressable>
-        <Pressable style={[styles.pillBtn, isFavorite && styles.favoritePillBtnActive]} onPress={onToggleFavorite}>
+        </TvPressable>
+        <TvPressable style={[styles.pillBtn, isFavorite && styles.favoritePillBtnActive]} focusedStyle={styles.pillBtnFocused} onPress={onToggleFavorite}>
           <Text style={[styles.pillBtnText, isFavorite && styles.favoritePillBtnTextActive]}>
             Favorite {isFavorite ? "ON" : "OFF"}
           </Text>
-        </Pressable>
+        </TvPressable>
       </View>
       <Text style={styles.delayLabel}>Slide Delay</Text>
       <View style={styles.settingsActions}>
         {delayOptions.map((value) => {
           const active = delayMs === value;
           return (
-            <Pressable key={value} style={[styles.pillBtn, active && styles.pillBtnActive]} onPress={() => onSetDelay(value)}>
+            <TvPressable
+              key={value}
+              style={[styles.pillBtn, active && styles.pillBtnActive]}
+              focusedStyle={styles.pillBtnFocused}
+              onPress={() => onSetDelay(value)}
+              hasTVPreferredFocus={active}
+            >
               <Text style={[styles.pillBtnText, active && styles.pillBtnTextActive]}>{value / 1000}s</Text>
-            </Pressable>
+            </TvPressable>
           );
         })}
       </View>
+      <Text style={styles.delayLabel}>Parent Controls</Text>
+      <View style={styles.settingsActions}>
+        <TvPressable
+          style={[styles.pillBtn, touchLockOn && styles.pillBtnLockActive]}
+          focusedStyle={styles.pillBtnFocused}
+          onPress={onToggleLock}
+        >
+          <Text style={[styles.pillBtnText, touchLockOn && styles.pillBtnLockActiveText]}>
+            {touchLockOn ? "🔒 Locked" : "🔓 Lock Screen"}
+          </Text>
+        </TvPressable>
+        {Platform.OS === "android" && (
+          <TvPressable
+            style={styles.pillBtn}
+            focusedStyle={styles.pillBtnFocused}
+            onPress={onOpenPinningGuide}
+          >
+            <Text style={styles.pillBtnText}>📌 Pinning Help</Text>
+          </TvPressable>
+        )}
+      </View>
       <Text style={styles.sheetVersion}>{appVersionLabel || "Version --"}</Text>
+    </View>
+  );
+}
+
+function ParentGuideSheet() {
+  return (
+    <View>
+      <Text style={styles.sheetTitle}>Parent Guide: Lock to This App</Text>
+      <Text style={styles.sheetStats}>Use Android Screen Pinning so children cannot switch apps easily.</Text>
+
+      <Text style={styles.guideSectionTitle}>Step 1 • Turn on Screen Pinning</Text>
+      <Text style={styles.guideStepText}>1. Open phone Settings</Text>
+      <Text style={styles.guideStepText}>2. Go to Security or Privacy</Text>
+      <Text style={styles.guideStepText}>3. Find Screen Pinning and turn it ON</Text>
+      <Text style={styles.guideStepText}>4. Also enable PIN lock to unpin (important)</Text>
+
+      <Text style={styles.guideSectionTitle}>Step 2 • Pin this app</Text>
+      <Text style={styles.guideStepText}>1. Open Recent Apps</Text>
+      <Text style={styles.guideStepText}>2. Tap this app icon</Text>
+      <Text style={styles.guideStepText}>3. Choose Pin or Pin this app</Text>
+
+      <Text style={styles.guideSectionTitle}>Step 3 • Unpin later</Text>
+      <Text style={styles.guideStepText}>- Hold Back + Recent (or gesture equivalent)</Text>
+      <Text style={styles.guideStepText}>- Enter your PIN/pattern</Text>
+
+      <Text style={styles.sheetVersion}>Menu names vary by device brand, but this flow is similar on most Android phones/tablets.</Text>
     </View>
   );
 }
@@ -486,6 +585,9 @@ export function KidsCardBookScreen({
   resolveCardAudioUri,
   onSpeakCard,
   onStopSpeaking,
+  onAutoplayChange,
+  onTouchLockChange,
+  onRequestUnlock,
 }) {
   const orderedCategoryIds = useMemo(
     () => categories.filter((item) => (cardsByCategory[item.id] || []).length > 0).map((item) => item.id),
@@ -498,12 +600,19 @@ export function KidsCardBookScreen({
   const [viewedIdsByCategory, setViewedIdsByCategory] = useState({});
   const [favorites, setFavorites] = useState([]);
   const [voiceOn, setVoiceOn] = useState(false);
-  const [swipeOn, setSwipeOn] = useState(true);
+  const [swipeOn, setSwipeOn] = useState(!Platform.isTV);
   const [autoplay, setAutoplay] = useState(false);
   const [delayMs, setDelayMs] = useState(3000);
   const [categoryPickerOpen, setCategoryPickerOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [parentGuideOpen, setParentGuideOpen] = useState(false);
   const [transitionDirection, setTransitionDirection] = useState(1);
+  const [touchLockOn, setTouchLockOn] = useState(false);
+  const [hasSeenPinningGuide, setHasSeenPinningGuide] = useState(null);
+  const [unlockHoldProgress, setUnlockHoldProgress] = useState(0);
+  const isTVDevice = Platform.isTV === true;
+  const unlockTimerRef = useRef(null);
+  const unlockProgressTimerRef = useRef(null);
 
   const cards = useMemo(() => cardsByCategory[selectedCategory] || [], [cardsByCategory, selectedCategory]);
   const normalizedIndex = useMemo(() => wrapIndex(currentIndex, cards.length || 1), [currentIndex, cards.length]);
@@ -525,8 +634,9 @@ export function KidsCardBookScreen({
   const overallTotal = useMemo(() => totalCardsCount(categories, cardsByCategory), [cardsByCategory, categories]);
 
   const topInset = Platform.OS === "android" ? (RNStatusBar.currentHeight || 0) : 0;
-  const bottomNavOffset = Platform.OS === "android" ? 22 : 8;
-  const bottomNavPadding = Platform.OS === "android" ? 34 : 28;
+  const safeAreaInsets = useSafeAreaInsets();
+  const bottomNavOffset = 0;
+  const bottomNavPadding = (safeAreaInsets.bottom || 0) + 12;
 
   useEffect(() => {
     if (!orderedCategoryIds.includes(selectedCategory)) {
@@ -635,6 +745,63 @@ export function KidsCardBookScreen({
   }, [autoplay, delayMs, moveGlobal]);
 
   useEffect(() => {
+    onAutoplayChange?.(autoplay);
+  }, [autoplay, onAutoplayChange]);
+
+  useEffect(() => {
+    let alive = true;
+
+    const loadPinningGuideSeen = async () => {
+      try {
+        const value = await AsyncStorage.getItem(PINNING_GUIDE_SEEN_KEY);
+        if (!alive) return;
+        setHasSeenPinningGuide(value === "1");
+      } catch {
+        if (!alive) return;
+        setHasSeenPinningGuide(false);
+      }
+    };
+
+    loadPinningGuideSeen();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    onTouchLockChange?.(touchLockOn);
+  }, [onTouchLockChange, touchLockOn]);
+
+  useEffect(() => {
+    if (!touchLockOn) return;
+    setCategoryPickerOpen(false);
+    setSettingsOpen(false);
+  }, [touchLockOn]);
+
+  useEffect(() => {
+    if (Platform.OS !== "android") return;
+    if (!touchLockOn) return;
+    if (hasSeenPinningGuide !== false) return;
+
+    setParentGuideOpen(true);
+    setHasSeenPinningGuide(true);
+    AsyncStorage.setItem(PINNING_GUIDE_SEEN_KEY, "1").catch(() => {});
+  }, [hasSeenPinningGuide, touchLockOn]);
+
+  const onTouchLockPress = useCallback(() => {
+    if (touchLockOn) return;
+    setTouchLockOn(true);
+  }, [touchLockOn]);
+
+  const onTouchUnlockPress = useCallback(async () => {
+    if (!touchLockOn) return;
+    const unlocked = await onRequestUnlock?.();
+    if (unlocked) {
+      setTouchLockOn(false);
+    }
+  }, [onRequestUnlock, touchLockOn]);
+
+  useEffect(() => {
     if (Platform.OS !== "web" || typeof window === "undefined") return undefined;
 
     const isEditableTarget = (target) => {
@@ -651,6 +818,11 @@ export function KidsCardBookScreen({
       const normalized = typeof key === "string" ? key.toLowerCase() : "";
 
       if (key === "Escape") {
+        if (parentGuideOpen) {
+          event.preventDefault();
+          setParentGuideOpen(false);
+          return;
+        }
         if (categoryPickerOpen) {
           event.preventDefault();
           setCategoryPickerOpen(false);
@@ -664,24 +836,28 @@ export function KidsCardBookScreen({
       }
 
       if (key === "ArrowLeft") {
+        if (touchLockOn) return;
         event.preventDefault();
         onPrev();
         return;
       }
 
       if (key === "ArrowRight") {
+        if (touchLockOn) return;
         event.preventDefault();
         onNext();
         return;
       }
 
       if (key === " " || key === "Spacebar" || key === "Space") {
+        if (touchLockOn) return;
         event.preventDefault();
         onNext();
         return;
       }
 
       if (normalized === "p") {
+        if (touchLockOn) return;
         event.preventDefault();
         setAutoplay((prev) => !prev);
       }
@@ -691,7 +867,7 @@ export function KidsCardBookScreen({
     return () => {
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [categoryPickerOpen, onNext, onPrev, settingsOpen]);
+  }, [categoryPickerOpen, onNext, onPrev, parentGuideOpen, settingsOpen, touchLockOn]);
 
   const onToggleFavorite = () => {
     if (!card) return;
@@ -705,33 +881,83 @@ export function KidsCardBookScreen({
     if (!next) onStopSpeaking?.();
   };
 
-  const hasSheetOpen = categoryPickerOpen || settingsOpen;
+  const hasSheetOpen = parentGuideOpen || (!touchLockOn && (categoryPickerOpen || settingsOpen));
+
+  const onTvEvent = useCallback((event) => {
+    if (!isTVDevice) return;
+    if (touchLockOn) return;
+    const eventType = event?.eventType;
+    if (!eventType) return;
+
+    if (eventType === "menu" || eventType === "back") {
+      if (parentGuideOpen) {
+        setParentGuideOpen(false);
+        return;
+      }
+      if (categoryPickerOpen) {
+        setCategoryPickerOpen(false);
+        return;
+      }
+      if (settingsOpen) {
+        setSettingsOpen(false);
+      }
+      return;
+    }
+
+    if (eventType === "playPause") {
+      setAutoplay((prev) => !prev);
+      return;
+    }
+
+    if (!hasSheetOpen && (eventType === "left" || eventType === "right")) {
+      if (eventType === "left") onPrev();
+      else onNext();
+    }
+  }, [categoryPickerOpen, hasSheetOpen, isTVDevice, onNext, onPrev, parentGuideOpen, settingsOpen, touchLockOn]);
+
+  useSafeTVEventHandler(onTvEvent);
 
   return (
     <SafeAreaView style={[styles.root, { paddingTop: topInset + 6 }]}> 
-      <StatusBar style="dark" />
+      <StatusBar style={touchLockOn ? "light" : "dark"} hidden={touchLockOn} />
       <LinearGradient colors={bgColors} start={{ x: 0.1, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFillObject} />
 
       <View style={styles.topBar}>
-        <View>
+        <View style={styles.topBarLeft}>
           <Text style={styles.appTitle}>{appTitle}</Text>
           <Text style={styles.currentCategoryLabel}>{categories.find((c) => c.id === selectedCategory)?.label || "Category"}</Text>
+          {touchLockOn && (
+            <Text style={styles.lockBannerText}>Parent lock is ON • tap 🔒 to unlock</Text>
+          )}
         </View>
+        {touchLockOn && (
+          <Pressable
+            style={styles.lockIconBtn}
+            onPress={onTouchUnlockPress}
+            accessibilityRole="button"
+            accessibilityLabel="Tap to unlock touch controls"
+          >
+            <Text style={styles.lockIconBtnEmoji}>🔒</Text>
+          </Pressable>
+        )}
       </View>
 
-      <CardViewer
-        categoryId={selectedCategory}
-        card={card}
-        imageUri={imageUri}
-        onPrev={onPrev}
-        onNext={onNext}
-        swipeEnabled={swipeOn}
-        transitionDirection={transitionDirection}
-      />
+      <View style={styles.mainContent} pointerEvents={touchLockOn ? "none" : "auto"}>
+        <CardViewer
+          categoryId={selectedCategory}
+          card={card}
+          imageUri={imageUri}
+          onPrev={onPrev}
+          onNext={onNext}
+          swipeEnabled={swipeOn && !isTVDevice && !touchLockOn}
+          transitionDirection={transitionDirection}
+        />
 
-      <View style={[styles.bottomNav, { bottom: bottomNavOffset, paddingBottom: bottomNavPadding }]}>
-        <Pressable
+        <View style={[styles.bottomNav, { bottom: bottomNavOffset, paddingBottom: bottomNavPadding }]}>
+        <TvPressable
           style={[styles.navPill, categoryPickerOpen && styles.navPillActive]}
+          focusedStyle={styles.navPillFocused}
+          hasTVPreferredFocus={!hasSheetOpen}
           onPress={() => {
             setSettingsOpen(false);
             setCategoryPickerOpen((prev) => !prev);
@@ -748,9 +974,13 @@ export function KidsCardBookScreen({
           >
             Categories
           </Text>
-        </Pressable>
+        </TvPressable>
 
-        <Pressable style={[styles.navPill, autoplay && styles.navPillActive]} onPress={() => setAutoplay((prev) => !prev)}>
+        <TvPressable
+          style={[styles.navPill, autoplay && styles.navPillActive]}
+          focusedStyle={styles.navPillFocused}
+          onPress={() => setAutoplay((prev) => !prev)}
+        >
           <View style={styles.navIconSlot}>
             <Text
               style={[
@@ -772,11 +1002,12 @@ export function KidsCardBookScreen({
           >
             {autoplay ? "Pause" : "Play"}
           </Text>
-        </Pressable>
+        </TvPressable>
 
 
-        <Pressable
+        <TvPressable
           style={[styles.navPill, settingsOpen && styles.navPillActive]}
+          focusedStyle={styles.navPillFocused}
           onPress={() => {
             setCategoryPickerOpen(false);
             setSettingsOpen((prev) => !prev);
@@ -793,7 +1024,8 @@ export function KidsCardBookScreen({
           >
             Settings
           </Text>
-        </Pressable>
+        </TvPressable>
+        </View>
       </View>
 
       {hasSheetOpen && (
@@ -802,6 +1034,7 @@ export function KidsCardBookScreen({
           onPress={() => {
             setCategoryPickerOpen(false);
             setSettingsOpen(false);
+            setParentGuideOpen(false);
           }}
         />
       )}
@@ -809,7 +1042,9 @@ export function KidsCardBookScreen({
       {hasSheetOpen && (
         <View style={styles.sheetContainer}>
           <ScrollView contentContainerStyle={styles.sheetContent}>
-            {categoryPickerOpen ? (
+            {parentGuideOpen ? (
+              <ParentGuideSheet />
+            ) : categoryPickerOpen ? (
               <CategorySheet categories={categories} selectedCategory={selectedCategory} onSelect={selectCategory} />
             ) : (
               <SettingsSheet
@@ -826,6 +1061,12 @@ export function KidsCardBookScreen({
                 delayMs={delayMs}
                 onSetDelay={setDelayMs}
                 appVersionLabel={appVersionLabel}
+                touchLockOn={touchLockOn}
+                onToggleLock={onTouchLockPress}
+                onOpenPinningGuide={() => {
+                  setSettingsOpen(false);
+                  setParentGuideOpen(true);
+                }}
               />
             )}
           </ScrollView>
@@ -848,6 +1089,12 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.26)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.45)",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  mainContent: {
+    flex: 1,
   },
   appTitle: {
     fontSize: 19,
@@ -859,6 +1106,42 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "800",
     color: "#2b476f",
+  },
+  lockBannerText: {
+    marginTop: 4,
+    fontSize: 11,
+    fontWeight: "800",
+    color: "#7a5200",
+  },
+  topBarLeft: {
+    flex: 1,
+  },
+  lockIconBtn: {
+    marginLeft: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 14,
+    backgroundColor: "#17243b",
+    alignItems: "center",
+    justifyContent: "center",
+    minWidth: 48,
+  },
+  lockIconBtnEmoji: {
+    fontSize: 20,
+    lineHeight: 24,
+  },
+  unlockProgressTrack: {
+    marginTop: 6,
+    width: "60%",
+    height: 5,
+    borderRadius: 999,
+    backgroundColor: "rgba(0,0,0,0.15)",
+    overflow: "hidden",
+  },
+  unlockProgressFill: {
+    height: 5,
+    borderRadius: 999,
+    backgroundColor: "#e07b00",
   },
   viewerWrap: {
     flex: 1,
@@ -1024,6 +1307,9 @@ const styles = StyleSheet.create({
   navPillActive: {
     backgroundColor: "black",
   },
+  navPillFocused: {
+    backgroundColor: "rgba(0,0,0,0.2)",
+  },
   navPillText: {
     fontSize: 13,
     lineHeight: 16,
@@ -1164,6 +1450,18 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#5a6e8d",
   },
+  guideSectionTitle: {
+    marginTop: 12,
+    fontSize: 13,
+    fontWeight: "900",
+    color: "#2c466c",
+  },
+  guideStepText: {
+    marginTop: 4,
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#1f2f46",
+  },
   settingsActions: {
     marginTop: 10,
     flexDirection: "row",
@@ -1182,6 +1480,17 @@ const styles = StyleSheet.create({
   pillBtnActive: {
     backgroundColor: "#d6f3e0",
     borderColor: "#8ed2a4",
+  },
+  pillBtnLockActive: {
+    backgroundColor: "#17243b",
+    borderColor: "#17243b",
+  },
+  pillBtnLockActiveText: {
+    color: "#ffffff",
+  },
+  pillBtnFocused: {
+    borderColor: "#3f8efc",
+    borderWidth: 2,
   },
   favoritePillBtnActive: {
     backgroundColor: "#ffeab3",
@@ -1217,6 +1526,10 @@ const styles = StyleSheet.create({
   categoryChipActive: {
     backgroundColor: "#3f8efc",
     borderColor: "#3f8efc",
+  },
+  categoryChipFocused: {
+    borderColor: "#3f8efc",
+    borderWidth: 2,
   },
   categoryEmoji: {
     fontSize: 22,

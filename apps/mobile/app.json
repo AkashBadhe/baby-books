@@ -18,11 +18,20 @@
       "adaptiveIcon": {
         "backgroundColor": "#f8fbff",
         "foregroundImage": "./assets/adaptive-icon.png"
-      }
+      },
+      "intentFilters": [
+        {
+          "action": "MAIN",
+          "category": [
+            "LEANBACK_LAUNCHER"
+          ]
+        }
+      ]
     },
     "scheme": "firstwordscards",
     "plugins": [
-      "expo-asset"
+      "expo-asset",
+      "./plugins/withAndroidTv"
     ],
     "extra": {
       "supportEmail": "support@firstwordscards.app",

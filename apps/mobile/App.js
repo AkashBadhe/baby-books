@@ -1,6 +1,11 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Audio } from "expo-av";
 import * as Speech from "expo-speech";
+import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
+import * as NavigationBar from "expo-navigation-bar";
+import * as LocalAuthentication from "expo-local-authentication";
+import { AppState, BackHandler, Platform } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { cardsByCategory, categories } from "./src/content";
 import { KidsCardBookScreen } from "./src/shared/KidsCardBookScreen";
 import { resolveBundledImageUri } from "./src/localImageAssets";
@@ -32,6 +37,96 @@ function resolveCardAudioUri(categoryId, card) {
 export default function App() {
   const soundRef = useRef(null);
   const audioAvailabilityCache = useRef(new Map());
+  const [autoplayOn, setAutoplayOn] = useState(false);
+  const [touchLockOn, setTouchLockOn] = useState(false);
+
+  const handleRequestUnlock = useCallback(async () => {
+    try {
+      const hasHardware = await LocalAuthentication.hasHardwareAsync();
+      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+      if (hasHardware && isEnrolled) {
+        const result = await LocalAuthentication.authenticateAsync({
+          promptMessage: "Unlock First Words Cards",
+          cancelLabel: "Cancel",
+          disableDeviceFallback: false,
+        });
+        return result.success === true;
+      }
+      // No biometrics/PIN enrolled — allow unlock.
+      return true;
+    } catch {
+      // Auth unavailable — allow unlock.
+      return true;
+    }
+  }, []);
+
+  useEffect(() => {
+    const syncKeepAwake = async () => {
+      try {
+        if (autoplayOn) {
+          await activateKeepAwakeAsync("slideshow-autoplay");
+        } else {
+          await deactivateKeepAwake("slideshow-autoplay");
+        }
+      } catch {
+        // Ignore keep-awake failures and continue slideshow.
+      }
+    };
+
+    syncKeepAwake();
+
+    return () => {
+      deactivateKeepAwake("slideshow-autoplay").catch(() => {});
+    };
+  }, [autoplayOn]);
+
+  useEffect(() => {
+    if (Platform.OS !== "android") return undefined;
+
+    const applyNavBarState = async () => {
+      try {
+        if (touchLockOn) {
+          await NavigationBar.setBehaviorAsync("overlay-swipe");
+          await NavigationBar.setVisibilityAsync("hidden");
+        } else {
+          await NavigationBar.setBehaviorAsync("inset-swipe");
+          await NavigationBar.setVisibilityAsync("visible");
+        }
+      } catch {
+        // Ignore navigation bar lock failures.
+      }
+    };
+
+    applyNavBarState();
+
+    // Re-apply when nav bar becomes visible again (e.g. after switching apps).
+    const visibilitySubscription = NavigationBar.addVisibilityListener(({ visibility }) => {
+      if (touchLockOn && visibility === "visible") {
+        applyNavBarState();
+      }
+    });
+
+    // Re-apply when app returns to foreground.
+    const appStateSubscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") {
+        applyNavBarState();
+      }
+    });
+
+    return () => {
+      visibilitySubscription?.remove();
+      appStateSubscription?.remove();
+      NavigationBar.setVisibilityAsync("visible").catch(() => {});
+    };
+  }, [touchLockOn]);
+
+  useEffect(() => {
+    if (!touchLockOn) return undefined;
+    const backSubscription = BackHandler.addEventListener("hardwareBackPress", () => true);
+    return () => {
+      backSubscription.remove();
+    };
+  }, [touchLockOn]);
 
   const stopSpeaking = useCallback(async () => {
     Speech.stop();
@@ -88,15 +183,20 @@ export default function App() {
   );
 
   return (
-    <KidsCardBookScreen
-      appTitle="First Words Cards"
-      appVersionLabel={APP_VERSION_LABEL}
-      categories={categories}
-      cardsByCategory={cardsByCategory}
-      resolveCardImageUri={resolveCardImageUri}
-      resolveCardAudioUri={resolveCardAudioUri}
-      onSpeakCard={speakCard}
-      onStopSpeaking={stopSpeaking}
-    />
+    <SafeAreaProvider>
+      <KidsCardBookScreen
+        appTitle="First Words Cards"
+        appVersionLabel={APP_VERSION_LABEL}
+        categories={categories}
+        cardsByCategory={cardsByCategory}
+        resolveCardImageUri={resolveCardImageUri}
+        resolveCardAudioUri={resolveCardAudioUri}
+        onSpeakCard={speakCard}
+        onStopSpeaking={stopSpeaking}
+        onAutoplayChange={setAutoplayOn}
+        onTouchLockChange={setTouchLockOn}
+        onRequestUnlock={handleRequestUnlock}
+      />
+    </SafeAreaProvider>
   );
 }
