@@ -2,7 +2,7 @@
   "expo": {
     "name": "First Words Cards",
     "slug": "firstwords-cards",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "assetBundlePatterns": [
@@ -14,7 +14,7 @@
     },
     "android": {
       "package": "com.akashbadhe.firstwordscards",
-      "versionCode": 9,
+      "versionCode": 10,
       "adaptiveIcon": {
         "backgroundColor": "#f8fbff",
         "foregroundImage": "./assets/adaptive-icon.png"

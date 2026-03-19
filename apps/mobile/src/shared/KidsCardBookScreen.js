@@ -791,6 +791,7 @@ export function KidsCardBookScreen({
   const onTouchLockPress = useCallback(() => {
     if (touchLockOn) return;
     setTouchLockOn(true);
+    setAutoplay(true);
   }, [touchLockOn]);
 
   const onTouchUnlockPress = useCallback(async () => {
