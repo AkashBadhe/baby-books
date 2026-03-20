@@ -14,7 +14,7 @@
     },
     "android": {
       "package": "com.akashbadhe.firstwordscards",
-      "versionCode": 10,
+      "versionCode": 13,
       "adaptiveIcon": {
         "backgroundColor": "#f8fbff",
         "foregroundImage": "./assets/adaptive-icon.png"
