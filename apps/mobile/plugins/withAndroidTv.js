@@ -29,6 +29,24 @@ function withAndroidTv(config) {
     ensureUsesFeature(manifest, "android.software.leanback", false);
     ensureUsesFeature(manifest, "android.hardware.touchscreen", false);
 
+    const application = manifest.application?.[0];
+    const activities = application?.activity || [];
+
+    activities.forEach((activity) => {
+      const intentFilters = activity["intent-filter"] || [];
+      const hasLeanbackCategory = intentFilters.some((intentFilter) => {
+        const categories = intentFilter.category || [];
+        return categories.some(
+          (category) => category?.$?.["android:name"] === "android.intent.category.LEANBACK_LAUNCHER",
+        );
+      });
+
+      if (hasLeanbackCategory) {
+        activity.$ = activity.$ || {};
+        activity.$["android:screenOrientation"] = "landscape";
+      }
+    });
+
     return mod;
   });
 }

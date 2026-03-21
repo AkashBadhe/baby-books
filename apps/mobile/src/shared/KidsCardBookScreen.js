@@ -328,7 +328,7 @@ function SlidersIcon({ active }) {
   );
 }
 
-function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled = true, transitionDirection = 1 }) {
+function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled = true, transitionDirection = 1, isTVLayout = false }) {
   const [imageFailed, setImageFailed] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
   const { width: viewportWidth, height: viewportHeight } = useWindowDimensions();
@@ -344,22 +344,30 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
   const numericValue = Number.parseInt(String(card?.value || ""), 10);
   const numberDenseMode = numberMode && Number.isFinite(numericValue) && numericValue >= 8;
   const visualMode = !alphabetMode && !numberMode;
+  const tvVisualSplitMode = isTVLayout && visualMode;
+  const tvTextOnlySplitMode = isTVLayout && textOnlyMode;
   const isWeb = Platform.OS === "web";
+  const tvScaleBase = Math.min(viewportWidth, viewportHeight);
   const isTabletLayout = Math.min(viewportWidth, viewportHeight) >= 700;
   const rectangleShapeMode = categoryId === "shapes" && card?.id === "rectangle";
   const showSubtitle = !shouldHideSubtitle(categoryId, card?.subtitle);
-  const visualEmojiSize = Math.max(isWeb ? 120 : 138, Math.round(Math.min(viewportWidth, viewportHeight) * (isWeb ? 0.22 : 0.24)));
-  const visualTitleSize = Math.max(isWeb ? 34 : 38, Math.round(viewportWidth * (isWeb ? 0.064 : 0.075)));
+  const visualEmojiSizeRaw = Math.max(isWeb ? 120 : 138, Math.round(Math.min(viewportWidth, viewportHeight) * (isWeb ? 0.22 : 0.24)));
+  const visualEmojiSize = isTVLayout ? Math.min(visualEmojiSizeRaw, 188) : visualEmojiSizeRaw;
+  const visualTitleBase = isTVLayout ? tvScaleBase : viewportWidth;
+  const visualTitleSizeRaw = Math.max(isWeb ? 34 : 38, Math.round(visualTitleBase * (isWeb ? 0.064 : 0.075)));
+  const visualTitleSize = isTVLayout ? Math.min(visualTitleSizeRaw, 62) : visualTitleSizeRaw;
   const alphabetEmojiSize = isTabletLayout
     ? Math.max(92, Math.min(Math.round(Math.min(viewportWidth, viewportHeight) * 0.118), 128))
     : 74;
-  const numberEmojiSizeBase = isTabletLayout
+  const alphabetEmojiSizeSafe = isTVLayout ? Math.min(alphabetEmojiSize, 114) : alphabetEmojiSize;
+  const numberEmojiSizeBaseRaw = isTabletLayout
     ? Math.max(50, Math.min(Math.round(Math.min(viewportWidth, viewportHeight) * 0.085), 74))
     : Math.max(isWeb ? 40 : 42, Math.round(Math.min(viewportWidth, viewportHeight) * (isWeb ? 0.076 : 0.082)));
+  const numberEmojiSizeBase = isTVLayout ? Math.min(numberEmojiSizeBaseRaw, 64) : numberEmojiSizeBaseRaw;
   const numberEmojiSize = numberDenseMode
     ? Math.round(numberEmojiSizeBase * 0.84)
     : numberEmojiSizeBase;
-  const alphabetEmojiLineHeight = Math.round(alphabetEmojiSize * 1.14);
+  const alphabetEmojiLineHeight = Math.round(alphabetEmojiSizeSafe * 1.14);
   const numberEmojiLineHeight = Math.round(numberEmojiSize * 1.1);
   const numberEmojiLetterSpacing = isTabletLayout ? 2.8 : 2.2;
   const alphabetEmojiBlockHeight = Math.round(alphabetEmojiLineHeight * 1.3);
@@ -369,7 +377,15 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
       ? Math.max(126, Math.min(Math.round(Math.min(viewportWidth, viewportHeight) * 0.27), 160))
       : Math.max(144, Math.min(Math.round(Math.min(viewportWidth, viewportHeight) * 0.31), 192)))
     : null;
-  const valueFontSize = isTabletLayout
+  const valueFontSize = isTVLayout
+    ? Math.max(
+      numberMode ? 162 : 182,
+      Math.min(
+        Math.round(tvScaleBase * (numberMode ? 0.2 : 0.235)),
+        numberMode ? 208 : 238,
+      ),
+    )
+    : isTabletLayout
     ? Math.max(
       numberMode ? 190 : 210,
       Math.min(
@@ -378,9 +394,15 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
       ),
     )
     : null;
-  const textOnlyMediaHeight = numberMode
+  const tvTextOnlyGlyphFontSize = isTVLayout
+    ? Math.max(120, Math.min(valueFontSize || mobileValueFontSize || 106, 238))
+    : null;
+  const tvTextOnlyGlyphLineHeight = tvTextOnlyGlyphFontSize ? Math.round(tvTextOnlyGlyphFontSize * 1.03) : null;
+  const tvTextOnlyEmojiLineHeight = tvTextOnlyGlyphFontSize ? Math.round(tvTextOnlyGlyphFontSize * 1.14) : null;
+  const textOnlyMediaHeightRaw = numberMode
     ? Math.max(numberEmojiBlockHeight + (isTabletLayout ? 12 : 8), isTabletLayout ? 156 : 122)
     : Math.max(alphabetEmojiBlockHeight + (isTabletLayout ? 24 : 16), isTabletLayout ? 172 : 132);
+  const textOnlyMediaHeight = isTVLayout ? Math.min(textOnlyMediaHeightRaw, 190) : textOnlyMediaHeightRaw;
   const colorSwatchSize = Math.round(
     Math.min(
       isWeb ? viewportWidth * 0.44 : viewportWidth * 0.62,
@@ -450,16 +472,16 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
 
   if (!card) {
     return (
-      <View style={styles.viewerWrap}>
-        <View style={styles.card}>
-          <Text style={styles.subtitle}>No cards in this category yet.</Text>
+      <View style={[styles.viewerWrap, isTVLayout && tvStyles.viewerWrap]}>
+        <View style={[styles.card, isTVLayout && tvStyles.card]}>
+          <Text style={[styles.subtitle, isTVLayout && tvStyles.subtitle]}>No cards in this category yet.</Text>
         </View>
       </View>
     );
   }
 
   return (
-    <View style={styles.viewerWrap}>
+    <View style={[styles.viewerWrap, isTVLayout && tvStyles.viewerWrap]}>
       <Animated.View
         style={[
           styles.card,
@@ -486,90 +508,188 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
         }}
         onResponderTerminate={() => setTouchStart(null)}
       >
-        {(alphabetMode || numberMode) && (
-          <View style={styles.valueSlot}>
-            <Text
-              style={[
-                styles.value,
-                numberMode && styles.valueNumeric,
-                mobileValueFontSize && {
-                  fontSize: mobileValueFontSize,
-                  lineHeight: Math.round(mobileValueFontSize * 1.03),
-                },
-                isTabletLayout && valueFontSize && {
-                  fontSize: valueFontSize,
-                  lineHeight: Math.round(valueFontSize * 1.03),
-                },
-              ]}
-            >
-              {card.value}
-            </Text>
+        {tvVisualSplitMode ? (
+          <View style={tvStyles.visualSplitRow}>
+            <View style={[styles.visualMediaWrap, tvStyles.visualSplitMediaWrap]}>
+              {colorMode ? (
+                <View
+                  style={[
+                    styles.colorSwatchCircle,
+                    {
+                      width: colorSwatchSize,
+                      height: colorSwatchSize,
+                      borderRadius: colorSwatchSize / 2,
+                      backgroundColor: swatchColorById(card?.id),
+                    },
+                  ]}
+                />
+              ) : !imageFailed && imageUri ? (
+                <Image
+                  source={{ uri: imageUri }}
+                  style={styles.cardImageLarge}
+                  resizeMode="contain"
+                  onError={() => setImageFailed(true)}
+                />
+              ) : rectangleShapeMode ? (
+                <View style={styles.rectangleShape} />
+              ) : (
+                <Text style={[styles.emojiLarge, { fontSize: visualEmojiSize }]}>{card.emoji}</Text>
+              )}
+            </View>
+            <View style={[styles.textSlot, styles.textSlotVisual, tvStyles.visualSplitTextWrap]}>
+              <Text
+                numberOfLines={2}
+                style={[styles.titleVisual, tvStyles.visualSplitTitle, { fontSize: visualTitleSize }]}
+              >
+                {card.title}
+              </Text>
+              {showSubtitle && (
+                <Text numberOfLines={3} style={[styles.subtitle, tvStyles.visualSplitSubtitle]}>
+                  {card.subtitle}
+                </Text>
+              )}
+            </View>
           </View>
-        )}
+        ) : tvTextOnlySplitMode ? (
+          <View style={tvStyles.textOnlySplitRow}>
+            <View style={[styles.mediaWrap, styles.classicMediaWrap, tvStyles.textOnlySplitLetterCol]}>
+              <View style={[styles.valueSlot, tvStyles.textOnlySplitValueSlot]}>
+                <Text
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.45}
+                  style={[
+                    styles.value,
+                    numberMode && styles.valueNumeric,
+                    tvStyles.textOnlySplitValue,
+                    tvTextOnlyGlyphFontSize && {
+                      fontSize: tvTextOnlyGlyphFontSize,
+                      lineHeight: tvTextOnlyGlyphLineHeight,
+                    },
+                  ]}
+                >
+                  {card.value}
+                </Text>
+              </View>
+            </View>
 
-        <View
-          style={
-            visualMode
-              ? [styles.visualMediaWrap, !isWeb && styles.visualMediaWrapMobile]
-              : [styles.mediaWrap, styles.classicMediaWrap, textOnlyMode && {
-                minHeight: textOnlyMediaHeight,
-                maxHeight: textOnlyMediaHeight,
-              }]
-          }
-        >
-          {colorMode ? (
+            <View style={[styles.mediaWrap, styles.classicMediaWrap, tvStyles.textOnlySplitEmojiCol]}>
+              <Text
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.35}
+                style={[
+                  tvStyles.textOnlySplitEmoji,
+                  numberMode && styles.valueNumeric,
+                  tvTextOnlyGlyphFontSize && {
+                    fontSize: tvTextOnlyGlyphFontSize,
+                    lineHeight: tvTextOnlyEmojiLineHeight,
+                  },
+                ]}
+              >
+                {card.emoji}
+              </Text>
+            </View>
+
+            <View style={[styles.textSlot, tvStyles.textOnlySplitTextWrap]}>
+              <Text numberOfLines={2} style={[styles.title, tvStyles.textOnlySplitTitle]}>
+                {card.title}
+              </Text>
+              {showSubtitle && (
+                <Text numberOfLines={3} style={[styles.subtitle, tvStyles.textOnlySplitSubtitle]}>
+                  {card.subtitle}
+                </Text>
+              )}
+            </View>
+          </View>
+        ) : (
+          <>
+            {(alphabetMode || numberMode) && (
+              <View style={styles.valueSlot}>
+                <Text
+                  style={[
+                    styles.value,
+                    numberMode && styles.valueNumeric,
+                    mobileValueFontSize && {
+                      fontSize: mobileValueFontSize,
+                      lineHeight: Math.round(mobileValueFontSize * 1.03),
+                    },
+                    isTabletLayout && valueFontSize && {
+                      fontSize: valueFontSize,
+                      lineHeight: Math.round(valueFontSize * 1.03),
+                    },
+                  ]}
+                >
+                  {card.value}
+                </Text>
+              </View>
+            )}
+
             <View
-              style={[
-                styles.colorSwatchCircle,
-                {
-                  width: colorSwatchSize,
-                  height: colorSwatchSize,
-                  borderRadius: colorSwatchSize / 2,
-                  backgroundColor: swatchColorById(card?.id),
-                },
-              ]}
-            />
-          ) : !imageFailed && imageUri ? (
-            <Image
-              source={{ uri: imageUri }}
-              style={visualMode ? styles.cardImageLarge : styles.cardImage}
-              resizeMode="contain"
-              onError={() => setImageFailed(true)}
-            />
-          ) : rectangleShapeMode ? (
-            <View style={styles.rectangleShape} />
-          ) : (
-            <Text
-              style={[
-                visualMode ? styles.emojiLarge : styles.emoji,
-                visualMode && { fontSize: visualEmojiSize },
-                alphabetMode && {
-                  fontSize: alphabetEmojiSize,
-                  lineHeight: alphabetEmojiLineHeight,
-                  minHeight: alphabetEmojiBlockHeight,
-                  maxHeight: alphabetEmojiBlockHeight,
-                  paddingTop: isTabletLayout ? 4 : 2,
-                },
-                numberMode && styles.numberEmoji,
-                numberMode && isTabletLayout && { maxWidth: "84%" },
-                numberMode && {
-                  fontSize: numberEmojiSize,
-                  lineHeight: numberEmojiLineHeight,
-                  letterSpacing: numberEmojiLetterSpacing,
-                  minHeight: numberEmojiBlockHeight,
-                  maxHeight: numberEmojiBlockHeight,
-                },
-              ]}
+              style={
+                visualMode
+                  ? [styles.visualMediaWrap, !isWeb && styles.visualMediaWrapMobile]
+                  : [styles.mediaWrap, styles.classicMediaWrap, textOnlyMode && {
+                    minHeight: textOnlyMediaHeight,
+                    maxHeight: textOnlyMediaHeight,
+                  }]
+              }
             >
-              {card.emoji}
-            </Text>
-          )}
-        </View>
+              {colorMode ? (
+                <View
+                  style={[
+                    styles.colorSwatchCircle,
+                    {
+                      width: colorSwatchSize,
+                      height: colorSwatchSize,
+                      borderRadius: colorSwatchSize / 2,
+                      backgroundColor: swatchColorById(card?.id),
+                    },
+                  ]}
+                />
+              ) : !imageFailed && imageUri ? (
+                <Image
+                  source={{ uri: imageUri }}
+                  style={visualMode ? styles.cardImageLarge : styles.cardImage}
+                  resizeMode="contain"
+                  onError={() => setImageFailed(true)}
+                />
+              ) : rectangleShapeMode ? (
+                <View style={styles.rectangleShape} />
+              ) : (
+                <Text
+                  style={[
+                    visualMode ? styles.emojiLarge : styles.emoji,
+                    visualMode && { fontSize: visualEmojiSize },
+                    alphabetMode && {
+                      fontSize: alphabetEmojiSizeSafe,
+                      lineHeight: alphabetEmojiLineHeight,
+                      minHeight: alphabetEmojiBlockHeight,
+                      maxHeight: alphabetEmojiBlockHeight,
+                      paddingTop: isTabletLayout ? 4 : 2,
+                    },
+                    numberMode && styles.numberEmoji,
+                    numberMode && isTabletLayout && { maxWidth: "84%" },
+                    numberMode && {
+                      fontSize: numberEmojiSize,
+                      lineHeight: numberEmojiLineHeight,
+                      letterSpacing: numberEmojiLetterSpacing,
+                      minHeight: numberEmojiBlockHeight,
+                      maxHeight: numberEmojiBlockHeight,
+                    },
+                  ]}
+                >
+                  {card.emoji}
+                </Text>
+              )}
+            </View>
 
-        <View style={[styles.textSlot, visualMode && styles.textSlotVisual]}>
-          <Text style={[visualMode ? styles.titleVisual : styles.title, visualMode && { fontSize: visualTitleSize }]}>{card.title}</Text>
-          {showSubtitle && <Text style={styles.subtitle}>{card.subtitle}</Text>}
-        </View>
+            <View style={[styles.textSlot, visualMode && styles.textSlotVisual]}>
+              <Text style={[visualMode ? styles.titleVisual : styles.title, visualMode && { fontSize: visualTitleSize }]}>{card.title}</Text>
+              {showSubtitle && <Text style={styles.subtitle}>{card.subtitle}</Text>}
+            </View>
+          </>
+        )}
       </Animated.View>
 
     </View>
@@ -919,31 +1039,31 @@ export function KidsCardBookScreen({
   useSafeTVEventHandler(onTvEvent);
 
   return (
-    <SafeAreaView style={[styles.root, { paddingTop: topInset + 6 }]}> 
+    <SafeAreaView style={[styles.root, isTVDevice && tvStyles.root, { paddingTop: topInset + (isTVDevice ? 12 : 6) }]}> 
       <StatusBar style={touchLockOn ? "light" : "dark"} hidden={touchLockOn} />
       <LinearGradient colors={bgColors} start={{ x: 0.1, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFillObject} />
 
-      <View style={styles.topBar}>
+      <View style={[styles.topBar, isTVDevice && tvStyles.topBar]}>
         <View style={styles.topBarLeft}>
-          <Text style={styles.appTitle}>{appTitle}</Text>
-          <Text style={styles.currentCategoryLabel}>{categories.find((c) => c.id === selectedCategory)?.label || "Category"}</Text>
+          <Text style={[styles.appTitle, isTVDevice && tvStyles.appTitle]}>{appTitle}</Text>
+          <Text style={[styles.currentCategoryLabel, isTVDevice && tvStyles.currentCategoryLabel]}>{categories.find((c) => c.id === selectedCategory)?.label || "Category"}</Text>
           {touchLockOn && (
-            <Text style={styles.lockBannerText}>Parent lock is ON • tap 🔒 to unlock</Text>
+            <Text style={[styles.lockBannerText, isTVDevice && tvStyles.lockBannerText]}>Parent lock is ON • tap 🔒 to unlock</Text>
           )}
         </View>
         {touchLockOn && (
           <Pressable
-            style={styles.lockIconBtn}
+            style={[styles.lockIconBtn, isTVDevice && tvStyles.lockIconBtn]}
             onPress={onTouchUnlockPress}
             accessibilityRole="button"
             accessibilityLabel="Tap to unlock touch controls"
           >
-            <Text style={styles.lockIconBtnEmoji}>🔒</Text>
+            <Text style={[styles.lockIconBtnEmoji, isTVDevice && tvStyles.lockIconBtnEmoji]}>🔒</Text>
           </Pressable>
         )}
       </View>
 
-      <View style={styles.mainContent} pointerEvents={touchLockOn ? "none" : "auto"}>
+      <View style={[styles.mainContent, isTVDevice && tvStyles.mainContent]} pointerEvents={touchLockOn ? "none" : "auto"}>
         <CardViewer
           categoryId={selectedCategory}
           card={card}
@@ -952,12 +1072,13 @@ export function KidsCardBookScreen({
           onNext={onNext}
           swipeEnabled={swipeOn && !isTVDevice && !touchLockOn}
           transitionDirection={transitionDirection}
+          isTVLayout={isTVDevice}
         />
 
-        <View style={[styles.bottomNav, { bottom: bottomNavOffset, paddingBottom: bottomNavPadding }]}>
+        <View style={[styles.bottomNav, isTVDevice && tvStyles.bottomNav, { bottom: bottomNavOffset, paddingBottom: bottomNavPadding }]}>
         <TvPressable
-          style={[styles.navPill, categoryPickerOpen && styles.navPillActive]}
-          focusedStyle={styles.navPillFocused}
+          style={[styles.navPill, isTVDevice && tvStyles.navPill, categoryPickerOpen && styles.navPillActive]}
+          focusedStyle={[styles.navPillFocused, isTVDevice && tvStyles.navPillFocused]}
           hasTVPreferredFocus={!hasSheetOpen}
           onPress={() => {
             setSettingsOpen(false);
@@ -968,7 +1089,7 @@ export function KidsCardBookScreen({
             <GridIcon active={categoryPickerOpen} />
           </View>
           <Text
-            style={[styles.navPillText, categoryPickerOpen && styles.navPillTextActive]}
+            style={[styles.navPillText, isTVDevice && tvStyles.navPillText, categoryPickerOpen && styles.navPillTextActive]}
             numberOfLines={1}
             ellipsizeMode="clip"
             maxFontSizeMultiplier={1}
@@ -978,16 +1099,19 @@ export function KidsCardBookScreen({
         </TvPressable>
 
         <TvPressable
-          style={[styles.navPill, autoplay && styles.navPillActive]}
-          focusedStyle={styles.navPillFocused}
+          style={[styles.navPill, isTVDevice && tvStyles.navPill, autoplay && styles.navPillActive]}
+          focusedStyle={[styles.navPillFocused, isTVDevice && tvStyles.navPillFocused]}
           onPress={() => setAutoplay((prev) => !prev)}
         >
-          <View style={styles.navIconSlot}>
+          <View style={[styles.navIconSlot, isTVDevice && tvStyles.navIconSlot]}>
             <Text
               style={[
                 styles.navIconGlyph,
                 styles.navIconGlyphPlay,
+                isTVDevice && tvStyles.navIconGlyph,
+                isTVDevice && tvStyles.navIconGlyphPlay,
                 autoplay && styles.navIconGlyphPause,
+                autoplay && isTVDevice && tvStyles.navIconGlyphPause,
                 autoplay && styles.navPillTextActive,
               ]}
               allowFontScaling={false}
@@ -996,7 +1120,7 @@ export function KidsCardBookScreen({
             </Text>
           </View>
           <Text
-            style={[styles.navPillText, autoplay && styles.navPillTextActive]}
+            style={[styles.navPillText, isTVDevice && tvStyles.navPillText, autoplay && styles.navPillTextActive]}
             numberOfLines={1}
             ellipsizeMode="clip"
             maxFontSizeMultiplier={1}
@@ -1007,8 +1131,8 @@ export function KidsCardBookScreen({
 
 
         <TvPressable
-          style={[styles.navPill, settingsOpen && styles.navPillActive]}
-          focusedStyle={styles.navPillFocused}
+          style={[styles.navPill, isTVDevice && tvStyles.navPill, settingsOpen && styles.navPillActive]}
+          focusedStyle={[styles.navPillFocused, isTVDevice && tvStyles.navPillFocused]}
           onPress={() => {
             setCategoryPickerOpen(false);
             setSettingsOpen((prev) => !prev);
@@ -1018,7 +1142,7 @@ export function KidsCardBookScreen({
             <SlidersIcon active={settingsOpen} />
           </View>
           <Text
-            style={[styles.navPillText, settingsOpen && styles.navPillTextActive]}
+            style={[styles.navPillText, isTVDevice && tvStyles.navPillText, settingsOpen && styles.navPillTextActive]}
             numberOfLines={1}
             ellipsizeMode="clip"
             maxFontSizeMultiplier={1}
@@ -1041,8 +1165,8 @@ export function KidsCardBookScreen({
       )}
 
       {hasSheetOpen && (
-        <View style={styles.sheetContainer}>
-          <ScrollView contentContainerStyle={styles.sheetContent}>
+        <View style={[styles.sheetContainer, isTVDevice && tvStyles.sheetContainer]}>
+          <ScrollView contentContainerStyle={[styles.sheetContent, isTVDevice && tvStyles.sheetContent]}>
             {parentGuideOpen ? (
               <ParentGuideSheet />
             ) : categoryPickerOpen ? (
@@ -1156,6 +1280,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.3)",
     borderColor: "rgba(255,255,255,0.5)",
     borderWidth: 1,
+    overflow: "hidden",
     justifyContent: "center",
     alignItems: "center",
     padding: 18,
@@ -1543,6 +1668,126 @@ const styles = StyleSheet.create({
   },
   categoryTextActive: {
     color: "#ffffff",
+  },
+});
+
+const tvStyles = StyleSheet.create({
+  root: {
+    paddingHorizontal: 0,
+  },
+  topBar: {
+    marginHorizontal: 0,
+    marginTop: 4,
+  },
+  appTitle: {},
+  currentCategoryLabel: {},
+  lockBannerText: {},
+  lockIconBtn: {},
+  lockIconBtnEmoji: {},
+  mainContent: {},
+  viewerWrap: {
+    paddingHorizontal: 0,
+  },
+  visualSplitRow: {
+    flex: 1,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "stretch",
+  },
+  visualSplitMediaWrap: {
+    flex: 1.05,
+    marginRight: 14,
+    minHeight: 0,
+  },
+  visualSplitTextWrap: {
+    flex: 0.95,
+    minHeight: 0,
+    alignItems: "flex-start",
+    justifyContent: "center",
+    paddingRight: 6,
+  },
+  visualSplitTitle: {
+    width: "100%",
+    textAlign: "left",
+  },
+  visualSplitSubtitle: {
+    width: "100%",
+    textAlign: "left",
+  },
+  textOnlySplitRow: {
+    flex: 1,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "stretch",
+    justifyContent: "space-between",
+    columnGap: 10,
+  },
+  textOnlySplitLetterCol: {
+    flex: 1,
+    minHeight: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 6,
+  },
+  textOnlySplitEmojiCol: {
+    flex: 1,
+    minHeight: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 6,
+  },
+  textOnlySplitValueSlot: {
+    width: "100%",
+    minHeight: 0,
+  },
+  textOnlySplitValue: {
+    width: "100%",
+    textAlign: "center",
+  },
+  textOnlySplitEmoji: {
+    width: "100%",
+    marginVertical: 0,
+    paddingTop: 8,
+    paddingBottom: 8,
+    textAlign: "center",
+    includeFontPadding: true,
+    textAlignVertical: "center",
+  },
+  textOnlySplitTextWrap: {
+    flex: 1,
+    minHeight: 0,
+    alignItems: "flex-start",
+    justifyContent: "center",
+    paddingHorizontal: 6,
+  },
+  textOnlySplitTitle: {
+    width: "100%",
+    textAlign: "left",
+  },
+  textOnlySplitSubtitle: {
+    width: "100%",
+    textAlign: "left",
+  },
+  card: {},
+  subtitle: {},
+  navIconGlyph: {},
+  navIconGlyphPlay: {},
+  navIconGlyphPause: {},
+  navPillText: {},
+  navIconSlot: {},
+  navPill: {},
+  navPillFocused: {},
+  sheetContent: {},
+  sheetContainer: {
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  bottomNav: {
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: 0,
   },
 });
 
