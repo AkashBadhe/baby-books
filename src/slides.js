@@ -10,6 +10,7 @@ export const categoryDefinitions = [
   { id: "wild_animals", label: "Wild Animals", icon: "🦁" },
   { id: "birds", label: "Birds", icon: "🦜" },
   { id: "vehicles", label: "Vehicles", icon: "🚗" },
+  { id: "indian_food", label: "Indian Food", icon: "🍛" },
 ];
 
 const alphabetCards = [
@@ -171,6 +172,25 @@ const vehicleCards = [
   { id: "ambulance", value: "Ambulance", title: "Ambulance", subtitle: "This is Ambulance", emoji: "🚑", image: "/assets/photos/vehicles/ambulance.png", audioLabel: "Ambulance", colors: ["#ff7e5f", "#feb47b"] },
 ];
 
+const indianFoodCards = [
+  { id: "khichdi", value: "Khichdi", title: "Khichdi", subtitle: "This is Khichdi", emoji: "🍚", image: "/assets/photos/indian_food/khichdi.png", audioLabel: "Khichdi", colors: ["#f6d365", "#fda085"] },
+  { id: "roti", value: "Roti", title: "Roti", subtitle: "This is Roti", emoji: "🫓", image: "/assets/photos/indian_food/roti.png", audioLabel: "Roti", colors: ["#d1913c", "#ffd194"] },
+  { id: "dhokala", value: "Dhokala", title: "Dhokala", subtitle: "This is Dhokala", emoji: "🧈", image: "/assets/photos/indian_food/dhokala.png", audioLabel: "Dhokala", colors: ["#f6d365", "#fda085"] },
+  { id: "dal", value: "Dal", title: "Dal", subtitle: "This is Dal", emoji: "🥘", image: "/assets/photos/indian_food/dal.png", audioLabel: "Dal", colors: ["#f6d365", "#fda085"] },
+  { id: "upma", value: "Upma", title: "Upma", subtitle: "This is Upma", emoji: "🥣", image: "/assets/photos/indian_food/upma.png", audioLabel: "Upma", colors: ["#fddb92", "#d1fdff"] },
+  { id: "makhana", value: "Makhana", title: "Makhana", subtitle: "This is Makhana", emoji: "🍿", image: "/assets/photos/indian_food/makhana.png", audioLabel: "Makhana", colors: ["#a1c4fd", "#c2e9fb"] },
+  { id: "rice", value: "Rice", title: "Rice", subtitle: "This is Rice", emoji: "🍚", image: "/assets/photos/indian_food/rice.png", audioLabel: "Rice", colors: ["#e0eafc", "#cfdef3"] },
+  { id: "paneer", value: "Paneer", title: "Paneer", subtitle: "This is Paneer", emoji: "🧀", image: "/assets/photos/indian_food/paneer.png", audioLabel: "Paneer", colors: ["#ffecd2", "#fcb69f"] },
+  { id: "murmura", value: "Murmura", title: "Murmura", subtitle: "This is Murmura", emoji: "🍿", image: "/assets/photos/indian_food/murmura.png", audioLabel: "Murmura", colors: ["#fddb92", "#d1fdff"] },
+  { id: "poha", value: "Poha", title: "Poha", subtitle: "This is Poha", emoji: "🍚", image: "/assets/photos/indian_food/poha.png", audioLabel: "Poha", colors: ["#a1c4fd", "#c2e9fb"] },
+  { id: "paratha", value: "Paratha", title: "Paratha", subtitle: "This is Paratha", emoji: "🫓", image: "/assets/photos/indian_food/paratha.png", audioLabel: "Paratha", colors: ["#d1913c", "#ffd194"] },
+  { id: "idli", value: "Idli", title: "Idli", subtitle: "This is Idli", emoji: "🍚", image: "/assets/photos/indian_food/idli.png", audioLabel: "Idli", colors: ["#e0eafc", "#cfdef3"] },
+  { id: "dosa", value: "Dosa", title: "Dosa", subtitle: "This is Dosa", emoji: "🥞", image: "/assets/photos/indian_food/dosa.png", audioLabel: "Dosa", colors: ["#f6d365", "#fda085"] },
+  { id: "curd", value: "Curd", title: "Curd", subtitle: "This is Curd", emoji: "🥛", image: "/assets/photos/indian_food/curd.png", audioLabel: "Curd", colors: ["#ff9a9e", "#fad0c4"] },
+  { id: "puri", value: "Puri", title: "Puri", subtitle: "This is Puri", emoji: "🫓", image: "/assets/photos/indian_food/puri.png", audioLabel: "Puri", colors: ["#fddb92", "#d1fdff"] },
+  { id: "kheer", value: "Kheer", title: "Kheer", subtitle: "This is Kheer", emoji: "🍨", image: "/assets/photos/indian_food/kheer.png", audioLabel: "Kheer", colors: ["#fbc2eb", "#a6c1ee"] },
+];
+
 export const categoryCards = {
   alphabet: alphabetCards,
   numbers: numberCards,
@@ -183,6 +203,7 @@ export const categoryCards = {
   wild_animals: wildAnimalCards,
   birds: birdCards,
   vehicles: vehicleCards,
+  indian_food: indianFoodCards,
 };
 
 export const categoryOrder = categoryDefinitions.map((c) => c.id);
