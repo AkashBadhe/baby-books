@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-22T03:15:28.087Z",
+  "generatedAt": "2026-04-21T12:45:51.780Z",
   "categoryDefinitions": [
     {
       "id": "alphabet",
@@ -70,7 +70,7 @@
         "title": "Apple",
         "subtitle": "A for Apple",
         "emoji": "🍎",
-        "audioLabel": "A for Apple",
+        "audioLabel": "A, for Apple",
         "colors": [
           "#ffd9de",
           "#fff0e8"
@@ -82,7 +82,7 @@
         "title": "Ball",
         "subtitle": "B for Ball",
         "emoji": "🏀",
-        "audioLabel": "B for Ball",
+        "audioLabel": "B, for Ball",
         "colors": [
           "#a1c4fd",
           "#c2e9fb"
@@ -94,7 +94,7 @@
         "title": "Cat",
         "subtitle": "C for Cat",
         "emoji": "🐱",
-        "audioLabel": "C for Cat",
+        "audioLabel": "C, for Cat",
         "colors": [
           "#fbc2eb",
           "#a6c1ee"
@@ -106,7 +106,7 @@
         "title": "Dog",
         "subtitle": "D for Dog",
         "emoji": "🐶",
-        "audioLabel": "D for Dog",
+        "audioLabel": "D, for Dog",
         "colors": [
           "#fddb92",
           "#d1fdff"
@@ -118,7 +118,7 @@
         "title": "Elephant",
         "subtitle": "E for Elephant",
         "emoji": "🐘",
-        "audioLabel": "E for Elephant",
+        "audioLabel": "E, for Elephant",
         "colors": [
           "#cfd9df",
           "#e2ebf0"
@@ -130,7 +130,7 @@
         "title": "Fish",
         "subtitle": "F for Fish",
         "emoji": "🐟",
-        "audioLabel": "F for Fish",
+        "audioLabel": "F, for Fish",
         "colors": [
           "#84fab0",
           "#8fd3f4"
@@ -142,7 +142,7 @@
         "title": "Giraffe",
         "subtitle": "G for Giraffe",
         "emoji": "🦒",
-        "audioLabel": "G for Giraffe",
+        "audioLabel": "G, for Giraffe",
         "colors": [
           "#fa709a",
           "#fee140"
@@ -154,7 +154,7 @@
         "title": "House",
         "subtitle": "H for House",
         "emoji": "🏠",
-        "audioLabel": "H for House",
+        "audioLabel": "H, for House",
         "colors": [
           "#30cfd0",
           "#330867"
@@ -166,7 +166,7 @@
         "title": "Ice cream",
         "subtitle": "I for Ice cream",
         "emoji": "🍦",
-        "audioLabel": "I for Ice cream",
+        "audioLabel": "I, for Ice cream",
         "colors": [
           "#ffecd2",
           "#fcb69f"
@@ -178,7 +178,7 @@
         "title": "Juice",
         "subtitle": "J for Juice",
         "emoji": "🧃",
-        "audioLabel": "J for Juice",
+        "audioLabel": "J, for Juice",
         "colors": [
           "#f6d365",
           "#fda085"
@@ -190,7 +190,7 @@
         "title": "Kite",
         "subtitle": "K for Kite",
         "emoji": "🪁",
-        "audioLabel": "K for Kite",
+        "audioLabel": "K, for Kite",
         "colors": [
           "#a8edea",
           "#fed6e3"
@@ -202,7 +202,7 @@
         "title": "Lion",
         "subtitle": "L for Lion",
         "emoji": "🦁",
-        "audioLabel": "L for Lion",
+        "audioLabel": "L, for Lion",
         "colors": [
           "#fdfbfb",
           "#ebedee"
@@ -214,7 +214,7 @@
         "title": "Moon",
         "subtitle": "M for Moon",
         "emoji": "🌙",
-        "audioLabel": "M for Moon",
+        "audioLabel": "M, for Moon",
         "colors": [
           "#d4fc79",
           "#96e6a1"
@@ -226,7 +226,7 @@
         "title": "Nest",
         "subtitle": "N for Nest",
         "emoji": "🪺",
-        "audioLabel": "N for Nest",
+        "audioLabel": "N, for Nest",
         "colors": [
           "#e0c3fc",
           "#8ec5fc"
@@ -238,7 +238,7 @@
         "title": "Orange",
         "subtitle": "O for Orange",
         "emoji": "🍊",
-        "audioLabel": "O for Orange",
+        "audioLabel": "O, for Orange",
         "colors": [
           "#f093fb",
           "#f5576c"
@@ -250,7 +250,7 @@
         "title": "Penguin",
         "subtitle": "P for Penguin",
         "emoji": "🐧",
-        "audioLabel": "P for Penguin",
+        "audioLabel": "P, for Penguin",
         "colors": [
           "#4facfe",
           "#00f2fe"
@@ -262,7 +262,7 @@
         "title": "Quilt",
         "subtitle": "Q for Quilt",
         "emoji": "🧵",
-        "audioLabel": "Q for Quilt",
+        "audioLabel": "Q, for Quilt",
         "colors": [
           "#43e97b",
           "#38f9d7"
@@ -274,7 +274,7 @@
         "title": "Rainbow",
         "subtitle": "R for Rainbow",
         "emoji": "🌈",
-        "audioLabel": "R for Rainbow",
+        "audioLabel": "R, for Rainbow",
         "colors": [
           "#fa709a",
           "#fee140"
@@ -286,7 +286,7 @@
         "title": "Sun",
         "subtitle": "S for Sun",
         "emoji": "☀️",
-        "audioLabel": "S for Sun",
+        "audioLabel": "S, for Sun",
         "colors": [
           "#f6d365",
           "#fda085"
@@ -298,7 +298,7 @@
         "title": "Tiger",
         "subtitle": "T for Tiger",
         "emoji": "🐯",
-        "audioLabel": "T for Tiger",
+        "audioLabel": "T, for Tiger",
         "colors": [
           "#fbc2eb",
           "#a6c1ee"
@@ -310,7 +310,7 @@
         "title": "Umbrella",
         "subtitle": "U for Umbrella",
         "emoji": "☂️",
-        "audioLabel": "U for Umbrella",
+        "audioLabel": "U, for Umbrella",
         "colors": [
           "#89f7fe",
           "#66a6ff"
@@ -322,7 +322,7 @@
         "title": "Violin",
         "subtitle": "V for Violin",
         "emoji": "🎻",
-        "audioLabel": "V for Violin",
+        "audioLabel": "V, for Violin",
         "colors": [
           "#fdfcfb",
           "#e2d1c3"
@@ -334,7 +334,7 @@
         "title": "Whale",
         "subtitle": "W for Whale",
         "emoji": "🐳",
-        "audioLabel": "W for Whale",
+        "audioLabel": "W, for Whale",
         "colors": [
           "#a1c4fd",
           "#c2e9fb"
@@ -346,7 +346,7 @@
         "title": "Xylophone",
         "subtitle": "X for Xylophone",
         "emoji": "🎶",
-        "audioLabel": "X for Xylophone",
+        "audioLabel": "X, for Xylophone",
         "colors": [
           "#d299c2",
           "#fef9d7"
@@ -358,7 +358,7 @@
         "title": "Yoyo",
         "subtitle": "Y for Yoyo",
         "emoji": "🪀",
-        "audioLabel": "Y for Yoyo",
+        "audioLabel": "Y, for Yoyo",
         "colors": [
           "#fddb92",
           "#d1fdff"
@@ -370,7 +370,7 @@
         "title": "Zebra",
         "subtitle": "Z for Zebra",
         "emoji": "🦓",
-        "audioLabel": "Z for Zebra",
+        "audioLabel": "Z, for Zebra",
         "colors": [
           "#84fab0",
           "#8fd3f4"
@@ -1685,7 +1685,7 @@
         "subtitle": "This is Khichdi",
         "emoji": "🍚",
         "image": "/assets/photos/indian_food/khichdi.png",
-        "audioLabel": "Khichdi",
+        "audioLabel": "Kitch dee",
         "colors": [
           "#f6d365",
           "#fda085"
@@ -1698,7 +1698,7 @@
         "subtitle": "This is Roti",
         "emoji": "🫓",
         "image": "/assets/photos/indian_food/roti.png",
-        "audioLabel": "Roti",
+        "audioLabel": "Roh tee",
         "colors": [
           "#d1913c",
           "#ffd194"
@@ -1711,7 +1711,7 @@
         "subtitle": "This is Dhokala",
         "emoji": "🧈",
         "image": "/assets/photos/indian_food/dhokala.png",
-        "audioLabel": "Dhokala",
+        "audioLabel": "Dhok la",
         "colors": [
           "#f6d365",
           "#fda085"
@@ -1724,7 +1724,7 @@
         "subtitle": "This is Dal",
         "emoji": "🥘",
         "image": "/assets/photos/indian_food/dal.png",
-        "audioLabel": "Dal",
+        "audioLabel": "Daal",
         "colors": [
           "#f6d365",
           "#fda085"
@@ -1737,7 +1737,7 @@
         "subtitle": "This is Upma",
         "emoji": "🥣",
         "image": "/assets/photos/indian_food/upma.png",
-        "audioLabel": "Upma",
+        "audioLabel": "oopmaa",
         "colors": [
           "#fddb92",
           "#d1fdff"
@@ -1750,7 +1750,7 @@
         "subtitle": "This is Makhana",
         "emoji": "🍿",
         "image": "/assets/photos/indian_food/makhana.png",
-        "audioLabel": "Makhana",
+        "audioLabel": "Mak ha naa",
         "colors": [
           "#a1c4fd",
           "#c2e9fb"
@@ -1776,7 +1776,7 @@
         "subtitle": "This is Paneer",
         "emoji": "🧀",
         "image": "/assets/photos/indian_food/paneer.png",
-        "audioLabel": "Paneer",
+        "audioLabel": "pa-nneer",
         "colors": [
           "#ffecd2",
           "#fcb69f"
@@ -1789,7 +1789,7 @@
         "subtitle": "This is Murmura",
         "emoji": "🍿",
         "image": "/assets/photos/indian_food/murmura.png",
-        "audioLabel": "Murmura",
+        "audioLabel": "Murrmura",
         "colors": [
           "#fddb92",
           "#d1fdff"
@@ -1802,7 +1802,7 @@
         "subtitle": "This is Poha",
         "emoji": "🍚",
         "image": "/assets/photos/indian_food/poha.png",
-        "audioLabel": "Poha",
+        "audioLabel": "Poh ha",
         "colors": [
           "#a1c4fd",
           "#c2e9fb"
@@ -1828,7 +1828,7 @@
         "subtitle": "This is Idli",
         "emoji": "🍚",
         "image": "/assets/photos/indian_food/idli.png",
-        "audioLabel": "Idli",
+        "audioLabel": "Iddlee",
         "colors": [
           "#e0eafc",
           "#cfdef3"
@@ -1841,7 +1841,7 @@
         "subtitle": "This is Dosa",
         "emoji": "🥞",
         "image": "/assets/photos/indian_food/dosa.png",
-        "audioLabel": "Dosa",
+        "audioLabel": "Doh sa",
         "colors": [
           "#f6d365",
           "#fda085"
@@ -1867,7 +1867,7 @@
         "subtitle": "This is Puri",
         "emoji": "🫓",
         "image": "/assets/photos/indian_food/puri.png",
-        "audioLabel": "Puri",
+        "audioLabel": "Poo ree",
         "colors": [
           "#fddb92",
           "#d1fdff"

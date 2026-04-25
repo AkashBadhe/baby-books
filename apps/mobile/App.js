@@ -39,8 +39,14 @@ export default function App() {
   const audioAvailabilityCache = useRef(new Map());
   const [autoplayOn, setAutoplayOn] = useState(false);
   const [touchLockOn, setTouchLockOn] = useState(false);
+  // Detect if running on TV (Android TV)
+  const isAndroidTV = Platform.OS === "android" && Platform.isTV === true;
 
   const handleRequestUnlock = useCallback(async () => {
+    if (isAndroidTV) {
+      // No lock/unlock on TV
+      return true;
+    }
     try {
       const hasHardware = await LocalAuthentication.hasHardwareAsync();
       const isEnrolled = await LocalAuthentication.isEnrolledAsync();
@@ -58,7 +64,7 @@ export default function App() {
       // Auth unavailable — allow unlock.
       return true;
     }
-  }, []);
+  }, [isAndroidTV]);
 
   useEffect(() => {
     const syncKeepAwake = async () => {
@@ -81,7 +87,7 @@ export default function App() {
   }, [autoplayOn]);
 
   useEffect(() => {
-    if (Platform.OS !== "android") return undefined;
+    if (Platform.OS !== "android" || isAndroidTV) return undefined;
 
     const applyNavBarState = async () => {
       try {
@@ -118,7 +124,7 @@ export default function App() {
       appStateSubscription?.remove();
       NavigationBar.setVisibilityAsync("visible").catch(() => {});
     };
-  }, [touchLockOn]);
+  }, [touchLockOn, isAndroidTV]);
 
   useEffect(() => {
     if (!touchLockOn) return undefined;
@@ -194,8 +200,8 @@ export default function App() {
         onSpeakCard={speakCard}
         onStopSpeaking={stopSpeaking}
         onAutoplayChange={setAutoplayOn}
-        onTouchLockChange={setTouchLockOn}
-        onRequestUnlock={handleRequestUnlock}
+        onTouchLockChange={isAndroidTV ? undefined : setTouchLockOn}
+        onRequestUnlock={isAndroidTV ? undefined : handleRequestUnlock}
       />
     </SafeAreaProvider>
   );

@@ -2,8 +2,8 @@
   "expo": {
     "name": "My First Words",
     "slug": "firstwords-cards",
-    "version": "2.0.0",
-    "orientation": "portrait",
+    "version": "2.0.7",
+    "orientation": "default",
     "userInterfaceStyle": "light",
     "assetBundlePatterns": [
       "**/*"
@@ -14,7 +14,12 @@
     },
     "android": {
       "package": "com.akashbadhe.firstwordscards",
-      "versionCode": 15,
+      "versionCode": 31,
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.VIBRATE"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#f8fbff",
         "foregroundImage": "./assets/adaptive-icon.png"
@@ -31,7 +36,9 @@
     "scheme": "firstwordscards",
     "plugins": [
       "expo-asset",
-      "./plugins/withAndroidTv"
+      "./plugins/withAndroidTv",
+      "./plugins/withPhoneBiometricPermissions",
+      "./plugins/withTvOnlyPermissions"
     ],
     "extra": {
       "supportEmail": "support@firstwordscards.app",

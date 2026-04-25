@@ -212,6 +212,7 @@ function SettingsSheet({
   onToggleLock,
   onOpenPinningGuide,
 }) {
+  const isTV = Platform.isTV === true && (Platform.OS !== "android" || Platform.constants?.uiMode === "tv");
   const delayOptions = [2000, 3000, 5000, 8000];
 
   return (
@@ -248,27 +249,31 @@ function SettingsSheet({
           );
         })}
       </View>
-      <Text style={styles.delayLabel}>Parent Controls</Text>
-      <View style={styles.settingsActions}>
-        <TvPressable
-          style={[styles.pillBtn, touchLockOn && styles.pillBtnLockActive]}
-          focusedStyle={styles.pillBtnFocused}
-          onPress={onToggleLock}
-        >
-          <Text style={[styles.pillBtnText, touchLockOn && styles.pillBtnLockActiveText]}>
-            {touchLockOn ? "🔒 Locked" : "🔓 Lock Screen"}
-          </Text>
-        </TvPressable>
-        {Platform.OS === "android" && (
-          <TvPressable
-            style={styles.pillBtn}
-            focusedStyle={styles.pillBtnFocused}
-            onPress={onOpenPinningGuide}
-          >
-            <Text style={styles.pillBtnText}>📌 Pinning Help</Text>
-          </TvPressable>
-        )}
-      </View>
+      {!isTV && (
+        <>
+          <Text style={styles.delayLabel}>Parent Controls</Text>
+          <View style={styles.settingsActions}>
+            <TvPressable
+              style={[styles.pillBtn, touchLockOn && styles.pillBtnLockActive]}
+              focusedStyle={styles.pillBtnFocused}
+              onPress={onToggleLock}
+            >
+              <Text style={[styles.pillBtnText, touchLockOn && styles.pillBtnLockActiveText]}>
+                {touchLockOn ? "🔒 Locked" : "🔓 Lock Screen"}
+              </Text>
+            </TvPressable>
+            {Platform.OS === "android" && (
+              <TvPressable
+                style={styles.pillBtn}
+                focusedStyle={styles.pillBtnFocused}
+                onPress={onOpenPinningGuide}
+              >
+                <Text style={styles.pillBtnText}>📌 Pinning Help</Text>
+              </TvPressable>
+            )}
+          </View>
+        </>
+      )}
       <Text style={styles.sheetVersion}>{appVersionLabel || "Version --"}</Text>
     </View>
   );
@@ -730,7 +735,8 @@ export function KidsCardBookScreen({
   const [touchLockOn, setTouchLockOn] = useState(false);
   const [hasSeenPinningGuide, setHasSeenPinningGuide] = useState(null);
   const [unlockHoldProgress, setUnlockHoldProgress] = useState(0);
-  const isTVDevice = Platform.isTV === true;
+  const tvUiMode = Platform.OS === "android" ? Platform.constants?.uiMode : null;
+  const isTVDevice = Platform.isTV === true && (Platform.OS !== "android" || tvUiMode === "tv");
   const unlockTimerRef = useRef(null);
   const unlockProgressTimerRef = useRef(null);
 
