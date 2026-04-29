@@ -173,23 +173,24 @@ const vehicleCards = [
 ];
 
 const indianFoodCards = [
-  { id: "khichdi", value: "Khichdi", title: "Khichdi", subtitle: "This is Khichdi", emoji: "🍚", image: "/assets/photos/indian_food/khichdi.png", audioLabel: "Kitch dee", colors: ["#f6d365", "#fda085"] },
-  { id: "roti", value: "Roti", title: "Roti", subtitle: "This is Roti", emoji: "🫓", image: "/assets/photos/indian_food/roti.png", audioLabel: "Roh tee", colors: ["#d1913c", "#ffd194"] },
-  { id: "dhokala", value: "Dhokala", title: "Dhokala", subtitle: "This is Dhokala", emoji: "🧈", image: "/assets/photos/indian_food/dhokala.png", audioLabel: "Dhok la", colors: ["#f6d365", "#fda085"] },
-  { id: "dal", value: "Dal", title: "Dal", subtitle: "This is Dal", emoji: "🥘", image: "/assets/photos/indian_food/dal.png", audioLabel: "Daal", colors: ["#f6d365", "#fda085"] },
-  { id: "upma", value: "Upma", title: "Upma", subtitle: "This is Upma", emoji: "🥣", image: "/assets/photos/indian_food/upma.png", audioLabel: "oopmaa", colors: ["#fddb92", "#d1fdff"] },
-  { id: "makhana", value: "Makhana", title: "Makhana", subtitle: "This is Makhana", emoji: "🍿", image: "/assets/photos/indian_food/makhana.png", audioLabel: "Mak ha naa", colors: ["#a1c4fd", "#c2e9fb"] },
+  { id: "khichdi", value: "Khichdi", title: "Khichdi", subtitle: "This is Khichdi", emoji: "🍚", image: "/assets/photos/indian_food/khichdi.png", audioLabel: "Khichdi", colors: ["#f6d365", "#fda085"] },
+  { id: "roti", value: "Roti", title: "Roti", subtitle: "This is Roti", emoji: "🫓", image: "/assets/photos/indian_food/roti.png", audioLabel: "Roti", colors: ["#d1913c", "#ffd194"] },
+  { id: "dhokala", value: "Dhokala", title: "Dhokala", subtitle: "This is Dhokala", emoji: "🧈", image: "/assets/photos/indian_food/dhokala.png", audioLabel: "Dhokala", colors: ["#f6d365", "#fda085"] },
+  { id: "dal", value: "Dal", title: "Dal", subtitle: "This is Dal", emoji: "🥘", image: "/assets/photos/indian_food/dal.png", audioLabel: "Dal", colors: ["#f6d365", "#fda085"] },
+  { id: "upma", value: "Upma", title: "Upma", subtitle: "This is Upma", emoji: "🥣", image: "/assets/photos/indian_food/upma.png", audioLabel: "Upma", colors: ["#fddb92", "#d1fdff"] },
+  { id: "makhana", value: "Makhana", title: "Makhana", subtitle: "This is Makhana", emoji: "🍿", image: "/assets/photos/indian_food/makhana.png", audioLabel: "Makhana", colors: ["#a1c4fd", "#c2e9fb"] },
   { id: "rice", value: "Rice", title: "Rice", subtitle: "This is Rice", emoji: "🍚", image: "/assets/photos/indian_food/rice.png", audioLabel: "Rice", colors: ["#e0eafc", "#cfdef3"] },
-  { id: "paneer", value: "Paneer", title: "Paneer", subtitle: "This is Paneer", emoji: "🧀", image: "/assets/photos/indian_food/paneer.png", audioLabel: "pa-nneer", colors: ["#ffecd2", "#fcb69f"] },
-  { id: "murmura", value: "Murmura", title: "Murmura", subtitle: "This is Murmura", emoji: "🍿", image: "/assets/photos/indian_food/murmura.png", audioLabel: "Murrmura", colors: ["#fddb92", "#d1fdff"] },
-  { id: "poha", value: "Poha", title: "Poha", subtitle: "This is Poha", emoji: "🍚", image: "/assets/photos/indian_food/poha.png", audioLabel: "Poh ha", colors: ["#a1c4fd", "#c2e9fb"] },
+  { id: "paneer", value: "Paneer", title: "Paneer", subtitle: "This is Paneer", emoji: "🧀", image: "/assets/photos/indian_food/paneer.png", audioLabel: "Paneer", colors: ["#ffecd2", "#fcb69f"] },
+  { id: "murmura", value: "Murmura", title: "Murmura", subtitle: "This is Murmura", emoji: "🍿", image: "/assets/photos/indian_food/murmura.png", audioLabel: "Murmura", colors: ["#fddb92", "#d1fdff"] },
+  { id: "poha", value: "Poha", title: "Poha", subtitle: "This is Poha", emoji: "🍚", image: "/assets/photos/indian_food/poha.png", audioLabel: "Poha", colors: ["#a1c4fd", "#c2e9fb"] },
   { id: "paratha", value: "Paratha", title: "Paratha", subtitle: "This is Paratha", emoji: "🫓", image: "/assets/photos/indian_food/paratha.png", audioLabel: "Paratha", colors: ["#d1913c", "#ffd194"] },
-  { id: "idli", value: "Idli", title: "Idli", subtitle: "This is Idli", emoji: "🍚", image: "/assets/photos/indian_food/idli.png", audioLabel: "Iddlee", colors: ["#e0eafc", "#cfdef3"] },
-  { id: "dosa", value: "Dosa", title: "Dosa", subtitle: "This is Dosa", emoji: "🥞", image: "/assets/photos/indian_food/dosa.png", audioLabel: "Doh sa", colors: ["#f6d365", "#fda085"] },
+  { id: "idli", value: "Idli", title: "Idli", subtitle: "This is Idli", emoji: "🍚", image: "/assets/photos/indian_food/idli.png", audioLabel: "Idli", colors: ["#e0eafc", "#cfdef3"] },
+  { id: "dosa", value: "Dosa", title: "Dosa", subtitle: "This is Dosa", emoji: "🥞", image: "/assets/photos/indian_food/dosa.png", audioLabel: "Dosa", colors: ["#f6d365", "#fda085"] },
   { id: "curd", value: "Curd", title: "Curd", subtitle: "This is Curd", emoji: "🥛", image: "/assets/photos/indian_food/curd.png", audioLabel: "Curd", colors: ["#ff9a9e", "#fad0c4"] },
-  { id: "puri", value: "Puri", title: "Puri", subtitle: "This is Puri", emoji: "🫓", image: "/assets/photos/indian_food/puri.png", audioLabel: "Poo ree", colors: ["#fddb92", "#d1fdff"] },
+  { id: "puri", value: "Puri", title: "Puri", subtitle: "This is Puri", emoji: "🫓", image: "/assets/photos/indian_food/puri.png", audioLabel: "Puri", colors: ["#fddb92", "#d1fdff"] },
   { id: "kheer", value: "Kheer", title: "Kheer", subtitle: "This is Kheer", emoji: "🍨", image: "/assets/photos/indian_food/kheer.png", audioLabel: "Kheer", colors: ["#fbc2eb", "#a6c1ee"] },
 ];
+
 
 export const categoryCards = {
   alphabet: alphabetCards,

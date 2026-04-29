@@ -4,6 +4,9 @@
       "eas": {
         "projectId": "e22da16f-faa1-4764-a7d0-99dcebe642f5"
       }
+    },
+    "android": {
+      "package": "com.akashbadhe.babyalphabetslideshow"
     }
   }
 }

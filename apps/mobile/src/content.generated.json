@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-21T12:45:51.780Z",
+  "generatedAt": "2026-04-29T07:08:41.962Z",
   "categoryDefinitions": [
     {
       "id": "alphabet",
@@ -1685,7 +1685,7 @@
         "subtitle": "This is Khichdi",
         "emoji": "🍚",
         "image": "/assets/photos/indian_food/khichdi.png",
-        "audioLabel": "Kitch dee",
+        "audioLabel": "Khichdi",
         "colors": [
           "#f6d365",
           "#fda085"
@@ -1698,7 +1698,7 @@
         "subtitle": "This is Roti",
         "emoji": "🫓",
         "image": "/assets/photos/indian_food/roti.png",
-        "audioLabel": "Roh tee",
+        "audioLabel": "Roti",
         "colors": [
           "#d1913c",
           "#ffd194"
@@ -1711,7 +1711,7 @@
         "subtitle": "This is Dhokala",
         "emoji": "🧈",
         "image": "/assets/photos/indian_food/dhokala.png",
-        "audioLabel": "Dhok la",
+        "audioLabel": "Dhokala",
         "colors": [
           "#f6d365",
           "#fda085"
@@ -1724,7 +1724,7 @@
         "subtitle": "This is Dal",
         "emoji": "🥘",
         "image": "/assets/photos/indian_food/dal.png",
-        "audioLabel": "Daal",
+        "audioLabel": "Dal",
         "colors": [
           "#f6d365",
           "#fda085"
@@ -1737,7 +1737,7 @@
         "subtitle": "This is Upma",
         "emoji": "🥣",
         "image": "/assets/photos/indian_food/upma.png",
-        "audioLabel": "oopmaa",
+        "audioLabel": "Upma",
         "colors": [
           "#fddb92",
           "#d1fdff"
@@ -1750,7 +1750,7 @@
         "subtitle": "This is Makhana",
         "emoji": "🍿",
         "image": "/assets/photos/indian_food/makhana.png",
-        "audioLabel": "Mak ha naa",
+        "audioLabel": "Makhana",
         "colors": [
           "#a1c4fd",
           "#c2e9fb"
@@ -1776,7 +1776,7 @@
         "subtitle": "This is Paneer",
         "emoji": "🧀",
         "image": "/assets/photos/indian_food/paneer.png",
-        "audioLabel": "pa-nneer",
+        "audioLabel": "Paneer",
         "colors": [
           "#ffecd2",
           "#fcb69f"
@@ -1789,7 +1789,7 @@
         "subtitle": "This is Murmura",
         "emoji": "🍿",
         "image": "/assets/photos/indian_food/murmura.png",
-        "audioLabel": "Murrmura",
+        "audioLabel": "Murmura",
         "colors": [
           "#fddb92",
           "#d1fdff"
@@ -1802,7 +1802,7 @@
         "subtitle": "This is Poha",
         "emoji": "🍚",
         "image": "/assets/photos/indian_food/poha.png",
-        "audioLabel": "Poh ha",
+        "audioLabel": "Poha",
         "colors": [
           "#a1c4fd",
           "#c2e9fb"
@@ -1828,7 +1828,7 @@
         "subtitle": "This is Idli",
         "emoji": "🍚",
         "image": "/assets/photos/indian_food/idli.png",
-        "audioLabel": "Iddlee",
+        "audioLabel": "Idli",
         "colors": [
           "#e0eafc",
           "#cfdef3"
@@ -1841,7 +1841,7 @@
         "subtitle": "This is Dosa",
         "emoji": "🥞",
         "image": "/assets/photos/indian_food/dosa.png",
-        "audioLabel": "Doh sa",
+        "audioLabel": "Dosa",
         "colors": [
           "#f6d365",
           "#fda085"
@@ -1867,7 +1867,7 @@
         "subtitle": "This is Puri",
         "emoji": "🫓",
         "image": "/assets/photos/indian_food/puri.png",
-        "audioLabel": "Poo ree",
+        "audioLabel": "Puri",
         "colors": [
           "#fddb92",
           "#d1fdff"
