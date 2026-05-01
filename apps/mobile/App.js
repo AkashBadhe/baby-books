@@ -191,7 +191,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <KidsCardBookScreen
-        appTitle="First Words Cards"
+        appTitle="My First Words"
         appVersionLabel={APP_VERSION_LABEL}
         categories={categories}
         cardsByCategory={cardsByCategory}

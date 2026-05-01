@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Animated, Easing, Image, Pressable, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar as RNStatusBar, ScrollView, useWindowDimensions, useTVEventHandler } from "react-native";
+import { Alert, Animated, BackHandler, Easing, Image, Pressable, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar as RNStatusBar, ScrollView, useWindowDimensions, useTVEventHandler } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
@@ -336,6 +336,7 @@ function SlidersIcon({ active }) {
 function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled = true, transitionDirection = 1, isTVLayout = false }) {
   const [imageFailed, setImageFailed] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
+  const [tvArrowFocus, setTvArrowFocus] = useState(null); // "prev" | "next" | null
   const { width: viewportWidth, height: viewportHeight } = useWindowDimensions();
   const cardOpacity = useRef(new Animated.Value(1)).current;
   const cardTranslateX = useRef(new Animated.Value(0)).current;
@@ -345,10 +346,11 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
   const alphabetMode = categoryId === "alphabet";
   const numberMode = categoryId === "numbers";
   const colorMode = categoryId === "colors";
-  const textOnlyMode = alphabetMode || numberMode;
+  const hasImage = !imageFailed && !!imageUri;
+  const textOnlyMode = (alphabetMode || numberMode) && !hasImage;
   const numericValue = Number.parseInt(String(card?.value || ""), 10);
   const numberDenseMode = numberMode && Number.isFinite(numericValue) && numericValue >= 8;
-  const visualMode = !alphabetMode && !numberMode;
+  const visualMode = !textOnlyMode;
   const tvVisualSplitMode = isTVLayout && visualMode;
   const tvTextOnlySplitMode = isTVLayout && textOnlyMode;
   const isWeb = Platform.OS === "web";
@@ -485,6 +487,16 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
     );
   }
 
+  // When an arrow button is focused, pressing that direction navigates the slide
+  const onArrowTvEvent = useCallback((event) => {
+    if (!isTVLayout || !tvArrowFocus) return;
+    const eventType = event?.eventType;
+    if (eventType === "left" && tvArrowFocus === "prev") onPrev();
+    if (eventType === "right" && tvArrowFocus === "next") onNext();
+  }, [isTVLayout, tvArrowFocus, onPrev, onNext]);
+
+  useSafeTVEventHandler(onArrowTvEvent);
+
   return (
     <View style={[styles.viewerWrap, isTVLayout && tvStyles.viewerWrap]}>
       <Animated.View
@@ -542,6 +554,14 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
               )}
             </View>
             <View style={[styles.textSlot, styles.textSlotVisual, tvStyles.visualSplitTextWrap]}>
+              {(alphabetMode || numberMode) && (
+                <Text
+                  numberOfLines={1}
+                  style={[styles.value, numberMode && styles.valueNumeric, tvStyles.visualSplitValue]}
+                >
+                  {card.value}
+                </Text>
+              )}
               <Text
                 numberOfLines={2}
                 style={[styles.titleVisual, tvStyles.visualSplitTitle, { fontSize: visualTitleSize }]}
@@ -696,7 +716,30 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
           </>
         )}
       </Animated.View>
-
+      {isTVLayout && (
+        <View style={tvStyles.tvArrowOverlay} pointerEvents="box-none">
+          <TvPressable
+            style={tvStyles.tvArrowBtn}
+            focusedStyle={tvStyles.tvArrowBtnFocused}
+            onPress={onPrev}
+            onFocus={() => setTvArrowFocus("prev")}
+            onBlur={() => setTvArrowFocus((f) => f === "prev" ? null : f)}
+            accessibilityLabel="Previous card"
+          >
+            <View style={[tvStyles.tvChevron, tvStyles.tvChevronPrev]} />
+          </TvPressable>
+          <TvPressable
+            style={tvStyles.tvArrowBtn}
+            focusedStyle={tvStyles.tvArrowBtnFocused}
+            onPress={onNext}
+            onFocus={() => setTvArrowFocus("next")}
+            onBlur={() => setTvArrowFocus((f) => f === "next" ? null : f)}
+            accessibilityLabel="Next card"
+          >
+            <View style={[tvStyles.tvChevron, tvStyles.tvChevronNext]} />
+          </TvPressable>
+        </View>
+      )}
     </View>
   );
 }
@@ -727,7 +770,7 @@ export function KidsCardBookScreen({
   const [voiceOn, setVoiceOn] = useState(false);
   const [swipeOn, setSwipeOn] = useState(!Platform.isTV);
   const [autoplay, setAutoplay] = useState(false);
-  const [delayMs, setDelayMs] = useState(3000);
+  const [delayMs, setDelayMs] = useState(5000);
   const [categoryPickerOpen, setCategoryPickerOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [parentGuideOpen, setParentGuideOpen] = useState(false);
@@ -1044,6 +1087,44 @@ export function KidsCardBookScreen({
 
   useSafeTVEventHandler(onTvEvent);
 
+  // TV-only: intercept hardware back press to close menus or confirm exit
+  useEffect(() => {
+    if (!isTVDevice) return undefined;
+
+    const onBackPress = () => {
+      if (touchLockOn) return true; // swallow back while locked
+
+      // Close the topmost open sheet first
+      if (parentGuideOpen) {
+        setParentGuideOpen(false);
+        return true;
+      }
+      if (categoryPickerOpen) {
+        setCategoryPickerOpen(false);
+        return true;
+      }
+      if (settingsOpen) {
+        setSettingsOpen(false);
+        return true;
+      }
+
+      // No menu open — ask user to confirm exit
+      Alert.alert(
+        "Exit App",
+        "Are you sure you want to exit?",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Exit", style: "destructive", onPress: () => BackHandler.exitApp() },
+        ],
+        { cancelable: true },
+      );
+      return true; // prevent default exit while dialog is shown
+    };
+
+    const subscription = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    return () => subscription.remove();
+  }, [isTVDevice, touchLockOn, parentGuideOpen, categoryPickerOpen, settingsOpen]);
+
   return (
     <SafeAreaView style={[styles.root, isTVDevice && tvStyles.root, { paddingTop: topInset + (isTVDevice ? 12 : 6) }]}> 
       <StatusBar style={touchLockOn ? "light" : "dark"} hidden={touchLockOn} />
@@ -1293,7 +1374,8 @@ const styles = StyleSheet.create({
   },  cardVisual: {
     justifyContent: "space-between",
     paddingHorizontal: 14,
-    paddingVertical: 14,
+    paddingTop: 14,
+    paddingBottom: 24,
   },
   value: {
     fontSize: 106,
@@ -1393,7 +1475,9 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   subtitle: {
-    marginTop: 8,
+    marginTop: 2,
+    marginBottom: 12,
+    paddingBottom: 12,
     fontSize: 20,
     fontWeight: "700",
     color: "#2f4b73",
@@ -1406,7 +1490,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   textSlotVisual: {
-    minHeight: 92,
+    minHeight: 72,
   },
   bottomNav: {
     position: "absolute",
@@ -1693,6 +1777,52 @@ const tvStyles = StyleSheet.create({
   mainContent: {},
   viewerWrap: {
     paddingHorizontal: 0,
+    position: "relative",
+  },
+  tvArrowOverlay: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 150,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 18,
+    zIndex: 10,
+  },
+  tvArrowBtn: {
+    width: 56,
+    height: 56,
+    borderRadius: 12,
+    backgroundColor: "rgba(255,255,255,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.5)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  tvArrowBtnFocused: {
+    backgroundColor: "rgba(255,255,255,0.65)",
+    borderColor: "rgba(255,255,255,0.85)",
+    transform: [{ scale: 1.18 }],
+  },
+  tvChevron: {
+    width: 14,
+    height: 14,
+    borderColor: "#29486f",
+    borderTopWidth: 3,
+    borderRightWidth: 3,
+  },
+  tvChevronPrev: {
+    transform: [{ rotate: "-135deg" }],
+    marginLeft: 4,
+  },
+  tvChevronNext: {
+    transform: [{ rotate: "45deg" }],
+    marginRight: 4,
+  },
+  tvChevronFocused: {
+    borderColor: "#142038",
   },
   visualSplitRow: {
     flex: 1,
@@ -1711,6 +1841,13 @@ const tvStyles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "center",
     paddingRight: 6,
+  },
+  visualSplitValue: {
+    fontSize: 96,
+    lineHeight: 100,
+    textAlign: "left",
+    width: "100%",
+    marginBottom: 4,
   },
   visualSplitTitle: {
     width: "100%",

@@ -57,6 +57,10 @@ Use these as GitHub Topics/keywords:
 2. Copy mapped files to `public/assets/photos/...` (lowercase names matching card IDs).
 3. Run optimization:
    - `npm run assets:optimize`
+4. Export updated images and content to the mobile app:
+   - `node scripts/export-mobile-content.mjs`
+   - This copies images from `public/assets/photos/` to `apps/mobile/assets/photos/`, regenerates `apps/mobile/src/localImageAssets.js` (static `require()` map for the bundler), and updates `apps/mobile/src/content.generated.json`.
+   - **Must be run whenever images are added, removed, or updated so the mobile bundle picks up the changes.**
 
 ## Build and Test
 
