@@ -30,7 +30,7 @@ const alphabetCards = [
   { id: "n", value: "N", title: "Nest", subtitle: "N for Nest", emoji: "🪺", audioLabel: "N, for Nest", colors: ["#e0c3fc", "#8ec5fc"] },
   { id: "o", value: "O", title: "Orange", subtitle: "O for Orange", emoji: "🍊", audioLabel: "O, for Orange", colors: ["#f093fb", "#f5576c"] },
   { id: "p", value: "P", title: "Penguin", subtitle: "P for Penguin", emoji: "🐧", audioLabel: "P, for Penguin", colors: ["#4facfe", "#00f2fe"] },
-  { id: "q", value: "Q", title: "Quilt", subtitle: "Q for Quilt", emoji: "🧵", audioLabel: "Q, for Quilt", colors: ["#43e97b", "#38f9d7"] },
+  { id: "q", value: "Q", title: "Queen", subtitle: "Q for Queen", emoji: "👑", audioLabel: "Q, for Queen", colors: ["#43e97b", "#38f9d7"] },
   { id: "r", value: "R", title: "Rainbow", subtitle: "R for Rainbow", emoji: "🌈", audioLabel: "R, for Rainbow", colors: ["#fa709a", "#fee140"] },
   { id: "s", value: "S", title: "Sun", subtitle: "S for Sun", emoji: "☀️", audioLabel: "S, for Sun", colors: ["#f6d365", "#fda085"] },
   { id: "t", value: "T", title: "Tiger", subtitle: "T for Tiger", emoji: "🐯", audioLabel: "T, for Tiger", colors: ["#fbc2eb", "#a6c1ee"] },

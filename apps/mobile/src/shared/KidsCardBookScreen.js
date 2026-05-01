@@ -381,8 +381,8 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
   const numberEmojiBlockHeight = Math.round(numberEmojiLineHeight * 2.22);
   const mobileValueFontSize = !isTabletLayout
     ? (numberMode
-      ? Math.max(126, Math.min(Math.round(Math.min(viewportWidth, viewportHeight) * 0.27), 160))
-      : Math.max(144, Math.min(Math.round(Math.min(viewportWidth, viewportHeight) * 0.31), 192)))
+      ? Math.max(hasImage ? 126 : 126, Math.min(Math.round(Math.min(viewportWidth, viewportHeight) * (hasImage ? 0.27 : 0.27)), hasImage ? 160 : 160))
+      : Math.max(hasImage ? 144 : 144, Math.min(Math.round(Math.min(viewportWidth, viewportHeight) * (hasImage ? 0.31 : 0.31)), hasImage ? 192 : 192)))
     : null;
   const valueFontSize = isTVLayout
     ? Math.max(
@@ -394,10 +394,10 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
     )
     : isTabletLayout
     ? Math.max(
-      numberMode ? 190 : 210,
+      hasImage ? (numberMode ? 96 : 108) : (numberMode ? 190 : 210),
       Math.min(
-        Math.round(Math.min(viewportWidth, viewportHeight) * (numberMode ? 0.29 : 0.33)),
-        numberMode ? 260 : 300,
+        Math.round(Math.min(viewportWidth, viewportHeight) * (hasImage ? 0.16 : (numberMode ? 0.29 : 0.33))),
+        hasImage ? (numberMode ? 128 : 144) : (numberMode ? 260 : 300),
       ),
     )
     : null;
@@ -653,7 +653,11 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
             <View
               style={
                 visualMode
-                  ? [styles.visualMediaWrap, !isWeb && styles.visualMediaWrapMobile]
+                  ? [
+                      styles.visualMediaWrap,
+                      !isWeb && styles.visualMediaWrapMobile,
+                      (alphabetMode || numberMode) && hasImage && !isTVLayout && styles.visualMediaWrapCompact,
+                    ]
                   : [styles.mediaWrap, styles.classicMediaWrap, textOnlyMode && {
                     minHeight: textOnlyMediaHeight,
                     maxHeight: textOnlyMediaHeight,
@@ -1431,6 +1435,10 @@ const styles = StyleSheet.create({
   },
   visualMediaWrapMobile: {
     minHeight: 280,
+  },
+  visualMediaWrapCompact: {
+    flex: 0.6,
+    minHeight: 140,
   },
   rectangleShape: {
     width: "88%",
