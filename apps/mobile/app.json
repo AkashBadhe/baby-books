@@ -2,7 +2,7 @@
   "expo": {
     "name": "My First Words",
     "slug": "firstwords-cards",
-    "version": "2.9.0",
+    "version": "2.10.0",
     "orientation": "default",
     "userInterfaceStyle": "light",
     "assetBundlePatterns": [
@@ -14,7 +14,7 @@
     },
     "android": {
       "package": "com.akashbadhe.firstwordscards",
-      "versionCode": 50,
+      "versionCode": 51,
       "permissions": [
         "android.permission.INTERNET",
         "android.permission.MODIFY_AUDIO_SETTINGS",

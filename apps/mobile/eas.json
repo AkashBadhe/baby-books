@@ -17,6 +17,15 @@
       "env": {
         "EAS_BUILD_NO_EXPO_GO_WARNING": "false"
       }
+    },
+    "production-apk": {
+      "credentialsSource": "local",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EAS_BUILD_NO_EXPO_GO_WARNING": "false"
+      }
     }
   },
   "submit": {
