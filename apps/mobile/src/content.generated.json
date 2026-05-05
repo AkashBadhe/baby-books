@@ -1,65 +1,77 @@
 {
-  "generatedAt": "2026-05-01T06:19:12.723Z",
+  "generatedAt": "2026-05-05T16:53:03.758Z",
   "categoryDefinitions": [
     {
       "id": "alphabet",
       "label": "Alphabet",
-      "icon": "🔤"
+      "icon": "🔤",
+      "image": "/assets/photos/titles/alphabet.png"
     },
     {
       "id": "numbers",
       "label": "Numbers",
-      "icon": "🔢"
+      "icon": "🔢",
+      "image": "/assets/photos/titles/numbers.png"
     },
     {
       "id": "colors",
       "label": "Colors",
-      "icon": "🎨"
+      "icon": "🎨",
+      "image": "/assets/photos/titles/colors.png"
     },
     {
       "id": "shapes",
       "label": "Shapes",
-      "icon": "🟠"
+      "icon": "🟠",
+      "image": "/assets/photos/titles/shapes.png"
     },
     {
-      "id": "sizes",
-      "label": "Sizes",
-      "icon": "📏"
+      "id": "opposites",
+      "label": "Opposites",
+      "icon": "↔️",
+      "image": "/assets/photos/titles/opposites.png"
     },
     {
       "id": "vegetables",
       "label": "Vegetables",
-      "icon": "🥕"
+      "icon": "🥕",
+      "image": "/assets/photos/titles/vegetables.png"
     },
     {
       "id": "fruits",
       "label": "Fruits",
-      "icon": "🍓"
+      "icon": "🍓",
+      "image": "/assets/photos/titles/fruits.png"
     },
     {
       "id": "body",
       "label": "Know Your Body",
-      "icon": "🧍"
+      "icon": "🧍",
+      "image": "/assets/photos/titles/body.png"
     },
     {
       "id": "wild_animals",
       "label": "Wild Animals",
-      "icon": "🦁"
+      "icon": "🦁",
+      "image": "/assets/photos/titles/wild_animals.png"
     },
     {
       "id": "birds",
       "label": "Birds",
-      "icon": "🦜"
+      "icon": "🦜",
+      "image": "/assets/photos/titles/birds.png"
     },
     {
       "id": "vehicles",
-      "label": "Vehicles",
-      "icon": "🚗"
+      "label": "Transport",
+      "icon": "🚗",
+      "image": "/assets/photos/titles/vehicles.png"
     },
     {
       "id": "indian_food",
       "label": "Indian Food",
-      "icon": "🍛"
+      "icon": "🍛",
+      "image": "/assets/photos/titles/indian_food.png"
     }
   ],
   "categoryCards": {
@@ -753,14 +765,14 @@
         ]
       }
     ],
-    "sizes": [
+    "opposites": [
       {
         "id": "big",
         "value": "Big",
         "title": "Big",
         "subtitle": "Elephant is Big",
         "emoji": "🐘",
-        "image": "/assets/photos/sizes/big.png",
+        "image": "/assets/photos/opposites/big.png",
         "audioLabel": "Big",
         "colors": [
           "#e0c3fc",
@@ -773,7 +785,7 @@
         "title": "Small",
         "subtitle": "Ant is Small",
         "emoji": "🐭",
-        "image": "/assets/photos/sizes/small.png",
+        "image": "/assets/photos/opposites/small.png",
         "audioLabel": "Small",
         "colors": [
           "#fbc2eb",
@@ -786,7 +798,7 @@
         "title": "Tall",
         "subtitle": "Giraffe is Tall",
         "emoji": "🦒",
-        "image": "/assets/photos/sizes/tall.png",
+        "image": "/assets/photos/opposites/tall.png",
         "audioLabel": "Tall",
         "colors": [
           "#d4fc79",
@@ -799,24 +811,11 @@
         "title": "Short",
         "subtitle": "This Boy is Short",
         "emoji": "🧍",
-        "image": "/assets/photos/sizes/short.png",
+        "image": "/assets/photos/opposites/short.png",
         "audioLabel": "Short",
         "colors": [
           "#f6d365",
           "#fda085"
-        ]
-      },
-      {
-        "id": "long",
-        "value": "Long",
-        "title": "Long",
-        "subtitle": "This Road is Long",
-        "emoji": "🚌",
-        "image": "/assets/photos/sizes/long.png",
-        "audioLabel": "Long",
-        "colors": [
-          "#84fab0",
-          "#8fd3f4"
         ]
       },
       {
@@ -825,7 +824,7 @@
         "title": "Heavy",
         "subtitle": "Rock is Heavy",
         "emoji": "🪨",
-        "image": "/assets/photos/sizes/heavy.png",
+        "image": "/assets/photos/opposites/heavy.png",
         "audioLabel": "Heavy",
         "colors": [
           "#cfd9df",
@@ -838,7 +837,7 @@
         "title": "Light",
         "subtitle": "Feather is Light",
         "emoji": "🪶",
-        "image": "/assets/photos/sizes/light.png",
+        "image": "/assets/photos/opposites/light.png",
         "audioLabel": "Light",
         "colors": [
           "#ffecd2",
@@ -851,7 +850,7 @@
         "title": "Wide",
         "subtitle": "This Road is Wide",
         "emoji": "🖥️",
-        "image": "/assets/photos/sizes/wide.png",
+        "image": "/assets/photos/opposites/wide.png",
         "audioLabel": "Wide",
         "colors": [
           "#89f7fe",
@@ -864,7 +863,7 @@
         "title": "Narrow",
         "subtitle": "This Lane is Narrow",
         "emoji": "📏",
-        "image": "/assets/photos/sizes/narrow.png",
+        "image": "/assets/photos/opposites/narrow.png",
         "audioLabel": "Narrow",
         "colors": [
           "#fddb92",
@@ -877,11 +876,128 @@
         "title": "Thin",
         "subtitle": "Paper is Thin",
         "emoji": "🎗️",
-        "image": "/assets/photos/sizes/thin.png",
+        "image": "/assets/photos/opposites/thin.png",
         "audioLabel": "Thin",
         "colors": [
           "#fa709a",
           "#fee140"
+        ]
+      },
+      {
+        "id": "thick",
+        "value": "Thick",
+        "title": "Thick",
+        "subtitle": "Book is Thick",
+        "emoji": "📚",
+        "image": "/assets/photos/opposites/thick.png",
+        "audioLabel": "Thick",
+        "colors": [
+          "#a18cd1",
+          "#fbc2eb"
+        ]
+      },
+      {
+        "id": "fast",
+        "value": "Fast",
+        "title": "Fast",
+        "subtitle": "Cheetah is Fast",
+        "emoji": "🐆",
+        "image": "/assets/photos/opposites/fast.png",
+        "audioLabel": "Fast",
+        "colors": [
+          "#f6d365",
+          "#fda085"
+        ]
+      },
+      {
+        "id": "slow",
+        "value": "Slow",
+        "title": "Slow",
+        "subtitle": "Snail is Slow",
+        "emoji": "🐌",
+        "image": "/assets/photos/opposites/slow.png",
+        "audioLabel": "Slow",
+        "colors": [
+          "#84fab0",
+          "#8fd3f4"
+        ]
+      },
+      {
+        "id": "hot",
+        "value": "Hot",
+        "title": "Hot",
+        "subtitle": "Tea is Hot",
+        "emoji": "🔥",
+        "image": "/assets/photos/opposites/hot.png",
+        "audioLabel": "Hot",
+        "colors": [
+          "#ff512f",
+          "#f09819"
+        ]
+      },
+      {
+        "id": "cold",
+        "value": "Cold",
+        "title": "Cold",
+        "subtitle": "Ice Cream is Cold",
+        "emoji": "🧊",
+        "image": "/assets/photos/opposites/cold.png",
+        "audioLabel": "Cold",
+        "colors": [
+          "#89f7fe",
+          "#a1c4fd"
+        ]
+      },
+      {
+        "id": "hard",
+        "value": "Hard",
+        "title": "Hard",
+        "subtitle": "Rock is Hard",
+        "emoji": "🪨",
+        "image": "/assets/photos/opposites/hard.png",
+        "audioLabel": "Hard",
+        "colors": [
+          "#cfd9df",
+          "#e2ebf0"
+        ]
+      },
+      {
+        "id": "soft",
+        "value": "Soft",
+        "title": "Soft",
+        "subtitle": "Pillow is Soft",
+        "emoji": "🛏️",
+        "image": "/assets/photos/opposites/soft.png",
+        "audioLabel": "Soft",
+        "colors": [
+          "#fbc2eb",
+          "#e0c3fc"
+        ]
+      },
+      {
+        "id": "full",
+        "value": "Full",
+        "title": "Full",
+        "subtitle": "This Glass is Full",
+        "emoji": "🥛",
+        "image": "/assets/photos/opposites/full.png",
+        "audioLabel": "Full",
+        "colors": [
+          "#4facfe",
+          "#00f2fe"
+        ]
+      },
+      {
+        "id": "empty",
+        "value": "Empty",
+        "title": "Empty",
+        "subtitle": "This Glass is Empty",
+        "emoji": "🫙",
+        "image": "/assets/photos/opposites/empty.png",
+        "audioLabel": "Empty",
+        "colors": [
+          "#fdfbfb",
+          "#e8ecf1"
         ]
       }
     ],
@@ -1468,12 +1584,12 @@
       },
       {
         "id": "chicken",
-        "value": "Chicken",
-        "title": "Chicken",
-        "subtitle": "This is Chicken",
+        "value": "Hen",
+        "title": "Hen",
+        "subtitle": "This is Hen",
         "emoji": "🐔",
         "image": "/assets/photos/birds/chicken.png",
-        "audioLabel": "Chicken",
+        "audioLabel": "Hen",
         "colors": [
           "#fddb92",
           "#d1fdff"
@@ -1706,12 +1822,12 @@
       },
       {
         "id": "dhokala",
-        "value": "Dhokala",
-        "title": "Dhokala",
-        "subtitle": "This is Dhokala",
+        "value": "Dhokla",
+        "title": "Dhokla",
+        "subtitle": "This is Dhokla",
         "emoji": "🧈",
         "image": "/assets/photos/indian_food/dhokala.png",
-        "audioLabel": "Dhokala",
+        "audioLabel": "Dhokla",
         "colors": [
           "#f6d365",
           "#fda085"

@@ -42,9 +42,8 @@ async function listImageFiles(dirPath) {
 }
 
 async function copyPhotoAssets() {
-  await fs.rm(mobilePhotosDir, { recursive: true, force: true });
   await ensureDir(mobilePhotosDir);
-  await fs.cp(publicPhotosDir, mobilePhotosDir, { recursive: true });
+  await fs.cp(publicPhotosDir, mobilePhotosDir, { recursive: true, force: true });
 }
 
 async function generateLocalImageAssetsModule() {

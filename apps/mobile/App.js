@@ -20,6 +20,12 @@ const APP_VERSION_LABEL = ANDROID_VERSION_CODE
 
 function resolveCardImageUri(categoryId, card) {
   if (!card) return null;
+  if (card.__isIntro) {
+    const bundledUri = resolveBundledImageUri("titles", categoryId);
+    if (bundledUri) return bundledUri;
+    if (card.image?.startsWith("/")) return `${WEB_ASSET_BASE}${card.image}`;
+    return null;
+  }
   const bundledUri = resolveBundledImageUri(categoryId, card.id);
   if (bundledUri) return bundledUri;
   if (card.image?.startsWith("http://") || card.image?.startsWith("https://")) return card.image;

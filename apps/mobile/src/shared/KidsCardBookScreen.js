@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Alert, Animated, BackHandler, Easing, Image, Pressable, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar as RNStatusBar, ScrollView, useWindowDimensions, useTVEventHandler } from "react-native";
+import { Alert, Animated, BackHandler, Easing, findNodeHandle, Image, Pressable, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar as RNStatusBar, ScrollView, useWindowDimensions, useTVEventHandler } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
 
 const PINNING_GUIDE_SEEN_KEY = "firstwords:pinning-guide-seen:v1";
 const useSafeTVEventHandler = typeof useTVEventHandler === "function" ? useTVEventHandler : () => {};
@@ -13,14 +14,10 @@ function wrapIndex(index, size) {
   return (index + size) % size;
 }
 
-function favoriteKey(categoryId, cardId) {
-  return `${categoryId}:${cardId}`;
-}
-
 function shouldHideSubtitle(categoryId, subtitle) {
   if (!subtitle) return true;
   if (categoryId === "numbers") return true;
-  if (categoryId === "sizes") return false;
+  if (categoryId === "opposites") return false;
   return /^(this is|these are)\b/i.test(subtitle.trim());
 }
 
@@ -137,19 +134,20 @@ function swatchColorById(cardId) {
   return swatches[cardId] || "#94a3b8";
 }
 
-function TvPressable({
+const TvPressable = React.forwardRef(function TvPressable({
   style,
   focusedStyle,
   onFocus,
   onBlur,
   hasTVPreferredFocus,
   ...props
-}) {
+}, ref) {
   const isTVDevice = Platform.isTV === true;
   const [isFocused, setIsFocused] = useState(false);
 
   return (
     <Pressable
+      ref={ref}
       {...props}
       focusable={isTVDevice ? true : props.focusable}
       hasTVPreferredFocus={isTVDevice ? hasTVPreferredFocus : false}
@@ -167,24 +165,57 @@ function TvPressable({
       }}
     />
   );
-}
+});
 
-function CategorySheet({ categories, selectedCategory, onSelect }) {
+function CategorySheet({ categories, selectedCategory, onSelect, resolveCategoryImageUri }) {
+  const isTVDevice = Platform.isTV === true;
+  const chipRefs = useRef([]);
+  const [nodeHandles, setNodeHandles] = useState([]);
+  const COLS = 2;
+
+  useEffect(() => {
+    if (!isTVDevice) return;
+    const handles = chipRefs.current.map((r) => (r ? findNodeHandle(r) : null));
+    setNodeHandles(handles);
+  }, [categories.length, isTVDevice]);
+
+  const totalCount = categories.length;
+  const totalRows = Math.ceil(totalCount / COLS);
+  const lastRowStart = (totalRows - 1) * COLS;
+
   return (
     <View>
       <Text style={styles.sheetTitle}>Choose Category</Text>
       <View style={styles.categoryGrid}>
-        {categories.map((item) => {
+        {categories.map((item, index) => {
           const active = item.id === selectedCategory;
+          const imageUri = resolveCategoryImageUri ? resolveCategoryImageUri(item) : null;
+          const col = index % COLS;
+          const row = Math.floor(index / COLS);
+
+          const upIdx = row === 0 ? index : index - COLS;
+          const downIdx = index >= lastRowStart ? index : Math.min(index + COLS, totalCount - 1);
+          const leftIdx = col === 0 ? index : index - 1;
+          const rightIdx = col === COLS - 1 || index === totalCount - 1 ? index : index + 1;
+
           return (
             <TvPressable
               key={item.id}
+              ref={(el) => { chipRefs.current[index] = el; }}
               onPress={() => onSelect(item.id)}
               style={[styles.categoryChip, active && styles.categoryChipActive]}
               focusedStyle={styles.categoryChipFocused}
               hasTVPreferredFocus={active}
+              nextFocusUp={nodeHandles[upIdx] ?? undefined}
+              nextFocusDown={nodeHandles[downIdx] ?? undefined}
+              nextFocusLeft={nodeHandles[leftIdx] ?? undefined}
+              nextFocusRight={nodeHandles[rightIdx] ?? undefined}
             >
-              <Text style={styles.categoryEmoji}>{item.icon}</Text>
+              {imageUri ? (
+                <Image source={{ uri: imageUri }} style={styles.categoryThumb} resizeMode="contain" />
+              ) : (
+                <Text style={styles.categoryEmoji}>{item.icon}</Text>
+              )}
               <Text style={[styles.categoryText, active && styles.categoryTextActive]}>{item.label}</Text>
             </TvPressable>
           );
@@ -197,10 +228,8 @@ function CategorySheet({ categories, selectedCategory, onSelect }) {
 function SettingsSheet({
   voiceOn,
   swipeOn,
-  isFavorite,
   onToggleVoice,
   onToggleSwipe,
-  onToggleFavorite,
   currentViewed,
   cardsLength,
   totalViewed,
@@ -225,11 +254,6 @@ function SettingsSheet({
         </TvPressable>
         <TvPressable style={[styles.pillBtn, swipeOn && styles.pillBtnActive]} focusedStyle={styles.pillBtnFocused} onPress={onToggleSwipe}>
           <Text style={[styles.pillBtnText, swipeOn && styles.pillBtnTextActive]}>Swipe {swipeOn ? "ON" : "OFF"}</Text>
-        </TvPressable>
-        <TvPressable style={[styles.pillBtn, isFavorite && styles.favoritePillBtnActive]} focusedStyle={styles.pillBtnFocused} onPress={onToggleFavorite}>
-          <Text style={[styles.pillBtnText, isFavorite && styles.favoritePillBtnTextActive]}>
-            Favorite {isFavorite ? "ON" : "OFF"}
-          </Text>
         </TvPressable>
       </View>
       <Text style={styles.delayLabel}>Slide Delay</Text>
@@ -333,7 +357,7 @@ function SlidersIcon({ active }) {
   );
 }
 
-function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled = true, transitionDirection = 1, isTVLayout = false }) {
+function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled = true, transitionDirection = 1, isTVLayout = false, isCompactLandscape = false, landscapeLeftInset = 0, landscapeRightInset = 0 }) {
   const [imageFailed, setImageFailed] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
   const [tvArrowFocus, setTvArrowFocus] = useState(null); // "prev" | "next" | null
@@ -351,8 +375,12 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
   const numericValue = Number.parseInt(String(card?.value || ""), 10);
   const numberDenseMode = numberMode && Number.isFinite(numericValue) && numericValue >= 8;
   const visualMode = !textOnlyMode;
+  const valueText = String(card?.value || "");
+  const isSingleLandscapeValue = valueText.length <= 1;
   const tvVisualSplitMode = isTVLayout && visualMode;
   const tvTextOnlySplitMode = isTVLayout && textOnlyMode;
+  const mobileLandscapeLetterNumberThreeColMode = isCompactLandscape && !isTVLayout && (alphabetMode || numberMode);
+  const mobileLandscapeTwoColMode = isCompactLandscape && !isTVLayout && !mobileLandscapeLetterNumberThreeColMode;
   const isWeb = Platform.OS === "web";
   const tvScaleBase = Math.min(viewportWidth, viewportHeight);
   const isTabletLayout = Math.min(viewportWidth, viewportHeight) >= 700;
@@ -360,7 +388,9 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
   const showSubtitle = !shouldHideSubtitle(categoryId, card?.subtitle);
   const visualEmojiSizeRaw = Math.max(isWeb ? 120 : 138, Math.round(Math.min(viewportWidth, viewportHeight) * (isWeb ? 0.22 : 0.24)));
   const visualEmojiSize = isTVLayout ? Math.min(visualEmojiSizeRaw, 188) : visualEmojiSizeRaw;
-  const visualTitleBase = isTVLayout ? tvScaleBase : viewportWidth;
+  const visualTitleBase = isTVLayout
+    ? tvScaleBase
+    : (isCompactLandscape ? Math.min(viewportWidth, viewportHeight * 1.45) : viewportWidth);
   const visualTitleSizeRaw = Math.max(isWeb ? 34 : 38, Math.round(visualTitleBase * (isWeb ? 0.064 : 0.075)));
   const visualTitleSize = isTVLayout ? Math.min(visualTitleSizeRaw, 62) : visualTitleSizeRaw;
   const alphabetEmojiSize = isTabletLayout
@@ -383,6 +413,14 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
     ? (numberMode
       ? Math.max(hasImage ? 126 : 126, Math.min(Math.round(Math.min(viewportWidth, viewportHeight) * (hasImage ? 0.27 : 0.27)), hasImage ? 160 : 160))
       : Math.max(hasImage ? 144 : 144, Math.min(Math.round(Math.min(viewportWidth, viewportHeight) * (hasImage ? 0.31 : 0.31)), hasImage ? 192 : 192)))
+    : null;
+  const mobileLandscapeValueFontSize = mobileLandscapeLetterNumberThreeColMode && mobileValueFontSize
+    ? (numberMode
+      ? Math.max(92, Math.min(Math.round(mobileValueFontSize * (isSingleLandscapeValue ? 1.24 : 1.12)), 152))
+      : Math.max(100, Math.min(Math.round(mobileValueFontSize * (isSingleLandscapeValue ? 1.3 : 1.16)), 166)))
+    : null;
+  const mobileLandscapeValueLineHeight = mobileLandscapeValueFontSize
+    ? Math.round(mobileLandscapeValueFontSize * 1.03)
     : null;
   const valueFontSize = isTVLayout
     ? Math.max(
@@ -409,12 +447,15 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
   const textOnlyMediaHeightRaw = numberMode
     ? Math.max(numberEmojiBlockHeight + (isTabletLayout ? 12 : 8), isTabletLayout ? 156 : 122)
     : Math.max(alphabetEmojiBlockHeight + (isTabletLayout ? 24 : 16), isTabletLayout ? 172 : 132);
-  const textOnlyMediaHeight = isTVLayout ? Math.min(textOnlyMediaHeightRaw, 190) : textOnlyMediaHeightRaw;
+  const textOnlyMediaHeight = isTVLayout ? Math.min(textOnlyMediaHeightRaw, 190) : (isCompactLandscape ? Math.round(textOnlyMediaHeightRaw * 0.82) : textOnlyMediaHeightRaw);
+  const colorSwatchWidthFactor = isTVLayout ? 0.52 : (isCompactLandscape ? 0.66 : (isWeb ? 0.44 : 0.62));
+  const colorSwatchHeightFactor = isTVLayout ? 0.58 : (isCompactLandscape ? 0.48 : (isWeb ? 0.34 : 0.3));
+  const colorSwatchCap = isTVLayout ? 520 : (isCompactLandscape ? 380 : (isWeb ? 320 : 280));
   const colorSwatchSize = Math.round(
     Math.min(
-      isWeb ? viewportWidth * 0.44 : viewportWidth * 0.62,
-      viewportHeight * (isWeb ? 0.34 : 0.3),
-      isWeb ? 320 : 280,
+      viewportWidth * colorSwatchWidthFactor,
+      viewportHeight * colorSwatchHeightFactor,
+      colorSwatchCap,
     ),
   );
 
@@ -498,11 +539,13 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
   useSafeTVEventHandler(onArrowTvEvent);
 
   return (
-    <View style={[styles.viewerWrap, isTVLayout && tvStyles.viewerWrap]}>
+    <View style={[styles.viewerWrap, isTVLayout && tvStyles.viewerWrap, isCompactLandscape && styles.viewerWrapLandscape]}>
       <Animated.View
         style={[
           styles.card,
-          visualMode && styles.cardVisual,
+          !card?.__isIntro && visualMode && styles.cardVisual,
+          isCompactLandscape && styles.cardLandscape,
+          isCompactLandscape && !card?.__isIntro && visualMode && styles.cardVisualLandscape,
           {
             opacity: cardOpacity,
             transform: [{ translateX: cardTranslateX }, { scale: cardScale }],
@@ -525,7 +568,39 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
         }}
         onResponderTerminate={() => setTouchStart(null)}
       >
-        {tvVisualSplitMode ? (
+        {card?.__isIntro ? (
+          isCompactLandscape && !isTVLayout ? (
+            <View style={styles.landscapeTwoColRow}>
+              <View style={[styles.landscapeCol, styles.landscapeTwoColAlignedCol, styles.landscapeTwoColMediaCol]}>
+                <View style={[styles.introCategoryWrap, styles.introCategoryWrapLandscape]}> 
+                  {imageUri ? (
+                    <Image
+                      source={{ uri: imageUri }}
+                      style={[styles.introCategoryImage, styles.introCategoryImageLandscape]}
+                      resizeMode="contain"
+                    />
+                  ) : null}
+                </View>
+              </View>
+              <View style={[styles.landscapeCol, styles.landscapeTwoColAlignedCol, styles.landscapeTwoColTextCol]}>
+                <View style={[styles.introCategoryWrap, styles.introCategoryWrapLandscapeText]}>
+                  <Text style={[styles.introCategoryLabel, styles.introCategoryLabelLandscape]}>{card._categoryLabel}</Text>
+                </View>
+              </View>
+            </View>
+          ) : (
+            <View style={styles.introCategoryWrap}>
+              {imageUri ? (
+                <Image
+                  source={{ uri: imageUri }}
+                  style={styles.introCategoryImage}
+                  resizeMode="contain"
+                />
+              ) : null}
+              <Text style={[styles.introCategoryLabel, isTVLayout && tvStyles.introCategoryLabel, isCompactLandscape && styles.introCategoryLabelLandscape]}>{card._categoryLabel}</Text>
+            </View>
+          )
+        ) : tvVisualSplitMode ? (
           <View style={tvStyles.visualSplitRow}>
             <View style={[styles.visualMediaWrap, tvStyles.visualSplitMediaWrap]}>
               {colorMode ? (
@@ -627,10 +702,160 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
               )}
             </View>
           </View>
+        ) : mobileLandscapeLetterNumberThreeColMode ? (
+          <View style={[styles.landscapeThreeColRow, { paddingLeft: landscapeLeftInset, paddingRight: landscapeRightInset }]}>
+            <View style={[styles.landscapeCol, styles.landscapeThreeColAlignedCol, styles.landscapeColLeft]}>
+              {(alphabetMode || numberMode) ? (
+                <View style={[styles.valueSlot, styles.valueSlotLandscape, styles.landscapeValueSlot]}>
+                  <Text
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={isSingleLandscapeValue ? 0.52 : 0.44}
+                    style={[
+                      styles.value,
+                      numberMode && styles.valueNumeric,
+                      styles.landscapeValue,
+                      mobileLandscapeValueFontSize && {
+                        fontSize: mobileLandscapeValueFontSize,
+                        lineHeight: mobileLandscapeValueLineHeight,
+                      },
+                    ]}
+                  >
+                    {card.value}
+                  </Text>
+                </View>
+              ) : (
+                <View style={[styles.mediaWrap, styles.landscapeValueSlot]}>
+                  <Text
+                    numberOfLines={2}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.5}
+                    style={[styles.emoji, styles.landscapeSideGlyph]}
+                  >
+                    {card.emoji}
+                  </Text>
+                </View>
+              )}
+            </View>
+
+            <View style={[styles.landscapeCol, styles.landscapeThreeColAlignedCol, styles.landscapeColCenter]}>
+              <View style={[styles.visualMediaWrap, styles.visualMediaWrapLandscape, styles.landscapeMediaWrap]}>
+                {colorMode ? (
+                  <View
+                    style={[
+                      styles.colorSwatchCircle,
+                      {
+                        width: colorSwatchSize,
+                        height: colorSwatchSize,
+                        borderRadius: Math.round(colorSwatchSize / 2),
+                        backgroundColor: swatchColorById(card?.id),
+                      },
+                    ]}
+                  />
+                ) : !imageFailed && imageUri ? (
+                  <Image
+                    source={{ uri: imageUri }}
+                    style={styles.cardImageLarge}
+                    resizeMode="contain"
+                    onError={() => setImageFailed(true)}
+                  />
+                ) : rectangleShapeMode ? (
+                  <View style={[styles.rectangleShape, styles.landscapeRectangleShape]} />
+                ) : (
+                  <Text
+                    style={[
+                      styles.emojiLarge,
+                      { fontSize: Math.max(74, Math.min(visualEmojiSize, 122)) },
+                    ]}
+                  >
+                    {card.emoji}
+                  </Text>
+                )}
+              </View>
+            </View>
+
+            <View style={[styles.landscapeCol, styles.landscapeThreeColAlignedCol, styles.landscapeColRight]}>
+              <View style={[styles.textSlot, styles.textSlotLandscape, styles.landscapeTextSlot]}>
+                <Text
+                  numberOfLines={2}
+                  style={[
+                    visualMode ? styles.titleVisual : styles.title,
+                    { fontSize: Math.max(28, Math.min(visualTitleSize, 42)) },
+                    styles.landscapeTitle,
+                  ]}
+                >
+                  {card.title}
+                </Text>
+                {showSubtitle && (
+                  <Text numberOfLines={3} style={[styles.subtitle, styles.landscapeSubtitle]}>
+                    {card.subtitle}
+                  </Text>
+                )}
+              </View>
+            </View>
+          </View>
+        ) : mobileLandscapeTwoColMode ? (
+          <View style={styles.landscapeTwoColRow}>
+            <View style={[styles.landscapeCol, styles.landscapeTwoColAlignedCol, styles.landscapeTwoColMediaCol]}>
+              <View style={[styles.visualMediaWrap, styles.visualMediaWrapLandscape, styles.landscapeMediaWrap]}>
+                {colorMode ? (
+                  <View
+                    style={[
+                      styles.colorSwatchCircle,
+                      {
+                        width: colorSwatchSize,
+                        height: colorSwatchSize,
+                        borderRadius: Math.round(colorSwatchSize / 2),
+                        backgroundColor: swatchColorById(card?.id),
+                      },
+                    ]}
+                  />
+                ) : !imageFailed && imageUri ? (
+                  <Image
+                    source={{ uri: imageUri }}
+                    style={styles.cardImageLarge}
+                    resizeMode="contain"
+                    onError={() => setImageFailed(true)}
+                  />
+                ) : rectangleShapeMode ? (
+                  <View style={[styles.rectangleShape, styles.landscapeRectangleShape]} />
+                ) : (
+                  <Text
+                    style={[
+                      styles.emojiLarge,
+                      { fontSize: Math.max(82, Math.min(visualEmojiSize, 140)) },
+                    ]}
+                  >
+                    {card.emoji}
+                  </Text>
+                )}
+              </View>
+            </View>
+
+            <View style={[styles.landscapeCol, styles.landscapeTwoColAlignedCol, styles.landscapeTwoColTextCol]}>
+              <View style={[styles.textSlot, styles.textSlotLandscape, styles.landscapeTextSlot]}>
+                <Text
+                  numberOfLines={2}
+                  style={[
+                    visualMode ? styles.titleVisual : styles.title,
+                    { fontSize: Math.max(30, Math.min(visualTitleSize, 46)) },
+                    styles.landscapeTitle,
+                  ]}
+                >
+                  {card.title}
+                </Text>
+                {showSubtitle && (
+                  <Text numberOfLines={3} style={[styles.subtitle, styles.landscapeSubtitle]}>
+                    {card.subtitle}
+                  </Text>
+                )}
+              </View>
+            </View>
+          </View>
         ) : (
           <>
             {(alphabetMode || numberMode) && (
-              <View style={styles.valueSlot}>
+              <View style={[styles.valueSlot, isCompactLandscape && styles.valueSlotLandscape]}>
                 <Text
                   style={[
                     styles.value,
@@ -655,13 +880,14 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
                 visualMode
                   ? [
                       styles.visualMediaWrap,
-                      !isWeb && styles.visualMediaWrapMobile,
+                      !isWeb && !isCompactLandscape && styles.visualMediaWrapMobile,
+                      isCompactLandscape && styles.visualMediaWrapLandscape,
                       (alphabetMode || numberMode) && hasImage && !isTVLayout && styles.visualMediaWrapCompact,
                     ]
                   : [styles.mediaWrap, styles.classicMediaWrap, textOnlyMode && {
                     minHeight: textOnlyMediaHeight,
                     maxHeight: textOnlyMediaHeight,
-                  }]
+                  }, isCompactLandscape && styles.classicMediaWrapLandscape]
               }
             >
               {colorMode ? (
@@ -713,7 +939,7 @@ function CardViewer({ categoryId, card, imageUri, onPrev, onNext, swipeEnabled =
               )}
             </View>
 
-            <View style={[styles.textSlot, visualMode && styles.textSlotVisual]}>
+            <View style={[styles.textSlot, visualMode && styles.textSlotVisual, isCompactLandscape && styles.textSlotLandscape]}>
               <Text style={[visualMode ? styles.titleVisual : styles.title, visualMode && { fontSize: visualTitleSize }]}>{card.title}</Text>
               {showSubtitle && <Text style={styles.subtitle}>{card.subtitle}</Text>}
             </View>
@@ -767,11 +993,25 @@ export function KidsCardBookScreen({
   );
   const defaultCategory = orderedCategoryIds[0] || "alphabet";
 
+  const cardsWithIntros = useMemo(() => {
+    const result = {};
+    for (const cat of categories) {
+      const introCard = {
+        id: `__intro_${cat.id}`,
+        __isIntro: true,
+        _categoryLabel: cat.label || cat.id,
+        _categoryIcon: cat.icon || "",
+        image: cat.image || null,
+      };
+      result[cat.id] = [introCard, ...(cardsByCategory[cat.id] || [])];
+    }
+    return result;
+  }, [categories, cardsByCategory]);
+
   const [selectedCategory, setSelectedCategory] = useState(defaultCategory);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [viewedIdsByCategory, setViewedIdsByCategory] = useState({});
-  const [favorites, setFavorites] = useState([]);
-  const [voiceOn, setVoiceOn] = useState(false);
+  const [voiceOn, setVoiceOn] = useState(true);
   const [swipeOn, setSwipeOn] = useState(!Platform.isTV);
   const [autoplay, setAutoplay] = useState(false);
   const [delayMs, setDelayMs] = useState(5000);
@@ -784,17 +1024,19 @@ export function KidsCardBookScreen({
   const [unlockHoldProgress, setUnlockHoldProgress] = useState(0);
   const tvUiMode = Platform.OS === "android" ? Platform.constants?.uiMode : null;
   const isTVDevice = Platform.isTV === true && (Platform.OS !== "android" || tvUiMode === "tv");
+  const { width: viewportWidth, height: viewportHeight } = useWindowDimensions();
+  const isCompactLandscape = !isTVDevice && viewportWidth > viewportHeight;
   const unlockTimerRef = useRef(null);
   const unlockProgressTimerRef = useRef(null);
 
-  const cards = useMemo(() => cardsByCategory[selectedCategory] || [], [cardsByCategory, selectedCategory]);
+  const cards = useMemo(() => cardsWithIntros[selectedCategory] || [], [cardsWithIntros, selectedCategory]);
   const normalizedIndex = useMemo(() => wrapIndex(currentIndex, cards.length || 1), [currentIndex, cards.length]);
   const card = cards[normalizedIndex] || null;
   const imageUri = useMemo(() => resolveCardImageUri(selectedCategory, card), [card, resolveCardImageUri, selectedCategory]);
-  const isFavorite = card ? favorites.includes(favoriteKey(selectedCategory, card.id)) : false;
 
   const bgColors = useMemo(() => {
     const fallback = ["#fde7ef", "#e9f6ff"];
+    if (card?.__isIntro) return ["#e3f0ff", "#f4e8ff"];
     if (!card?.colors || card.colors.length < 2) return fallback;
     return [softenColorForBabies(card.colors[0]), softenColorForBabies(card.colors[1])];
   }, [card]);
@@ -809,7 +1051,9 @@ export function KidsCardBookScreen({
   const topInset = Platform.OS === "android" ? (RNStatusBar.currentHeight || 0) : 0;
   const safeAreaInsets = useSafeAreaInsets();
   const bottomNavOffset = 0;
-  const bottomNavPadding = (safeAreaInsets.bottom || 0) + 12;
+  const bottomNavPadding = (safeAreaInsets.bottom || 0) + (isCompactLandscape ? 2 : 12);
+  const landscapeLeftInset = isCompactLandscape ? Math.max(0, safeAreaInsets.left || 0) : 0;
+  const landscapeRightInset = isCompactLandscape ? Math.max(8, safeAreaInsets.right || 0) : 0;
 
   useEffect(() => {
     if (!orderedCategoryIds.includes(selectedCategory)) {
@@ -823,7 +1067,7 @@ export function KidsCardBookScreen({
   }, [cards.length]);
 
   useEffect(() => {
-    if (!card) return;
+    if (!card || card.__isIntro) return;
     setViewedIdsByCategory((prev) => {
       const existing = prev[selectedCategory] || [];
       if (existing.includes(card.id)) return prev;
@@ -839,8 +1083,10 @@ export function KidsCardBookScreen({
     onSpeakCard?.({
       categoryId: selectedCategory,
       card,
-      audioUri: resolveCardAudioUri(selectedCategory, card),
-      fallbackText: card.audioLabel || card.subtitle || `${card.value} ${card.title}`,
+      audioUri: card.__isIntro ? null : resolveCardAudioUri(selectedCategory, card),
+      fallbackText: card.__isIntro
+        ? card._categoryLabel
+        : (card.audioLabel || card.subtitle || `${card.value} ${card.title}`),
     });
 
     return () => {
@@ -857,14 +1103,14 @@ export function KidsCardBookScreen({
 
   const selectCategory = useCallback(
     (categoryId) => {
-      if (!cardsByCategory[categoryId]) return;
+      if (!cardsWithIntros[categoryId]) return;
       onStopSpeaking?.();
       setTransitionDirection(1);
       setSelectedCategory(categoryId);
       setCurrentIndex(0);
       setCategoryPickerOpen(false);
     },
-    [cardsByCategory, onStopSpeaking],
+    [cardsWithIntros, onStopSpeaking],
   );
 
   const moveGlobal = useCallback(
@@ -877,7 +1123,7 @@ export function KidsCardBookScreen({
 
       while (true) {
         const categoryId = orderedCategoryIds[categoryPos];
-        const cardsLength = (cardsByCategory[categoryId] || []).length;
+        const cardsLength = (cardsWithIntros[categoryId] || []).length;
 
         if (cardsLength <= 0) {
           categoryPos = (categoryPos + (step >= 0 ? 1 : -1) + orderedCategoryIds.length) % orderedCategoryIds.length;
@@ -892,7 +1138,7 @@ export function KidsCardBookScreen({
 
         if (indexPos < 0) {
           categoryPos = (categoryPos - 1 + orderedCategoryIds.length) % orderedCategoryIds.length;
-          indexPos += (cardsByCategory[orderedCategoryIds[categoryPos]] || []).length;
+          indexPos += (cardsWithIntros[orderedCategoryIds[categoryPos]] || []).length;
           continue;
         }
 
@@ -903,7 +1149,7 @@ export function KidsCardBookScreen({
         return;
       }
     },
-    [cardsByCategory, currentIndex, onStopSpeaking, orderedCategoryIds, selectedCategory],
+    [cardsWithIntros, currentIndex, onStopSpeaking, orderedCategoryIds, selectedCategory],
   );
 
   const onPrev = () => moveGlobal(-1);
@@ -1043,12 +1289,6 @@ export function KidsCardBookScreen({
     };
   }, [categoryPickerOpen, onNext, onPrev, parentGuideOpen, settingsOpen, touchLockOn]);
 
-  const onToggleFavorite = () => {
-    if (!card) return;
-    const key = favoriteKey(selectedCategory, card.id);
-    setFavorites((prev) => (prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key]));
-  };
-
   const onToggleVoice = () => {
     const next = !voiceOn;
     setVoiceOn(next);
@@ -1134,10 +1374,10 @@ export function KidsCardBookScreen({
       <StatusBar style={touchLockOn ? "light" : "dark"} hidden={touchLockOn} />
       <LinearGradient colors={bgColors} start={{ x: 0.1, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFillObject} />
 
-      <View style={[styles.topBar, isTVDevice && tvStyles.topBar]}>
+      <View style={[styles.topBar, isTVDevice && tvStyles.topBar, isCompactLandscape && styles.topBarLandscape]}>
         <View style={styles.topBarLeft}>
-          <Text style={[styles.appTitle, isTVDevice && tvStyles.appTitle]}>{appTitle}</Text>
-          <Text style={[styles.currentCategoryLabel, isTVDevice && tvStyles.currentCategoryLabel]}>{categories.find((c) => c.id === selectedCategory)?.label || "Category"}</Text>
+          <Text style={[styles.appTitle, isTVDevice && tvStyles.appTitle, isCompactLandscape && styles.appTitleLandscape]}>{appTitle}</Text>
+          <Text style={[styles.currentCategoryLabel, isTVDevice && tvStyles.currentCategoryLabel, isCompactLandscape && styles.currentCategoryLabelLandscape]}>{categories.find((c) => c.id === selectedCategory)?.label || "Category"}</Text>
           {touchLockOn && (
             <Text style={[styles.lockBannerText, isTVDevice && tvStyles.lockBannerText]}>Parent lock is ON • tap 🔒 to unlock</Text>
           )}
@@ -1164,11 +1404,14 @@ export function KidsCardBookScreen({
           swipeEnabled={swipeOn && !isTVDevice && !touchLockOn}
           transitionDirection={transitionDirection}
           isTVLayout={isTVDevice}
+          isCompactLandscape={isCompactLandscape}
+          landscapeLeftInset={landscapeLeftInset}
+          landscapeRightInset={landscapeRightInset}
         />
 
-        <View style={[styles.bottomNav, isTVDevice && tvStyles.bottomNav, { bottom: bottomNavOffset, paddingBottom: bottomNavPadding }]}>
+        <View style={[styles.bottomNav, isTVDevice && tvStyles.bottomNav, isCompactLandscape && styles.bottomNavLandscape, { bottom: bottomNavOffset, paddingBottom: bottomNavPadding }]}>
         <TvPressable
-          style={[styles.navPill, isTVDevice && tvStyles.navPill, categoryPickerOpen && styles.navPillActive]}
+          style={[styles.navPill, isTVDevice && tvStyles.navPill, isCompactLandscape && styles.navPillLandscape, categoryPickerOpen && styles.navPillActive]}
           focusedStyle={[styles.navPillFocused, isTVDevice && tvStyles.navPillFocused]}
           hasTVPreferredFocus={!hasSheetOpen}
           onPress={() => {
@@ -1180,7 +1423,12 @@ export function KidsCardBookScreen({
             <GridIcon active={categoryPickerOpen} />
           </View>
           <Text
-            style={[styles.navPillText, isTVDevice && tvStyles.navPillText, categoryPickerOpen && styles.navPillTextActive]}
+            style={[
+              styles.navPillText,
+              isTVDevice && tvStyles.navPillText,
+              isCompactLandscape && styles.navPillTextLandscape,
+              categoryPickerOpen && styles.navPillTextActive,
+            ]}
             numberOfLines={1}
             ellipsizeMode="clip"
             maxFontSizeMultiplier={1}
@@ -1190,11 +1438,11 @@ export function KidsCardBookScreen({
         </TvPressable>
 
         <TvPressable
-          style={[styles.navPill, isTVDevice && tvStyles.navPill, autoplay && styles.navPillActive]}
+          style={[styles.navPill, isTVDevice && tvStyles.navPill, isCompactLandscape && styles.navPillLandscape, autoplay && styles.navPillActive]}
           focusedStyle={[styles.navPillFocused, isTVDevice && tvStyles.navPillFocused]}
           onPress={() => setAutoplay((prev) => !prev)}
         >
-          <View style={[styles.navIconSlot, isTVDevice && tvStyles.navIconSlot]}>
+          <View style={[styles.navIconSlot, isTVDevice && tvStyles.navIconSlot, isCompactLandscape && styles.navIconSlotLandscape]}>
             <Text
               style={[
                 styles.navIconGlyph,
@@ -1211,7 +1459,12 @@ export function KidsCardBookScreen({
             </Text>
           </View>
           <Text
-            style={[styles.navPillText, isTVDevice && tvStyles.navPillText, autoplay && styles.navPillTextActive]}
+            style={[
+              styles.navPillText,
+              isTVDevice && tvStyles.navPillText,
+              isCompactLandscape && styles.navPillTextLandscape,
+              autoplay && styles.navPillTextActive,
+            ]}
             numberOfLines={1}
             ellipsizeMode="clip"
             maxFontSizeMultiplier={1}
@@ -1222,7 +1475,7 @@ export function KidsCardBookScreen({
 
 
         <TvPressable
-          style={[styles.navPill, isTVDevice && tvStyles.navPill, settingsOpen && styles.navPillActive]}
+          style={[styles.navPill, isTVDevice && tvStyles.navPill, isCompactLandscape && styles.navPillLandscape, settingsOpen && styles.navPillActive]}
           focusedStyle={[styles.navPillFocused, isTVDevice && tvStyles.navPillFocused]}
           onPress={() => {
             setCategoryPickerOpen(false);
@@ -1233,12 +1486,44 @@ export function KidsCardBookScreen({
             <SlidersIcon active={settingsOpen} />
           </View>
           <Text
-            style={[styles.navPillText, isTVDevice && tvStyles.navPillText, settingsOpen && styles.navPillTextActive]}
+            style={[
+              styles.navPillText,
+              isTVDevice && tvStyles.navPillText,
+              isCompactLandscape && styles.navPillTextLandscape,
+              settingsOpen && styles.navPillTextActive,
+            ]}
             numberOfLines={1}
             ellipsizeMode="clip"
             maxFontSizeMultiplier={1}
           >
             Settings
+          </Text>
+        </TvPressable>
+
+        <TvPressable
+          style={[styles.navPill, isTVDevice && tvStyles.navPill, isCompactLandscape && styles.navPillLandscape, !voiceOn && styles.navPillMuted]}
+          focusedStyle={[styles.navPillFocused, isTVDevice && tvStyles.navPillFocused]}
+          onPress={onToggleVoice}
+        >
+          <View style={[styles.navIconSlot, isTVDevice && tvStyles.navIconSlot, isCompactLandscape && styles.navIconSlotLandscape]}>
+            <Ionicons
+              name={voiceOn ? "volume-high" : "volume-mute"}
+              size={20}
+              color="#29486f"
+            />
+          </View>
+          <Text
+            style={[
+              styles.navPillText,
+              isTVDevice && tvStyles.navPillText,
+              isCompactLandscape && styles.navPillTextLandscape,
+              !voiceOn && styles.navPillTextMuted,
+            ]}
+            numberOfLines={1}
+            ellipsizeMode="clip"
+            maxFontSizeMultiplier={1}
+          >
+            {voiceOn ? "Sound" : "Muted"}
           </Text>
         </TvPressable>
         </View>
@@ -1261,15 +1546,13 @@ export function KidsCardBookScreen({
             {parentGuideOpen ? (
               <ParentGuideSheet />
             ) : categoryPickerOpen ? (
-              <CategorySheet categories={categories} selectedCategory={selectedCategory} onSelect={selectCategory} />
+              <CategorySheet categories={categories} selectedCategory={selectedCategory} onSelect={selectCategory} resolveCategoryImageUri={(cat) => resolveCardImageUri(cat.id, { __isIntro: true, image: cat.image })} />
             ) : (
               <SettingsSheet
                 voiceOn={voiceOn}
                 swipeOn={swipeOn}
-                isFavorite={isFavorite}
                 onToggleVoice={onToggleVoice}
                 onToggleSwipe={() => setSwipeOn((prev) => !prev)}
-                onToggleFavorite={onToggleFavorite}
                 currentViewed={currentViewed}
                 cardsLength={cards.length}
                 totalViewed={totalViewed}
@@ -1309,6 +1592,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  topBarLandscape: {
+    marginTop: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
+  },
   mainContent: {
     flex: 1,
   },
@@ -1317,11 +1606,18 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     color: "#142038",
   },
+  appTitleLandscape: {
+    fontSize: 17,
+  },
   currentCategoryLabel: {
     marginTop: 2,
     fontSize: 12,
     fontWeight: "800",
     color: "#2b476f",
+  },
+  currentCategoryLabelLandscape: {
+    marginTop: 1,
+    fontSize: 11,
   },
   lockBannerText: {
     marginTop: 4,
@@ -1365,6 +1661,10 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 150,
   },
+  viewerWrapLandscape: {
+    paddingTop: 6,
+    paddingBottom: 8,
+  },
   card: {
     flex: 1,
     borderRadius: 30,
@@ -1375,11 +1675,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 18,
-  },  cardVisual: {
+  },
+  cardLandscape: {
+    padding: 12,
+  },
+  cardVisual: {
     justifyContent: "space-between",
     paddingHorizontal: 14,
     paddingTop: 14,
     paddingBottom: 24,
+  },
+  cardVisualLandscape: {
+    paddingTop: 8,
+    paddingBottom: 10,
   },
   value: {
     fontSize: 106,
@@ -1400,6 +1708,19 @@ const styles = StyleSheet.create({
     minHeight: 124,
     alignItems: "center",
     justifyContent: "center",
+  },
+  valueSlotLandscape: {
+    minHeight: 88,
+  },
+  landscapeValueSlot: {
+    minHeight: 0,
+    width: "100%",
+    flex: 1,
+  },
+  landscapeValue: {
+    width: "100%",
+    textAlign: "center",
+    includeFontPadding: false,
   },
   emoji: {
     fontSize: 74,
@@ -1426,7 +1747,11 @@ const styles = StyleSheet.create({
   },
   classicMediaWrap: {
     minHeight: 170,
-  },  visualMediaWrap: {
+  },
+  classicMediaWrapLandscape: {
+    minHeight: 132,
+  },
+  visualMediaWrap: {
     flex: 1,
     width: "100%",
     minHeight: 220,
@@ -1435,6 +1760,19 @@ const styles = StyleSheet.create({
   },
   visualMediaWrapMobile: {
     minHeight: 280,
+  },
+  visualMediaWrapLandscape: {
+    minHeight: 156,
+  },
+  landscapeMediaWrap: {
+    minHeight: 0,
+    width: "100%",
+    flex: 1,
+  },
+  landscapeRectangleShape: {
+    width: "92%",
+    minHeight: 84,
+    maxHeight: 150,
   },
   visualMediaWrapCompact: {
     flex: 0.6,
@@ -1497,6 +1835,83 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
   },
+  textSlotLandscape: {
+    minHeight: 54,
+  },
+  landscapeTextSlot: {
+    minHeight: 0,
+    width: "100%",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+  },
+  landscapeTitle: {
+    width: "100%",
+    textAlign: "center",
+    marginTop: 0,
+  },
+  landscapeSubtitle: {
+    width: "100%",
+    textAlign: "center",
+    marginTop: 4,
+    marginBottom: 0,
+    paddingBottom: 0,
+    fontSize: 16,
+    lineHeight: 21,
+  },
+  landscapeThreeColRow: {
+    flex: 1,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    columnGap: 8,
+  },
+  landscapeTwoColRow: {
+    flex: 1,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    columnGap: 8,
+  },
+  landscapeCol: {
+    minHeight: 0,
+    justifyContent: "center",
+    alignItems: "stretch",
+  },
+  landscapeThreeColAlignedCol: {
+    alignItems: "center",
+  },
+  landscapeColLeft: {
+    flex: 1,
+    paddingHorizontal: 4,
+  },
+  landscapeColCenter: {
+    flex: 1,
+    paddingHorizontal: 4,
+  },
+  landscapeColRight: {
+    flex: 1,
+    paddingHorizontal: 4,
+  },
+  landscapeTwoColMediaCol: {
+    flex: 1,
+    paddingHorizontal: 4,
+  },
+  landscapeTwoColTextCol: {
+    flex: 1,
+    paddingHorizontal: 4,
+  },
+  landscapeTwoColAlignedCol: {
+    alignItems: "center",
+  },
+  landscapeSideGlyph: {
+    fontSize: 70,
+    lineHeight: 78,
+    textAlign: "center",
+    marginVertical: 0,
+  },
   textSlotVisual: {
     minHeight: 72,
   },
@@ -1516,6 +1931,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  bottomNavLandscape: {
+    position: "relative",
+    zIndex: 0,
+    paddingTop: 2,
+    paddingBottom: 2,
+    paddingHorizontal: 1,
+  },
   navPill: {
     flex: 1,
     borderRadius: 999,
@@ -1527,6 +1949,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 2,
     minWidth: 0,
+  },
+  navPillLandscape: {
+    minHeight: 40,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 1,
+  },
+  navPillTextLandscape: {
+    fontSize: 12,
+    lineHeight: 50,
+    width: "auto",
+    textAlign: "left",
+  },
+  navIconSlotLandscape: {
+    width: 18,
+    height: 30,
+    marginBottom: 0,
+    marginRight: 4,
   },
   navPillActive: {
     backgroundColor: "black",
@@ -1603,6 +2046,15 @@ const styles = StyleSheet.create({
   },
   navPillTextActive: {
     color: "#ffffff",
+  },
+  navPillMuted: {
+    opacity: 0.55,
+  },
+  navPillTextMuted: {
+    color: "#6b7a90",
+  },
+  navIconGlyphMuted: {
+    color: "#6b7a90",
   },
   navIconGlyph: {
     fontSize: 18,
@@ -1716,10 +2168,6 @@ const styles = StyleSheet.create({
     borderColor: "#3f8efc",
     borderWidth: 2,
   },
-  favoritePillBtnActive: {
-    backgroundColor: "#ffeab3",
-    borderColor: "#ffcf58",
-  },
   pillBtnText: {
     fontSize: 13,
     fontWeight: "800",
@@ -1727,9 +2175,6 @@ const styles = StyleSheet.create({
   },
   pillBtnTextActive: {
     color: "#14532d",
-  },
-  favoritePillBtnTextActive: {
-    color: "#6f4d00",
   },
   categoryGrid: {
     flexDirection: "row",
@@ -1759,6 +2204,11 @@ const styles = StyleSheet.create({
     fontSize: 22,
     marginBottom: 4,
   },
+  categoryThumb: {
+    width: 40,
+    height: 40,
+    marginBottom: 4,
+  },
   categoryText: {
     fontSize: 13,
     fontWeight: "700",
@@ -1766,6 +2216,49 @@ const styles = StyleSheet.create({
   },
   categoryTextActive: {
     color: "#ffffff",
+  },
+  introCategoryWrap: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+    gap: 12,
+  },
+  introCategoryWrapLandscape: {
+    width: "100%",
+    paddingHorizontal: 6,
+    gap: 4,
+  },
+  introCategoryWrapLandscapeText: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 8,
+  },
+  introCategoryImage: {
+    width: "70%",
+    aspectRatio: 1,
+    maxHeight: 220,
+  },
+  introCategoryImageLandscape: {
+    width: "68%",
+    maxHeight: 160,
+  },
+  introCategoryLabel: {
+    fontSize: 46,
+    fontWeight: "900",
+    color: "#141d30",
+    textAlign: "center",
+    includeFontPadding: false,
+  },
+  introCategoryLabelLandscape: {
+    fontSize: 32,
+  },
+  introHint: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "rgba(20,29,48,0.40)",
+    textAlign: "center",
+    marginTop: 4,
   },
 });
 
@@ -1786,13 +2279,15 @@ const tvStyles = StyleSheet.create({
   viewerWrap: {
     paddingHorizontal: 0,
     position: "relative",
+    paddingTop: 10,
+    paddingBottom: 100,
   },
   tvArrowOverlay: {
     position: "absolute",
     left: 0,
     right: 0,
     top: 0,
-    bottom: 150,
+    bottom: 100,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -1939,6 +2434,12 @@ const tvStyles = StyleSheet.create({
     right: 0,
     bottom: 0,
     borderRadius: 0,
+  },
+  introCategoryLabel: {
+    fontSize: 64,
+  },
+  introHint: {
+    fontSize: 22,
   },
 });
 
